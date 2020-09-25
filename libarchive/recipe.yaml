@@ -1,0 +1,149 @@
+context:
+  version: 3.4.3
+
+package:
+  name: libarchive
+  version: '{{ version }}'
+
+source:
+  url: https://github.com/libarchive/libarchive/archive/v{{ version }}.tar.gz
+  sha256: 19556c1c67aacdff547fd719729630444dbc7161c63eca661a310676a022bb01
+  patches:
+  - patches/0001-Add-lib-to-CMAKE_FIND_LIBRARY_PREFIXES-for-lzma.patch
+  - patches/0003-VC9-compatibility-test-for-BCryptDeriveKeyPBKDF2.patch
+  - patches/0004-VC9-compatibility-define-BCRYPT_SUCCESS.patch
+    # This should not be applied in general. It exists so I can build it for
+    # debugging Visual Studio where warnings are errors for some reason.
+    # Hiding warnings is poor practice.
+    # - patches/0005-VC9-compatibility-ignore-some-warnings.patch
+  - patches/0006-VC-openssl-define-inline-as-__inline.patch
+    # These warnings are errors when compiling lz-4 support
+  - patches/0007-CMake-VC9-compatibility-ignore-some-warnings.patch
+  - patches/0008-VC9-compatibility-remove-C99.patch
+  - patches/0009-CMake-Force-Multi-threaded-DLL-runtime.patch
+
+build:
+  number: 0
+  run_exports:
+    # https://abi-laboratory.pro/index.php?view=timeline&l=libarchive
+  - '{{ pin_subpackage("libarchive", max_pin="x.x") }}'
+
+  skip:
+  - win and vc<14
+requirements:
+  build:
+  - '{{ compiler("c") }}'
+    # Does not work in this recips at present
+    # we manually convert C99 to C89 instead.
+    # - c99-to-c89  # [win and vc<14]
+  - sel(win and vc<14): msinttypes
+  - sel(unix): autoconf
+  - sel(unix): automake
+  - sel(unix): libtool
+  - sel(unix): pkg-config
+  - sel(win): cmake
+  - sel(unix): make
+  - sel(win): ninja
+  - sel(win): m2-patch
+  host:
+  - sel(win and vc<14): msinttypes
+  - sel(osx): libiconv
+  - libxml2
+  run:
+  - sel(osx): libiconv
+  - libxml2
+
+features:
+  - name: zlib
+    default: on
+    requirements:
+      host:
+        - zlib
+      run:
+        - zlib
+
+  - name: zstd
+    default: on
+    requirements:
+      host:
+        - zstd
+      run:
+        - zstd
+
+  - name: openssl
+    default: on
+    requirements:
+      host:
+        - openssl
+      run:
+        - openssl
+
+  - name: lzo
+    default: on
+    requirements:
+      host:
+        - lzo
+      run:
+        - lzo
+
+  - name: xz
+    default: on
+    requirements:
+      host:
+        - xz
+      run:
+        - xz
+
+  - name: bzip2
+    default: on
+    requirements:
+      host:
+        - bzip2
+      run:
+        - bzip2
+
+  - name: lz4
+    default: on
+    requirements:
+      host:
+        - lz4-c
+      run:
+        - lz4-c
+
+  - name: static
+    default: off
+
+test:
+  files:
+  - test/hello_world.xar
+  commands:
+    # Verify pkg-config file is in place.
+  - sel(unix): test -f "${PREFIX}/lib/pkgconfig/libarchive.pc"
+
+    # Verify headers are in place.
+  - sel(unix): test -f "${PREFIX}/include/archive.h"
+  - sel(unix): test -f "${PREFIX}/include/archive_entry.h"
+
+    # Verify libraries are in place.
+  - sel(unix): test -f "${PREFIX}/lib/libarchive.a"
+  - sel(unix): test -f "${PREFIX}/lib/libarchive${SHLIB_EXT}"
+
+    # Check for commands
+  - bsdcat --version
+  - bsdcpio --version
+  - bsdtar --version
+  - bsdtar -tf test/hello_world.xar
+
+about:
+  home: http://www.libarchive.org/
+  summary: Multi-format archive and compression library
+  license: BSD-2-Clause
+  license_file: COPYING
+  license_family: BSD
+
+extra:
+  recipe-maintainers:
+  - jakirkham
+  - mingwandroid
+  - ocefpaf
+
