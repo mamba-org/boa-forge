@@ -26,36 +26,36 @@ build:
   number: 0
   run_exports:
     # https://abi-laboratory.pro/index.php?view=timeline&l=libarchive
-  - '{{ pin_subpackage("libarchive", max_pin="x.x") }}'
-
+    - '{{ pin_subpackage("libarchive", max_pin="x.x") }}'
   skip:
-  - win and vc<14
+    - win and vc<14
+
 requirements:
   build:
-  - '{{ compiler("c") }}'
-    # Does not work in this recips at present
-    # we manually convert C99 to C89 instead.
-    # - c99-to-c89  # [win and vc<14]
-  - sel(win and vc<14): msinttypes
-  - sel(unix): autoconf
-  - sel(unix): automake
-  - sel(unix): libtool
-  - sel(unix): pkg-config
-  - sel(win): cmake
-  - sel(unix): make
-  - sel(win): ninja
-  - sel(win): m2-patch
+    - '{{ compiler("c") }}'
+      # Does not work in this recips at present
+      # we manually convert C99 to C89 instead.
+      # - c99-to-c89  # [win and vc<14]
+    - sel(win and vc<14): msinttypes
+    - sel(unix): autoconf
+    - sel(unix): automake
+    - sel(unix): libtool
+    - sel(unix): pkg-config
+    - sel(win): cmake
+    - sel(unix): make
+    - sel(win): ninja
+    - sel(win): m2-patch
   host:
-  - sel(win and vc<14): msinttypes
-  - sel(osx): libiconv
-  - libxml2
+    - sel(win and vc<14): msinttypes
+    - sel(osx): libiconv
+    - libxml2
   run:
-  - sel(osx): libiconv
-  - libxml2
+    - sel(osx): libiconv
+    - libxml2
 
 features:
   - name: zlib
-    default: on
+    default: true
     requirements:
       host:
         - zlib
@@ -63,7 +63,7 @@ features:
         - zlib
 
   - name: zstd
-    default: on
+    default: true
     requirements:
       host:
         - zstd
@@ -71,7 +71,7 @@ features:
         - zstd
 
   - name: openssl
-    default: on
+    default: true
     requirements:
       host:
         - openssl
@@ -79,7 +79,7 @@ features:
         - openssl
 
   - name: lzo
-    default: on
+    default: true
     requirements:
       host:
         - lzo
@@ -87,7 +87,7 @@ features:
         - lzo
 
   - name: xz
-    default: on
+    default: true
     requirements:
       host:
         - xz
@@ -95,7 +95,7 @@ features:
         - xz
 
   - name: bzip2
-    default: on
+    default: true
     requirements:
       host:
         - bzip2
@@ -103,7 +103,7 @@ features:
         - bzip2
 
   - name: lz4
-    default: on
+    default: true
     requirements:
       host:
         - lz4-c
@@ -111,7 +111,7 @@ features:
         - lz4-c
 
   - name: static
-    default: off
+    default: false
 
 test:
   files:

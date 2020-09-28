@@ -3,16 +3,6 @@ set -x
 autoreconf -vfi
 mkdir build-${HOST} && pushd build-${HOST}
 
-function feature()
-{
-    if [[ $1 != "0" ]]
-    then
-        echo $2
-    else
-        echo $3
-    fi
-}
-
 if [[ "${FEATURE_STATIC}" == "1" ]]; then
     BUILD_TYPE="--enable-static --disable-shared"
 else
