@@ -1,0 +1,277 @@
+From 7ee0adefec0f43f64bbf06974b42156322f65f22 Mon Sep 17 00:00:00 2001
+From: "distro-bot@anaconda.com" <Distro Bot>
+Date: Thu, 16 Apr 2020 01:33:58 +0200
+Subject: [PATCH 1/2] Add WindowsTargetPlatformVersion of 10.0 and lz4
+ executable to VS2017 Visual Studio solution
+
+---
+ visual/VS2017/datagen/datagen.vcxproj         |   1 +
+ visual/VS2017/frametest/frametest.vcxproj     |   1 +
+ .../fullbench-dll/fullbench-dll.vcxproj       |   1 +
+ visual/VS2017/fullbench/fullbench.vcxproj     |   1 +
+ visual/VS2017/fuzzer/fuzzer.vcxproj           |   1 +
+ visual/VS2017/liblz4-dll/liblz4-dll.vcxproj   |   1 +
+ visual/VS2017/liblz4/liblz4.vcxproj           |   1 +
+ visual/VS2017/lz4.sln                         |  14 +-
+ visual/VS2017/lz4/lz4.rc                      |  51 +++++
+ visual/VS2017/lz4/lz4.vcxproj                 | 189 ++++++++++++++++++
+ 10 files changed, 259 insertions(+), 2 deletions(-)
+ create mode 100644 visual/VS2017/lz4/lz4.rc
+ create mode 100644 visual/VS2017/lz4/lz4.vcxproj
+
+diff --git visual/VS2017/lz4/lz4.rc visual/VS2017/lz4/lz4.rc
+new file mode 100644
+index 0000000..c593edf
+--- /dev/null
++++ visual/VS2017/lz4/lz4.rc
+@@ -0,0 +1,51 @@
++// Microsoft Visual C++ generated resource script.
++//
++
++#include "lz4.h" /* LZ4_VERSION_STRING */
++#define APSTUDIO_READONLY_SYMBOLS
++#include "verrsrc.h"
++#undef APSTUDIO_READONLY_SYMBOLS
++
++
++#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
++LANGUAGE 9, 1
++
++/////////////////////////////////////////////////////////////////////////////
++//
++// Version
++//
++
++VS_VERSION_INFO     VERSIONINFO
++  FILEVERSION       LZ4_VERSION_MAJOR,LZ4_VERSION_MINOR,LZ4_VERSION_RELEASE,0
++  PRODUCTVERSION    LZ4_VERSION_MAJOR,LZ4_VERSION_MINOR,LZ4_VERSION_RELEASE,0
++ FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
++#ifdef _DEBUG
++ FILEFLAGS VS_FF_DEBUG
++#else
++ FILEFLAGS 0x0L
++#endif
++ FILEOS VOS_NT_WINDOWS32
++ FILETYPE VFT_DLL
++ FILESUBTYPE VFT2_UNKNOWN
++BEGIN
++    BLOCK "StringFileInfo"
++    BEGIN
++        BLOCK "040904B0"
++        BEGIN
++            VALUE "CompanyName", "Yann Collet"
++            VALUE "FileDescription", "Extremely fast compression"
++            VALUE "FileVersion", LZ4_VERSION_STRING
++            VALUE "InternalName", "lz4.exe"
++            VALUE "LegalCopyright", "Copyright (C) 2013-2016, Yann Collet"
++            VALUE "OriginalFilename", "lz4.exe"
++            VALUE "ProductName", "LZ4"
++            VALUE "ProductVersion", LZ4_VERSION_STRING
++        END
++    END
++    BLOCK "VarFileInfo"
++    BEGIN
++        VALUE "Translation", 0x0409, 1200
++    END
++END
++
++#endif
+diff --git visual/VS2017/lz4/lz4.vcxproj visual/VS2017/lz4/lz4.vcxproj
+new file mode 100644
+index 0000000..de7a714
+--- /dev/null
++++ visual/VS2017/lz4/lz4.vcxproj
+@@ -0,0 +1,189 @@
++﻿<?xml version="1.0" encoding="utf-8"?>
++<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
++  <ItemGroup Label="ProjectConfigurations">
++    <ProjectConfiguration Include="Debug|Win32">
++      <Configuration>Debug</Configuration>
++      <Platform>Win32</Platform>
++    </ProjectConfiguration>
++    <ProjectConfiguration Include="Debug|x64">
++      <Configuration>Debug</Configuration>
++      <Platform>x64</Platform>
++    </ProjectConfiguration>
++    <ProjectConfiguration Include="Release|Win32">
++      <Configuration>Release</Configuration>
++      <Platform>Win32</Platform>
++    </ProjectConfiguration>
++    <ProjectConfiguration Include="Release|x64">
++      <Configuration>Release</Configuration>
++      <Platform>x64</Platform>
++    </ProjectConfiguration>
++  </ItemGroup>
++  <PropertyGroup Label="Globals">
++    <ProjectGuid>{E30329AC-0057-4FE0-8FDA-7F650D398C4C}</ProjectGuid>
++    <Keyword>Win32Proj</Keyword>
++    <RootNamespace>lz4</RootNamespace>
++    <OutDir>$(SolutionDir)bin\$(Platform)_$(Configuration)\</OutDir>
++    <IntDir>$(SolutionDir)bin\obj\$(RootNamespace)_$(Platform)_$(Configuration)\</IntDir>
++  </PropertyGroup>
++  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
++    <ConfigurationType>Application</ConfigurationType>
++    <UseDebugLibraries>true</UseDebugLibraries>
++    <CharacterSet>Unicode</CharacterSet>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
++    <ConfigurationType>Application</ConfigurationType>
++    <UseDebugLibraries>true</UseDebugLibraries>
++    <CharacterSet>Unicode</CharacterSet>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
++    <ConfigurationType>Application</ConfigurationType>
++    <UseDebugLibraries>false</UseDebugLibraries>
++    <CharacterSet>Unicode</CharacterSet>
++    <WholeProgramOptimization Condition="'$(EnableWholeProgramOptimization)'=='true'">true</WholeProgramOptimization>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
++    <ConfigurationType>Application</ConfigurationType>
++    <UseDebugLibraries>false</UseDebugLibraries>
++    <CharacterSet>Unicode</CharacterSet>
++    <WholeProgramOptimization Condition="'$(EnableWholeProgramOptimization)'=='true'">true</WholeProgramOptimization>
++  </PropertyGroup>
++  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
++  <ImportGroup Label="ExtensionSettings">
++  </ImportGroup>
++  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
++    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
++  </ImportGroup>
++  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
++    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
++  </ImportGroup>
++  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
++    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
++  </ImportGroup>
++  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
++    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
++  </ImportGroup>
++  <PropertyGroup Label="UserMacros" />
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
++    <LinkIncremental>true</LinkIncremental>
++    <IncludePath>$(IncludePath);$(UniversalCRT_IncludePath);$(SolutionDir)..\..\lib;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
++    <LinkIncremental>true</LinkIncremental>
++    <IncludePath>$(IncludePath);$(UniversalCRT_IncludePath);$(SolutionDir)..\..\lib;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
++    <RunCodeAnalysis>true</RunCodeAnalysis>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
++    <LinkIncremental>false</LinkIncremental>
++    <IncludePath>$(IncludePath);$(UniversalCRT_IncludePath);$(SolutionDir)..\..\lib;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
++    <LinkIncremental>false</LinkIncremental>
++    <IncludePath>$(IncludePath);$(UniversalCRT_IncludePath);$(SolutionDir)..\..\lib;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
++    <RunCodeAnalysis>true</RunCodeAnalysis>
++  </PropertyGroup>
++  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
++    <ClCompile>
++      <PrecompiledHeader>
++      </PrecompiledHeader>
++      <WarningLevel>Level4</WarningLevel>
++      <Optimization>Disabled</Optimization>
++      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
++      <TreatWarningAsError>true</TreatWarningAsError>
++      <EnablePREfast>false</EnablePREfast>
++      <RuntimeLibrary Condition="'$(UseStaticCRT)'=='true'">MultiThreadedDebug</RuntimeLibrary>
++    </ClCompile>
++    <Link>
++      <SubSystem>Console</SubSystem>
++      <GenerateDebugInformation>true</GenerateDebugInformation>
++      <AdditionalDependencies>setargv.obj;%(AdditionalDependencies)</AdditionalDependencies>
++    </Link>
++  </ItemDefinitionGroup>
++  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
++    <ClCompile>
++      <PrecompiledHeader>
++      </PrecompiledHeader>
++      <WarningLevel>Level4</WarningLevel>
++      <Optimization>Disabled</Optimization>
++      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
++      <TreatWarningAsError>true</TreatWarningAsError>
++      <EnablePREfast>true</EnablePREfast>
++      <AdditionalOptions>/analyze:stacksize295252 %(AdditionalOptions)</AdditionalOptions>
++      <RuntimeLibrary Condition="'$(UseStaticCRT)'=='true'">MultiThreadedDebug</RuntimeLibrary>
++    </ClCompile>
++    <Link>
++      <SubSystem>Console</SubSystem>
++      <GenerateDebugInformation>true</GenerateDebugInformation>
++      <AdditionalDependencies>setargv.obj;%(AdditionalDependencies)</AdditionalDependencies>
++    </Link>
++  </ItemDefinitionGroup>
++  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
++    <ClCompile>
++      <WarningLevel>Level4</WarningLevel>
++      <PrecompiledHeader>
++      </PrecompiledHeader>
++      <Optimization>MaxSpeed</Optimization>
++      <FunctionLevelLinking>true</FunctionLevelLinking>
++      <IntrinsicFunctions>true</IntrinsicFunctions>
++      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
++      <TreatWarningAsError>false</TreatWarningAsError>
++      <EnablePREfast>false</EnablePREfast>
++      <RuntimeLibrary Condition="'$(UseStaticCRT)'=='true'">MultiThreaded</RuntimeLibrary>
++    </ClCompile>
++    <Link>
++      <SubSystem>Console</SubSystem>
++      <GenerateDebugInformation>true</GenerateDebugInformation>
++      <EnableCOMDATFolding>true</EnableCOMDATFolding>
++      <OptimizeReferences>true</OptimizeReferences>
++      <AdditionalDependencies>setargv.obj;%(AdditionalDependencies)</AdditionalDependencies>
++    </Link>
++  </ItemDefinitionGroup>
++  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
++    <ClCompile>
++      <WarningLevel>Level4</WarningLevel>
++      <PrecompiledHeader>
++      </PrecompiledHeader>
++      <Optimization>MaxSpeed</Optimization>
++      <FunctionLevelLinking>true</FunctionLevelLinking>
++      <IntrinsicFunctions>true</IntrinsicFunctions>
++      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
++      <TreatWarningAsError>false</TreatWarningAsError>
++      <EnablePREfast>true</EnablePREfast>
++      <AdditionalOptions>/analyze:stacksize295252 %(AdditionalOptions)</AdditionalOptions>
++      <RuntimeLibrary Condition="'$(UseStaticCRT)'=='true'">MultiThreaded</RuntimeLibrary>
++    </ClCompile>
++    <Link>
++      <SubSystem>Console</SubSystem>
++      <GenerateDebugInformation>true</GenerateDebugInformation>
++      <EnableCOMDATFolding>true</EnableCOMDATFolding>
++      <OptimizeReferences>true</OptimizeReferences>
++      <AdditionalDependencies>setargv.obj;%(AdditionalDependencies)</AdditionalDependencies>
++    </Link>
++  </ItemDefinitionGroup>
++  <ItemGroup>
++    <ClInclude Include="..\..\..\lib\lz4.h" />
++    <ClInclude Include="..\..\..\lib\lz4frame.h" />
++    <ClInclude Include="..\..\..\lib\lz4frame_static.h" />
++    <ClInclude Include="..\..\..\lib\lz4hc.h" />
++    <ClInclude Include="..\..\..\lib\xxhash.h" />
++    <ClInclude Include="..\..\..\programs\datagen.h" />
++    <ClInclude Include="..\..\..\programs\bench.h" />
++    <ClInclude Include="..\..\..\programs\lz4io.h" />
++  </ItemGroup>
++  <ItemGroup>
++    <ClCompile Include="..\..\..\lib\lz4.c" />
++    <ClCompile Include="..\..\..\lib\lz4frame.c" />
++    <ClCompile Include="..\..\..\lib\lz4hc.c" />
++    <ClCompile Include="..\..\..\lib\xxhash.c" />
++    <ClCompile Include="..\..\..\programs\datagen.c" />
++    <ClCompile Include="..\..\..\programs\bench.c" />
++    <ClCompile Include="..\..\..\programs\lz4cli.c" />
++    <ClCompile Include="..\..\..\programs\lz4io.c" />
++  </ItemGroup>
++  <ItemGroup>
++    <ResourceCompile Include="lz4.rc" />
++  </ItemGroup>
++  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
++  <ImportGroup Label="ExtensionTargets">
++  </ImportGroup>
++</Project>
+\ No newline at end of file
+-- 
+2.25.0
+

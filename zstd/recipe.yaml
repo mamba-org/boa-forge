@@ -1,0 +1,109 @@
+context:
+  name: zstd
+  version: 1.4.5
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  fn: '{{ name }}-{{ version }}.tar.gz'
+  url: https://github.com/facebook/{{ name }}/releases/download/v{{ version }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 98e91c7c6bf162bf90e4e70fdbc41a8188b9fa8de5ad840c401198014406ce9e
+  patches:
+    - sel(aarch64): utime-aarch64.patch
+
+build:
+  number: 2
+  run_exports:
+    # pretty bad removal of symbols in every other micro release:
+    #   https://abi-laboratory.pro/tracker/timeline/zstd/
+    #  Working smoothly since 1.4.x
+    - '{{ pin_subpackage("zstd", max_pin="x.x") }}'
+
+  skip:
+    - win
+requirements:
+  build:
+    - '{{ compiler("c") }}'
+    - '{{ compiler("cxx") }}'
+    - sel(win): msinttypes
+    - sel(unix): make
+    - sel(win): ninja
+    - cmake
+  host:
+    - zlib
+    - xz
+    - lz4-c
+  run:
+    - zlib
+    - xz
+    - lz4-c
+
+outputs:
+  - test:
+      requires:
+        - sel(unix): pkg-config
+
+      commands:
+        - zstd -be -i5
+
+        - sel(unix): test -f ${PREFIX}/include/{{ name }}.h
+        - sel(unix): test ! -f ${PREFIX}/lib/lib{{ name }}.a
+        - sel(linux): test -f ${PREFIX}/lib/lib{{ name }}.so
+        - sel(osx): test -f ${PREFIX}/lib/lib{{ name }}.dylib
+
+        - sel(win): if not exist %LIBRARY_INC%\{{ name }}.h exit 1
+        - sel(win): if not exist %LIBRARY_BIN%\lib{{ name }}.dll exit 1
+        - sel(win): if not exist %LIBRARY_LIB%\lib{{ name }}.lib exit 1
+        - sel(win): if exist %LIBRARY_LIB%\lib{{ name }}_static.lib exit 1
+
+        - sel(unix): export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
+        - sel(unix): test -f ${PREFIX}/lib/pkgconfig/lib{{ name }}.pc
+        - sel(unix): pkg-config --cflags lib{{ name }}
+
+    package:
+      name: zstd
+    build:
+      script: install.sh
+  - build:
+      script: install.sh
+    requirements:
+      build:
+        - '{{ compiler("c") }}'
+        - '{{ compiler("cxx") }}'
+        - sel(win): msinttypes
+        - sel(unix): make
+        - sel(win): ninja
+        - cmake
+      host:
+        - '{{ pin_subpackage("zstd", exact=True) }}'
+      run:
+        - '{{ pin_subpackage("zstd", exact=True) }}'
+    test:
+      commands:
+        - sel(unix): test -f ${PREFIX}/lib/lib{{ name }}.a
+
+    package:
+      name: zstd-static
+about:
+  home: http://www.zstd.net
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: Zstandard - Fast real-time compression algorithm
+  description: |
+    Zstandard is a real-time compression algorithm, providing high compression
+    ratios. It offers a very wide range of compression / speed trade-off, while
+    being backed by a very fast decoder. It also offers a special mode for
+    small data, called dictionary compression, and can create dictionaries from
+    any sample set. Zstandard library is provided as open source software using
+    a BSD license.
+  doc_url: https://facebook.github.io/zstd/zstd_manual.html
+  dev_url: https://github.com/facebook/zstd
+
+extra:
+  recipe-maintainers:
+    - rmax
+    - msarahan
+    - xhochy
+

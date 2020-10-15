@@ -1,0 +1,101 @@
+context:
+  pkg_name: lz4-c
+  name: lz4
+  version: 1.9.2
+
+package:
+  name: '{{ pkg_name }}'
+  version: '{{ version }}'
+
+source:
+  fn: '{{ name }}-{{ version }}.tar.gz'
+  url: https://github.com/{{ name }}/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: 658ba6191fa44c92280d4aa2c271b0f4fbc0e34d249578dd05e50e76d0e5efcc
+  patches:
+    # Split into 2 patches due to a bug in conda-build
+    # - patches/0001-Add-WindowsTargetPlatformVersion-of-10.0-and-lz4-exe.patch
+  - patches/0001-Add-WindowsTargetPlatformVersion-of-10.0-and-lz4-exe.1.patch
+  - patches/0001-Add-WindowsTargetPlatformVersion-of-10.0-and-lz4-exe.2.patch
+    # fullbench build used to cause "an internal compiler error".
+    # - patches/0002-Do-not-build-tests-binaries-on-VS-project.patch  # [win]
+
+build:
+  number: 0
+
+outputs:
+- package:
+    name: lz4-c
+  requirements:
+    build:
+      - '{{ compiler("c") }}'
+      - sel(not win): '{{ compiler("cxx") }}'
+      - sel(not win): make
+      - sel(unix): patch
+      - sel(win): m2-patch
+      - sel(win): m2-gcc-libs
+
+  build:
+      # https://abi-laboratory.pro/index.php?view=timeline&l=lz4
+    run_exports:
+    - '{{ pin_subpackage(pkg_name, max_pin="x.x") }}'
+  test:
+    requires:
+    - sel(unix): pkg-config
+
+    commands:
+    - lz4 -h
+    - sel(unix): lz4c -h
+    - sel(unix): lz4cat -h
+    - sel(unix): unlz4 -h
+
+    - sel(unix): test -f ${PREFIX}/include/lz4.h
+    - sel(unix): test -f ${PREFIX}/include/lz4hc.h
+    - sel(unix): test -f ${PREFIX}/include/lz4frame.h
+
+    - sel(win): if not exist %LIBRARY_INC%\\lz4.h exit 1
+    - sel(win): if not exist %LIBRARY_INC%\\lz4hc.h exit 1
+    - sel(win): if not exist %LIBRARY_INC%\\lz4frame.h exit 1
+
+    - sel(unix): test ! -f ${PREFIX}/lib/liblz4.a
+    - sel(osx): test -f ${PREFIX}/lib/liblz4.dylib
+    - sel(linux): test -f ${PREFIX}/lib/liblz4.so
+
+    - sel(win): if not exist %LIBRARY_BIN%\\liblz4.dll exit 1
+    - sel(win): if not exist %LIBRARY_LIB%\\liblz4.lib exit 1
+    - sel(win): if exist %LIBRARY_LIB%\\liblz4_static.lib exit 1
+
+    - sel(unix): test -f ${PREFIX}/lib/pkgconfig/liblz4.pc
+    - sel(unix): pkg-config --cflags --libs liblz4
+
+- package:
+    name: lz4-c-static
+  build:
+    activate_in_script: true
+    script:
+    - sel(unix): build_static.sh
+    - sel(win): bld_static.bat
+  test:
+    commands:
+    - sel(unix): test -f ${PREFIX}/lib/liblz4.a
+    - sel(win): if not exist %LIBRARY_LIB%\\liblz4_static.lib exit 1
+
+about:
+  home: https://www.lz4.org
+  license: BSD-2-Clause
+  license_file: lib/LICENSE
+  summary: Extremely Fast Compression algorithm
+  description: |
+    LZ4 is lossless compression algorithm, providing compression speed at 400
+    MB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,
+    with speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression
+    derivative, called LZ4_HC, is available, trading customizable CPU time for
+    compression ratio. LZ4 library is provided as open source software using a
+    BSD license.
+
+extra:
+  recipe-maintainers:
+  - mingwandroid
+  - rmax
+  - wesm
+  - xhochy
+

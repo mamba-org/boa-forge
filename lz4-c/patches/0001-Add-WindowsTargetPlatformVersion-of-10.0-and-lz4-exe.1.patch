@@ -1,0 +1,145 @@
+From 7ee0adefec0f43f64bbf06974b42156322f65f22 Mon Sep 17 00:00:00 2001
+From: "distro-bot@anaconda.com" <Distro Bot>
+Date: Thu, 16 Apr 2020 01:33:58 +0200
+Subject: [PATCH 1/2] Add WindowsTargetPlatformVersion of 10.0 and lz4
+ executable to VS2017 Visual Studio solution
+
+---
+ visual/VS2017/datagen/datagen.vcxproj         |   1 +
+ visual/VS2017/frametest/frametest.vcxproj     |   1 +
+ .../fullbench-dll/fullbench-dll.vcxproj       |   1 +
+ visual/VS2017/fullbench/fullbench.vcxproj     |   1 +
+ visual/VS2017/fuzzer/fuzzer.vcxproj           |   1 +
+ visual/VS2017/liblz4-dll/liblz4-dll.vcxproj   |   1 +
+ visual/VS2017/liblz4/liblz4.vcxproj           |   1 +
+ visual/VS2017/lz4.sln                         |  14 +-
+ visual/VS2017/lz4/lz4.rc                      |  51 +++++
+ visual/VS2017/lz4/lz4.vcxproj                 | 189 ++++++++++++++++++
+ 10 files changed, 259 insertions(+), 2 deletions(-)
+ create mode 100644 visual/VS2017/lz4/lz4.rc
+ create mode 100644 visual/VS2017/lz4/lz4.vcxproj
+
+diff --git a/visual/VS2017/datagen/datagen.vcxproj b/visual/VS2017/datagen/datagen.vcxproj
+index 30e159e..1439fd5 100644
+--- a/visual/VS2017/datagen/datagen.vcxproj
++++ b/visual/VS2017/datagen/datagen.vcxproj
+@@ -24,6 +24,7 @@
+     <RootNamespace>datagen</RootNamespace>
+     <OutDir>$(SolutionDir)bin\$(Platform)_$(Configuration)\</OutDir>
+     <IntDir>$(SolutionDir)bin\obj\$(RootNamespace)_$(Platform)_$(Configuration)\</IntDir>
++    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+diff --git a/visual/VS2017/frametest/frametest.vcxproj b/visual/VS2017/frametest/frametest.vcxproj
+index a3a403d..0b45116 100644
+--- a/visual/VS2017/frametest/frametest.vcxproj
++++ b/visual/VS2017/frametest/frametest.vcxproj
+@@ -24,6 +24,7 @@
+     <RootNamespace>frametest</RootNamespace>
+     <OutDir>$(SolutionDir)bin\$(Platform)_$(Configuration)\</OutDir>
+     <IntDir>$(SolutionDir)bin\obj\$(RootNamespace)_$(Platform)_$(Configuration)\</IntDir>
++    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+diff --git a/visual/VS2017/fullbench-dll/fullbench-dll.vcxproj b/visual/VS2017/fullbench-dll/fullbench-dll.vcxproj
+index d54a8d7..011db7d 100644
+--- a/visual/VS2017/fullbench-dll/fullbench-dll.vcxproj
++++ b/visual/VS2017/fullbench-dll/fullbench-dll.vcxproj
+@@ -24,6 +24,7 @@
+     <RootNamespace>fullbench-dll</RootNamespace>
+     <OutDir>$(SolutionDir)bin\$(Platform)_$(Configuration)\</OutDir>
+     <IntDir>$(SolutionDir)bin\obj\$(RootNamespace)_$(Platform)_$(Configuration)\</IntDir>
++    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+diff --git a/visual/VS2017/fullbench/fullbench.vcxproj b/visual/VS2017/fullbench/fullbench.vcxproj
+index 54c9743..7ddd639 100644
+--- a/visual/VS2017/fullbench/fullbench.vcxproj
++++ b/visual/VS2017/fullbench/fullbench.vcxproj
+@@ -24,6 +24,7 @@
+     <RootNamespace>fullbench</RootNamespace>
+     <OutDir>$(SolutionDir)bin\$(Platform)_$(Configuration)\</OutDir>
+     <IntDir>$(SolutionDir)bin\obj\$(RootNamespace)_$(Platform)_$(Configuration)\</IntDir>
++    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+diff --git a/visual/VS2017/fuzzer/fuzzer.vcxproj b/visual/VS2017/fuzzer/fuzzer.vcxproj
+index aa6fe42..1a436f6 100644
+--- a/visual/VS2017/fuzzer/fuzzer.vcxproj
++++ b/visual/VS2017/fuzzer/fuzzer.vcxproj
+@@ -24,6 +24,7 @@
+     <RootNamespace>fuzzer</RootNamespace>
+     <OutDir>$(SolutionDir)bin\$(Platform)_$(Configuration)\</OutDir>
+     <IntDir>$(SolutionDir)bin\obj\$(RootNamespace)_$(Platform)_$(Configuration)\</IntDir>
++    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+diff --git a/visual/VS2017/liblz4-dll/liblz4-dll.vcxproj b/visual/VS2017/liblz4-dll/liblz4-dll.vcxproj
+index 8e7ee3b..ae86eb8 100644
+--- a/visual/VS2017/liblz4-dll/liblz4-dll.vcxproj
++++ b/visual/VS2017/liblz4-dll/liblz4-dll.vcxproj
+@@ -25,6 +25,7 @@
+     <OutDir>$(SolutionDir)bin\$(Platform)_$(Configuration)\</OutDir>
+     <IntDir>$(SolutionDir)bin\obj\$(RootNamespace)_$(Platform)_$(Configuration)\</IntDir>
+     <ProjectName>liblz4-dll</ProjectName>
++    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+diff --git a/visual/VS2017/liblz4/liblz4.vcxproj b/visual/VS2017/liblz4/liblz4.vcxproj
+index 948f7db..0ad3782 100644
+--- a/visual/VS2017/liblz4/liblz4.vcxproj
++++ b/visual/VS2017/liblz4/liblz4.vcxproj
+@@ -24,6 +24,7 @@
+     <RootNamespace>liblz4</RootNamespace>
+     <OutDir>$(SolutionDir)bin\$(Platform)_$(Configuration)\</OutDir>
+     <IntDir>$(SolutionDir)bin\obj\$(RootNamespace)_$(Platform)_$(Configuration)\</IntDir>
++    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+diff --git a/visual/VS2017/lz4.sln b/visual/VS2017/lz4.sln
+index 72e98fc..ede48a3 100644
+--- a/visual/VS2017/lz4.sln
++++ b/visual/VS2017/lz4.sln
+@@ -1,6 +1,6 @@
+ Microsoft Visual Studio Solution File, Format Version 12.00
+-# Visual Studio 15
+-VisualStudioVersion = 15.0.28307.271
++# Visual Studio Version 16
++VisualStudioVersion = 16.0.30011.22
+ MinimumVisualStudioVersion = 10.0.40219.1
+ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liblz4-dll", "liblz4-dll\liblz4-dll.vcxproj", "{9800039D-4AAA-43A4-BB78-FEF6F4836927}"
+ EndProject
+@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fullbench-dll", "fullbench-
+ 		{9800039D-4AAA-43A4-BB78-FEF6F4836927} = {9800039D-4AAA-43A4-BB78-FEF6F4836927}
+ 	EndProjectSection
+ EndProject
++Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lz4", "lz4\lz4.vcxproj", "{E30329AC-0057-4FE0-8FDA-7F650D398C4C}"
++EndProject
+ Global
+ 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+ 		Debug|Win32 = Debug|Win32
+@@ -83,6 +85,14 @@ Global
+ 		{13992FD2-077E-4954-B065-A428198201A9}.Release|Win32.Build.0 = Release|Win32
+ 		{13992FD2-077E-4954-B065-A428198201A9}.Release|x64.ActiveCfg = Release|x64
+ 		{13992FD2-077E-4954-B065-A428198201A9}.Release|x64.Build.0 = Release|x64
++		{E30329AC-0057-4FE0-8FDA-7F650D398C4C}.Debug|Win32.ActiveCfg = Debug|Win32
++		{E30329AC-0057-4FE0-8FDA-7F650D398C4C}.Debug|Win32.Build.0 = Debug|Win32
++		{E30329AC-0057-4FE0-8FDA-7F650D398C4C}.Debug|x64.ActiveCfg = Debug|x64
++		{E30329AC-0057-4FE0-8FDA-7F650D398C4C}.Debug|x64.Build.0 = Debug|x64
++		{E30329AC-0057-4FE0-8FDA-7F650D398C4C}.Release|Win32.ActiveCfg = Release|Win32
++		{E30329AC-0057-4FE0-8FDA-7F650D398C4C}.Release|Win32.Build.0 = Release|Win32
++		{E30329AC-0057-4FE0-8FDA-7F650D398C4C}.Release|x64.ActiveCfg = Release|x64
++		{E30329AC-0057-4FE0-8FDA-7F650D398C4C}.Release|x64.Build.0 = Release|x64
+ 	EndGlobalSection
+ 	GlobalSection(SolutionProperties) = preSolution
+ 		HideSolutionNode = FALSE
+--
+2.25.0
+

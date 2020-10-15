@@ -8,7 +8,6 @@ else
     BUILD_TYPE="--disable-static --enable-shared"
 fi
 
-
 ./configure --prefix=${PREFIX}  \
             --build=${BUILD}    \
             --host=${HOST}		\
