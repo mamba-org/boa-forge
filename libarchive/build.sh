@@ -25,7 +25,7 @@ ${SRC_DIR}/configure --prefix=${PREFIX} ${BUILD_TYPE}                           
                      $(feature $FEATURE_OPENSSL --with-openssl --without-openssl) \
                      --without-cng                                                \
                      --without-nettle                                             \
-                     --with-xml2                                                  \
+                     $(feature $FEATURE_XML2 --with-xml2 --without-xml2)          \
                      --without-expat                                              \
                      $WITH_ICONV
 

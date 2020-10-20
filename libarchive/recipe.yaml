@@ -48,10 +48,8 @@ requirements:
   host:
     - sel(win and vc<14): msinttypes
     - sel(osx): libiconv
-    - libxml2
   run:
     - sel(osx): libiconv
-    - libxml2
 
 features:
   - name: zlib
@@ -109,6 +107,14 @@ features:
         - lz4-c
       run:
         - lz4-c
+
+  - name: xml2
+    default: true
+    requirements:
+      host:
+        - libxml2
+      run:
+        - libxml2
 
   - name: static
     default: false
