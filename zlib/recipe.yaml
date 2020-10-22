@@ -11,10 +11,10 @@ source:
 
 build:
   number: 0
-  run_exports:
+  # run_exports:
         # mostly OK, but some scary symbol removal.  Let's try for trusting them.
         #    https://abi-laboratory.pro/tracker/timeline/zlib/
-  - '{{ pin_subpackage("zlib", max_pin="x.x") }}'
+  # - '{{ pin_subpackage("zlib", max_pin="x.x") }}'
 
 requirements:
   build:

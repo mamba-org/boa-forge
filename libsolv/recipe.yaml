@@ -1,0 +1,70 @@
+context:
+  name: libsolv
+  version: 0.7.15
+  sha256: 2a1d6ae1719288ecb368b33893bc2f4d047dbf4426cafa1dc6af4288388e6269
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  fn: '{{ name }}-{{ version }}.tar.gz'
+  url: https://github.com/openSUSE/libsolv/archive/{{ version }}.tar.gz
+  sha256: '{{ sha256 }}'
+  patches:
+    - sel(win): win_export_and_static_build.patch
+
+build:
+  number: 0
+  # run_exports:
+  #   - '{{ pin_subpackage(name, max_pin="x.x") }}'
+
+requirements:
+  build:
+    - '{{ compiler("c") }}'
+    - '{{ compiler("cxx") }}'
+    - sel(not win): make
+    - sel(win): ninja
+    - cmake
+  host:
+    - zlib
+
+test:
+  commands:
+    - sel(unix): test -f ${PREFIX}/lib/libsolv${SHLIB_EXT}
+    - sel(unix): test -f ${PREFIX}/lib/libsolvext${SHLIB_EXT}
+    - sel(linux): test -f ${PREFIX}/lib/libsolv.so.1
+    - sel(unix): test -f ${PREFIX}/include/solv/repo.h
+    - sel(win): if exist %LIBRARY_INC%\solv\repo.h (exit 0) else (exit 1)
+    - sel(win): if exist %LIBRARY_LIB%\solv.lib (exit 0) else (exit 1)
+    - sel(win): if exist %LIBRARY_LIB%\solvext.lib (exit 0) else (exit 1)
+    - sel(win): if exist %LIBRARY_BIN%\solv.dll (exit 0) else (exit 1)
+    - sel(win): dumpsolv.exe -h
+    - sel(unix): dumpsolv -h
+    # test:
+    #   commands:
+    #     - sel(unix): test -f ${PREFIX}/lib/libsolv.a
+    #     - sel(unix): test -f ${PREFIX}/lib/libsolvext.a
+    #     - sel(win): if exist %LIBRARY_LIB%\solv_static.lib (exit 0) else (exit 1)
+    #     - sel(win): if exist %LIBRARY_LIB%\solvext_static.lib (exit 0) else (exit 1)
+
+features:
+  - name: static
+    default: false
+
+about:
+  home: https://github.com/openSUSE/libsolv
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.BSD
+  summary: Library for solving packages and reading repositories
+  description: libsolv, a free package dependency solver using a satisfiability algorithm.
+  dev_url: https://github.com/openSUSE/libsolv
+
+extra:
+  recipe-maintainers:
+    - SylvainCorlay
+    - JohanMabille
+    - wolfv
+    - davidbrochart
+
