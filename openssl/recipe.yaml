@@ -1,0 +1,100 @@
+context:
+  version: 1.1.1h
+
+package:
+  name: openssl_split
+  version: '{{ version }}'
+
+source:
+  url: http://www.openssl.org/source/openssl-{{ version }}.tar.gz
+  sha256: 5c9ca8774bd7b03e5784f26ae9e9e6d749c9da2438545077e6b3d755a06595d9
+  patches:
+    - 0001-Don-t-use-USE_BCRYPTGENRANDOM-for-VS-older-than-2015.patch
+    - gh12369.patch
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - '{{ compiler("c") }}'
+    - sel(win): nasm
+    - sel(unix): make
+    - sel(not win): perl
+  # Empty host section to ensure that this is identified as cb3
+  host:
+    # technically a build tool, but the windows makefile really wants to find it in the host env.
+    #    easier to do this than carry a patch.
+    - sel(win): perl
+
+outputs:
+  - package:
+      name: openssl
+
+    build:
+      no_link:
+        - sel(linux): lib/libcrypto.so.1.1
+        - sel(osx): lib/libcrypto.1.1.dylib
+      run_exports:
+        # openssl's versioning is X.Y.Z(rev), where rev is really the patch release ID
+        #    This pin allows the patch release to be >= the build-time openssl version.
+        - "{{ pin_subpackage('openssl', max_pin='x.x.x') }}"
+
+    requirements:
+      build:
+        - '{{ compiler("c") }}'
+        - make
+        - sel(not win): perl
+      # Empty host section to ensure that this is identified as cb3
+      host:
+        # technically a build tool, but the windows makefile really wants to find it in the host env.
+        #    easier to do this than carry a patch.
+        - sel(win): perl
+      run:
+        - ca-certificates
+    # script:
+    #   - sel(unix): install_openssl.sh
+    #   - sel(win): install_openssl.bat
+    test:
+      commands:
+        - sel(win): copy NUL checksum.txt
+        - sel(unix): touch checksum.txt
+        - openssl sha256 checksum.txt
+
+  # - requirements:
+  #     build:
+  #       - '{{ compiler("c") }}'
+  #   # script: install_libopenssl-static.sh      # [unix]
+  #   # script: install_libopenssl-static.bat     # [win]
+  #   test:
+  #     commands:
+  #       - sel(unix): test -f ${PREFIX}/lib/libcrypto.a
+  #       - sel(unix): test -f ${PREFIX}/lib/libssl.a
+  #       - sel(win): if exist %LIBRARY_PREFIX%\lib\libcrypto_static.lib (exit 0) else (exit 1)
+  #       - sel(win): if exist %LIBRARY_PREFIX%\lib\libssl_static.lib (exit 0) else (exit 1)
+
+  #   package:
+  #     name: libopenssl-static
+  #   build: {}
+
+features:
+  - name: static
+    default: false
+
+about:
+  home: http://www.openssl.org/
+  license_file: LICENSE
+  license: OpenSSL
+  license_family: Apache
+  summary: OpenSSL is an open-source implementation of the SSL and TLS protocols
+  dev_url: https://github.com/openssl/openssl
+  doc_url: https://www.openssl.org/docs/man1.1.1/
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - jjhelmus
+    - msarahan
+    - ocefpaf
+    - pelson
+    - carlodri

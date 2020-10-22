@@ -1,0 +1,79 @@
+context:
+  version: 1.9.0
+
+package:
+  name: libssh2
+  version: '{{ version }}'
+
+source:
+  url: https://www.libssh2.org/download/libssh2-{{ version }}.tar.gz
+  sha256: d5fb8bd563305fd1074dda90bd053fb2d29fc4bce048d182f96eaa466dfadafd
+  patches:
+    # patch for CVE-2019-17498
+    # https://nvd.nist.gov/vuln/detail/CVE-2019-17498
+    # patch from the Fedora project
+    # https://src.fedoraproject.org/rpms/libssh2/c/41525baf
+    # merged into upstream in with small modification in:
+    # https://github.com/libssh2/libssh2/pull/402
+    - 0001-libssh2-1.9.0-CVE-2019-17498.patch
+    - 246c7cb0184b9e1a882c753b412825799c7a9118.patch
+
+build:
+  number: 5
+
+requirements:
+  build:
+    # This breals a dependency cycle:
+    # curl->libssh2->cmake->curl
+    - sel(win): cmake-binary
+    - sel(not win): cmake-no-system
+    - sel(not (osx and arm64)): '{{ compiler("c") }}'
+    - sel(osx and arm64): '{{ compiler("clang_bootstrap") }}'
+    - sel(win): ninja
+    - sel(unix): make
+  host:
+    - openssl
+    - zlib
+  run:
+    - openssl
+    - zlib
+
+test:
+  commands:
+    - sel(not win): test -f $PREFIX/include/libssh2.h
+    - sel(not win): test -f $PREFIX/include/libssh2_publickey.h
+    - sel(not win): test -f $PREFIX/include/libssh2_sftp.h
+
+    - sel(not win): test ! -f $PREFIX/lib/libssh2.a
+    - sel(not win): test -f $PREFIX/lib/libssh2${SHLIB_EXT}
+
+    - sel(win): if not exist %LIBRARY_INC%\\libssh2.h           exit 1
+    - sel(win): if not exist %LIBRARY_INC%\\libssh2_publickey.h exit 1
+    - sel(win): if not exist %LIBRARY_INC%\\libssh2_sftp.h      exit 1
+    - sel(win): if not exist %LIBRARY_LIB%\\libssh2.lib         exit 1
+
+    # static testss
+    # - sel(not win): test -f $PREFIX/lib/libssh2.a
+    # - sel(win): if not exist %LIBRARY_LIB%\libssh2_static.lib exit 1
+
+features:
+  - name: static
+    default: false
+
+about:
+  home: https://www.libssh2.org/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: COPYING
+  summary: the SSH library
+
+  description: |
+    libssh2 is a library implementing the SSH2 protocol, available under the revised BSD license.
+  dev_url: https://github.com/libssh2/libssh2
+
+extra:
+  recipe-maintainers:
+    - shadowwalkersb
+    - nehaljwani
+    - ocefpaf
+

@@ -31,22 +31,19 @@ requirements:
   host:
     - sel(win and vc<14): msinttypes
 
-outputs:
-  - package:
-      name: xz
-    test:
-      commands:
-        - sel(not win): xz --help
-        - sel(not win): unxz --help
-        - sel(not win): lzma --help
-        - sel(win): xz.exe --help
-        - sel(win): unxz.exe --help
-        - sel(win): if not exist %LIBRARY_PREFIX%\bin\liblzma.dll exit 1
-        - sel(win): if not exist %LIBRARY_PREFIX%\lib\liblzma.lib exit 1
-        - sel(win): if exist %LIBRARY_PREFIX%\lib\liblzma_static.lib exit 1
-        - sel(win): if not exist %LIBRARY_PREFIX%\include\lzma.h exit 1
-        - sel(unix): test -f ${PREFIX}/lib/liblzma${SHLIB_EXT}
-        - sel(unix): test ! -f ${PREFIX}/lib/liblzma.a
+test:
+  commands:
+    - sel(not win): xz --help
+    - sel(not win): unxz --help
+    - sel(not win): lzma --help
+    - sel(win): xz.exe --help
+    - sel(win): unxz.exe --help
+    - sel(win): if not exist %LIBRARY_PREFIX%\bin\liblzma.dll exit 1
+    - sel(win): if not exist %LIBRARY_PREFIX%\lib\liblzma.lib exit 1
+    - sel(win): if exist %LIBRARY_PREFIX%\lib\liblzma_static.lib exit 1
+    - sel(win): if not exist %LIBRARY_PREFIX%\include\lzma.h exit 1
+    - sel(unix): test -f ${PREFIX}/lib/liblzma${SHLIB_EXT}
+    - sel(unix): test ! -f ${PREFIX}/lib/liblzma.a
 
 features:
   - name: static

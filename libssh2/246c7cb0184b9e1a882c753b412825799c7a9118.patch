@@ -1,0 +1,23 @@
+From 246c7cb0184b9e1a882c753b412825799c7a9118 Mon Sep 17 00:00:00 2001
+From: "Uwe L. Korn" <xhochy@users.noreply.github.com>
+Date: Sat, 16 May 2020 08:45:40 +0200
+Subject: [PATCH] Use libssh2_EXPORTS as an alternative to _WINDLL
+
+`_WINDLL` is only defined when a Visual Studio CMake generator is used, `libssh2_EXPORTS` is used though for all CMake generator if a shared libssh2 library is being built.
+---
+ include/libssh2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/libssh2.h b/include/libssh2.h
+index 386bcc892..110e32ae2 100644
+--- a/include/libssh2.h
++++ b/include/libssh2.h
+@@ -100,7 +100,7 @@ extern "C" {
+ /* Allow alternate API prefix from CFLAGS or calling app */
+ #ifndef LIBSSH2_API
+ # ifdef LIBSSH2_WIN32
+-#  ifdef _WINDLL
++#  if defined(_WINDLL) || defined(libssh2_EXPORTS)
+ #   ifdef LIBSSH2_LIBRARY
+ #    define LIBSSH2_API __declspec(dllexport)
+ #   else

@@ -1,4 +1,4 @@
-make install PREFIX=${PREFIX}
+make install
 
 if [[ "$PKG_NAME" == *static ]]
 then

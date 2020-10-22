@@ -30,4 +30,12 @@ fi
 
 # Install
 make install PREFIX=${PREFIX}
-rm ${PREFIX}/lib/liblz4.a
+
+if [[ "${FEATURE_STATIC}" == "1" ]]; then
+    rm -rf $PREFIX/lib/liblz4*.dylib*
+    rm -rf $PREFIX/lib/liblz4.so*
+    rm -rf $PREFIX/bin/lz4*
+    rm -rf $PREFIX/bin/unlz4*
+else
+    rm -rf $PREFIX/lib/liblz4.a
+fi

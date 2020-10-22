@@ -1,0 +1,73 @@
+context:
+  version: 1.16.1
+
+package:
+  name: c-ares
+  version: '{{ version }}'
+
+source:
+  url: https://c-ares.haxx.se/download/c-ares-{{ version }}.tar.gz
+  sha256: d08312d0ecc3bd48eee0a4cc0d2137c9f194e0a28de2028928c0f6cae85f86ce
+
+build:
+  number: 3
+
+outputs:
+  - build:
+      script: build_output.sh
+    requirements:
+      build:
+        - '{{ compiler("c") }}'
+        - sel(win): cmake
+        # cmake on unix depends on c-ares. This breaks the cycle.
+        - sel(unix): cmake-no-system
+        - sel(unix): ninja
+      run_constraint:
+        - c-ares-static <0a0
+    test:
+      commands:
+        - sel(not win): test -f ${PREFIX}/include/ares.h
+        - sel(not win): test -f ${PREFIX}/lib/libcares${SHLIB_EXT}
+        - sel(not win): test ! -f ${PREFIX}/lib/libcares.a
+        - sel(not win): test ! -f ${PREFIX}/lib/libcares_static.a
+        - sel(win): if not exist %PREFIX%\\Library\\include\\ares.h exit 1
+        - sel(win): if not exist %PREFIX%\\Library\\bin\\cares.dll exit 1
+        - sel(win): if not exist %PREFIX%\\Library\\lib\\cares.lib exit 1
+        - sel(win): if exist %PREFIX%\\Library\\lib\\cares_static.lib exit 1
+    package:
+      name: c-ares
+  - requirements:
+      build:
+        - '{{ compiler("c") }}'
+        - sel(win): cmake
+        # cmake on unix depends on c-ares. This breaks the cycle.
+        - sel(unix): cmake-no-system
+        - sel(unix): ninja
+      run_constraint:
+        - c-ares <0a0
+    test:
+      commands:
+        - sel(not win): test -f ${PREFIX}/lib/libcares.a
+        - sel(not win): test ! -f ${PREFIX}/lib/libcares${SHLIB_EXT}
+        - sel(not win): test -f ${PREFIX}/include/ares.h
+        - sel(win): if not exist %PREFIX%\\Library\\include\\ares.h exit 1
+        - sel(win): if exist %PREFIX%\\Library\\bin\\cares.dll exit 1
+        - sel(win): if not exist %PREFIX%\\Library\\lib\\cares.lib exit 1
+
+    package:
+      name: c-ares-static
+    build:
+      script: build_output.sh
+about:
+  home: https://c-ares.haxx.se/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.md
+  summary: This is c-ares, an asynchronous resolver library
+
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - wesm
+    - xhochy
+

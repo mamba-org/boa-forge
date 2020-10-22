@@ -1,0 +1,109 @@
+{% set name = "nghttp2" %}
+{% set version = "1.41.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/nghttp2/{{ name }}/releases/download/v{{ version }}/nghttp2-{{ version }}.tar.gz
+  sha256: eacc6f0f8543583ecd659faf0a3f906ed03826f1d4157b536b4b385fe47c5bb8
+
+build:
+  number: 2
+  skip: true  # [not unix]
+
+requirements:
+  build:
+    - libtool  # [unix]
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - make
+    - pkg-config  # [unix]
+  host:
+    - zlib
+    - openssl  # [unix]
+    - libev >=4.11
+    - c-ares >=1.7.5
+  run:
+    - zlib
+    - openssl  # [unix]
+    - libev >=4.11
+    - c-ares >=1.7.5
+    - libstdcxx-ng  # [linux]
+
+
+outputs:
+  - name: libnghttp2
+    script: install.sh  # [unix]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+        - make
+      host:
+        - zlib
+        - openssl  # [unix]
+        - libev >=4.11
+        - c-ares >=1.7.5
+      run:
+        - zlib
+        - openssl  # [unix]
+        - libev >=4.11
+        - c-ares >=1.7.5
+        - libstdcxx-ng  # [linux]
+    build:
+      run_exports:
+        - {{ pin_subpackage('libnghttp2') }}
+    files:
+      - include/nghttp2/nghttp2*  # [unix]
+      - lib/libnghttp2*  # [unix]
+      - lib/nghttp2*  # [unix]
+      - lib/pkgconfig/libnghttp2*  # [unix]
+      - bin/nghttp*  # [unix]
+    test:
+      commands:
+        - nghttp -nv https://nghttp2.org
+        - test ! -f ${PREFIX}/lib/lib{{ name }}.a    # [unix]
+        - test -f ${PREFIX}/lib/lib{{ name }}.so     # [linux]
+
+  - name: libnghttp2-static
+    script: install.sh  # [unix]
+    build:
+      skip: true  # [not unix]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+        - make
+      host:
+        - {{ pin_subpackage('libnghttp2', exact=True) }}
+      run:
+        - {{ pin_subpackage('libnghttp2', exact=True) }}
+        - libev-static
+        - c-ares-static
+    test:
+      commands:
+        - test -f ${PREFIX}/lib/lib{{ name }}.a    # [unix]
+
+about:
+  home: http://github.com/nghttp2/nghttp2
+  license: MIT
+  license_family: MIT
+  license_file: COPYING
+  summary: This is an implementation of Hypertext Transfer Protocol version 2.
+
+  description: |
+    This is an implementation of the Hypertext Transfer Protocol version 2 in C.
+
+    The framing layer of HTTP/2 is implemented as a reusable C library. On top
+    of that, we have implemented an HTTP/2 client, server and proxy. We have
+    also developed load test and benchmarking tools for HTTP/2.
+  doc_url: https://nghttp2.org/documentation/
+  dev_url: https://github.com/nghttp2/nghttp2
+
+extra:
+  recipe-maintainers:
+    - cpaulik
+    - mariusvniekerk
+    - wolfv
