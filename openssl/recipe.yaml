@@ -2,7 +2,7 @@ context:
   version: 1.1.1h
 
 package:
-  name: openssl_split
+  name: openssl
   version: '{{ version }}'
 
 source:
@@ -52,30 +52,11 @@ outputs:
         - sel(win): perl
       run:
         - ca-certificates
-    # script:
-    #   - sel(unix): install_openssl.sh
-    #   - sel(win): install_openssl.bat
     test:
       commands:
         - sel(win): copy NUL checksum.txt
         - sel(unix): touch checksum.txt
         - openssl sha256 checksum.txt
-
-  # - requirements:
-  #     build:
-  #       - '{{ compiler("c") }}'
-  #   # script: install_libopenssl-static.sh      # [unix]
-  #   # script: install_libopenssl-static.bat     # [win]
-  #   test:
-  #     commands:
-  #       - sel(unix): test -f ${PREFIX}/lib/libcrypto.a
-  #       - sel(unix): test -f ${PREFIX}/lib/libssl.a
-  #       - sel(win): if exist %LIBRARY_PREFIX%\lib\libcrypto_static.lib (exit 0) else (exit 1)
-  #       - sel(win): if exist %LIBRARY_PREFIX%\lib\libssl_static.lib (exit 0) else (exit 1)
-
-  #   package:
-  #     name: libopenssl-static
-  #   build: {}
 
 features:
   - name: static
