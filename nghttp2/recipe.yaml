@@ -30,16 +30,19 @@ requirements:
   run:
     - zlib
     - sel(unix): openssl
-    - "libev >=4.11"
+    - libev >=4.11
     - c-ares >=1.7.5
     - sel(linux): libstdcxx-ng
+
+features:
+  - name: static
+    default: false
 
 test:
   commands:
     - nghttp -nv https://nghttp2.org
     - sel(unix): test ! -f ${PREFIX}/lib/lib{{ name }}.a
     - sel(linux): test -f ${PREFIX}/lib/lib{{ name }}.so
-
 
 about:
   home: http://github.com/nghttp2/nghttp2
