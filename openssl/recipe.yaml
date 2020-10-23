@@ -15,18 +15,6 @@ source:
 build:
   number: 0
 
-requirements:
-  build:
-    - '{{ compiler("c") }}'
-    - sel(win): nasm
-    - sel(unix): make
-    - sel(not win): perl
-  # Empty host section to ensure that this is identified as cb3
-  host:
-    # technically a build tool, but the windows makefile really wants to find it in the host env.
-    #    easier to do this than carry a patch.
-    - sel(win): perl
-
 outputs:
   - package:
       name: openssl
@@ -43,7 +31,8 @@ outputs:
     requirements:
       build:
         - '{{ compiler("c") }}'
-        - make
+        - sel(win): nasm
+        - sel(unix): make
         - sel(not win): perl
       # Empty host section to ensure that this is identified as cb3
       host:
