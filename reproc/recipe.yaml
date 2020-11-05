@@ -1,0 +1,59 @@
+context:
+  version: 14.2.0
+
+package:
+  name: reproc
+  version: '{{ version }}'
+
+source:
+  - url: https://github.com/DaanDeMeyer/reproc/archive/v{{ version }}.tar.gz
+    sha256: dd6165722f6a478b695b8a6b91d50ce7d2b1f934220d02757deb5b0b716bf970
+
+build:
+  number: 0
+
+outputs:
+  - package:
+      name: reproc
+    build:
+      script: build.sh
+    requirements:
+      build:
+        - '{{ compiler("c") }}'
+        - cmake
+        - sel(unix): make
+        - sel(win): ninja
+  - package:
+      name: reproc-cpp
+    build:
+      script: build_cpp.sh
+    requirements:
+      build:
+        - '{{ compiler("c") }}'
+        - '{{ compiler("cxx") }}'
+        - cmake
+        - sel(unix): make
+        - sel(win): ninja
+      host:
+        - "{{ pin_subpackage('reproc', exact=True ) }}"
+
+features:
+  - name: static
+    default: false
+
+test:
+  commands:
+    # - sel(unix): test -f $PREFIX/bin/micromamba
+    # - micromamba --help
+
+about:
+  home: https://github.com/DaanDeMeyer/reproc
+  license_file: LICENSE
+  license: MIT
+  summary: reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs.
+  dev_url: https://github.com/DaanDeMeyer/reproc
+
+extra:
+  recipe-maintainers:
+    - wolfv
+
