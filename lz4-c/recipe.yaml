@@ -19,8 +19,8 @@ source:
 build:
   number: 0
   # https://abi-laboratory.pro/index.php?view=timeline&l=lz4
-  run_exports:
-    - '{{ pin_subpackage(pkg_name, max_pin="x.x") }}'
+  # run_exports:
+  #   - '{{ pin_subpackage(pkg_name, max_pin="x.x") }}'
 
 requirements:
   build:
@@ -31,34 +31,34 @@ requirements:
     - sel(win): m2-patch
     - sel(win): m2-gcc-libs
 
-test:
-  requires:
-    - sel(unix): pkg-config
+# test:
+#   requires:
+#     - sel(unix): pkg-config
 
-  commands:
-    - lz4 -h
-    - sel(unix): lz4c -h
-    - sel(unix): lz4cat -h
-    - sel(unix): unlz4 -h
+#   commands:
+#     - lz4 -h
+#     - sel(unix): lz4c -h
+#     - sel(unix): lz4cat -h
+#     - sel(unix): unlz4 -h
 
-    - sel(unix): test -f ${PREFIX}/include/lz4.h
-    - sel(unix): test -f ${PREFIX}/include/lz4hc.h
-    - sel(unix): test -f ${PREFIX}/include/lz4frame.h
+#     - sel(unix): test -f ${PREFIX}/include/lz4.h
+#     - sel(unix): test -f ${PREFIX}/include/lz4hc.h
+#     - sel(unix): test -f ${PREFIX}/include/lz4frame.h
 
-    - sel(win): if not exist %LIBRARY_INC%\\lz4.h exit 1
-    - sel(win): if not exist %LIBRARY_INC%\\lz4hc.h exit 1
-    - sel(win): if not exist %LIBRARY_INC%\\lz4frame.h exit 1
+#     - sel(win): if not exist %LIBRARY_INC%\\lz4.h exit 1
+#     - sel(win): if not exist %LIBRARY_INC%\\lz4hc.h exit 1
+#     - sel(win): if not exist %LIBRARY_INC%\\lz4frame.h exit 1
 
-    - sel(unix): test ! -f ${PREFIX}/lib/liblz4.a
-    - sel(osx): test -f ${PREFIX}/lib/liblz4.dylib
-    - sel(linux): test -f ${PREFIX}/lib/liblz4.so
+#     # - sel(unix): test ! -f ${PREFIX}/lib/liblz4.a
+#     # - sel(osx): test -f ${PREFIX}/lib/liblz4.dylib
+#     # - sel(linux): test -f ${PREFIX}/lib/liblz4.so
 
-    - sel(win): if not exist %LIBRARY_BIN%\\liblz4.dll exit 1
-    - sel(win): if not exist %LIBRARY_LIB%\\liblz4.lib exit 1
-    - sel(win): if exist %LIBRARY_LIB%\\liblz4_static.lib exit 1
+#     # - sel(win): if not exist %LIBRARY_BIN%\\liblz4.dll exit 1
+#     # - sel(win): if not exist %LIBRARY_LIB%\\liblz4.lib exit 1
+#     # - sel(win): if exist %LIBRARY_LIB%\\liblz4_static.lib exit 1
 
-    - sel(unix): test -f ${PREFIX}/lib/pkgconfig/liblz4.pc
-    - sel(unix): pkg-config --cflags --libs liblz4
+#     - sel(unix): test -f ${PREFIX}/lib/pkgconfig/liblz4.pc
+#     - sel(unix): pkg-config --cflags --libs liblz4
 
 features:
   - name: static

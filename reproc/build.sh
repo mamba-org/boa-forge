@@ -1,4 +1,4 @@
-mkdir build; cd build
+mkdir -p build; cd build
 
 if [[ "${FEATURE_STATIC}" == "1" ]]; then
     BUILD_TYPE="-DBUILD_SHARED_LIBS=OFF"

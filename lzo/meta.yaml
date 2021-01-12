@@ -10,10 +10,10 @@ source:
   sha256: c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072
 
 build:
-  number: 1000
-  run_exports:
-    # excellent compat: https://abi-laboratory.pro/tracker/timeline/lzo/
-    - {{ pin_subpackage('lzo') }}
+  number: 0
+  # run_exports:
+  #   # excellent compat: https://abi-laboratory.pro/tracker/timeline/lzo/
+  #   - {{ pin_subpackage('lzo') }}
 
 requirements:
   build:

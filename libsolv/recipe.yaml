@@ -27,26 +27,20 @@ requirements:
     - sel(win): ninja
     - cmake
   host:
-    - zlib
+    - zlib-static
 
-test:
-  commands:
-    - sel(unix): test -f ${PREFIX}/lib/libsolv${SHLIB_EXT}
-    - sel(unix): test -f ${PREFIX}/lib/libsolvext${SHLIB_EXT}
-    - sel(linux): test -f ${PREFIX}/lib/libsolv.so.1
-    - sel(unix): test -f ${PREFIX}/include/solv/repo.h
-    - sel(win): if exist %LIBRARY_INC%\solv\repo.h (exit 0) else (exit 1)
-    - sel(win): if exist %LIBRARY_LIB%\solv.lib (exit 0) else (exit 1)
-    - sel(win): if exist %LIBRARY_LIB%\solvext.lib (exit 0) else (exit 1)
-    - sel(win): if exist %LIBRARY_BIN%\solv.dll (exit 0) else (exit 1)
-    - sel(win): dumpsolv.exe -h
-    - sel(unix): dumpsolv -h
-    # test:
-    #   commands:
-    #     - sel(unix): test -f ${PREFIX}/lib/libsolv.a
-    #     - sel(unix): test -f ${PREFIX}/lib/libsolvext.a
-    #     - sel(win): if exist %LIBRARY_LIB%\solv_static.lib (exit 0) else (exit 1)
-    #     - sel(win): if exist %LIBRARY_LIB%\solvext_static.lib (exit 0) else (exit 1)
+# test:
+#   commands:
+#     # - sel(unix): test -f ${PREFIX}/lib/libsolv${SHLIB_EXT}
+#     # - sel(unix): test -f ${PREFIX}/lib/libsolvext${SHLIB_EXT}
+#     # - sel(linux): test -f ${PREFIX}/lib/libsolv.so.1
+#     - sel(unix): test -f ${PREFIX}/include/solv/repo.h
+#     - sel(win): if exist %LIBRARY_INC%\solv\repo.h (exit 0) else (exit 1)
+#     # - sel(win): if exist %LIBRARY_LIB%\solv.lib (exit 0) else (exit 1)
+#     # - sel(win): if exist %LIBRARY_LIB%\solvext.lib (exit 0) else (exit 1)
+#     # - sel(win): if exist %LIBRARY_BIN%\solv.dll (exit 0) else (exit 1)
+#     - sel(win): dumpsolv.exe -h
+#     - sel(unix): dumpsolv -h
 
 features:
   - name: static

@@ -1,4 +1,5 @@
-mkdir build-cpp; cd build-cpp
+mkdir -p build-cpp; cd build-cpp
+rm -rf CMakeCache.txt
 
 if [[ "${FEATURE_STATIC}" == "1" ]]; then
     BUILD_TYPE="-DBUILD_SHARED_LIBS=OFF"

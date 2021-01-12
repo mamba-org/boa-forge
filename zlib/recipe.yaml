@@ -26,9 +26,9 @@ features:
   - name: static
     default: false
 
-test:
-  commands:
-  - sel(unix): test -f ${PREFIX}/lib/libz.a
+# test:
+#   commands:
+  # - sel(unix): test -f ${PREFIX}/lib/libz.a
 
 about:
   home: http://zlib.net/

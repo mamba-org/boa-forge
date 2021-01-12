@@ -53,8 +53,8 @@ outputs:
         - c-ares >=1.7.5
         - libstdcxx-ng  # [linux]
     build:
-      run_exports:
-        - {{ pin_subpackage('libnghttp2') }}
+      # run_exports:
+      #   - {{ pin_subpackage('libnghttp2') }}
     files:
       - include/nghttp2/nghttp2*  # [unix]
       - lib/libnghttp2*  # [unix]

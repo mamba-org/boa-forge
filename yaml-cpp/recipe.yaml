@@ -12,12 +12,13 @@ source:
     - sel(win): pkgconfig.patch
 
 build:
-  number: 4
-  run_exports:
-    - '{{ pin_subpackage("yaml-cpp", max_pin="x.x") }}'
+  number: 0
+  # run_exports:
+  #   - '{{ pin_subpackage("yaml-cpp", max_pin="x.x") }}'
 
   skip:
     - win
+
 requirements:
   build:
     - '{{ compiler("c") }}'
@@ -25,17 +26,17 @@ requirements:
     - cmake
     - ninja
 
-test:
-  files:
-    - test
-  requires:
-    - '{{ compiler("c") }}'
-    - '{{ compiler("cxx") }}'
-    - cmake
-    - ninja
-  commands:
-    - sel(not win): test -f $PREFIX/lib/libyaml-cpp.so
-    - sel(win): if not exist %LIBRARY_BIN%\\yaml-cpp.dll exit 1
+# test:
+#   files:
+#     - test
+#   requires:
+#     - '{{ compiler("c") }}'
+#     - '{{ compiler("cxx") }}'
+#     - cmake
+#     - ninja
+#   commands:
+#     - sel(not win): test -f $PREFIX/lib/libyaml-cpp.so
+#     - sel(win): if not exist %LIBRARY_BIN%\\yaml-cpp.dll exit 1
 
 features:
   - name: static

@@ -31,10 +31,10 @@ outputs:
     build:
       # no_link: lib/libcrypto.so.1.1        # [linux]
       # no_link: lib/libcrypto.1.1.dylib     # [osx]
-      run_exports:
-        # openssl's versioning is X.Y.Z(rev), where rev is really the patch release ID
-        #    This pin allows the patch release to be >= the build-time openssl version.
-        - {{ pin_subpackage('openssl', max_pin='x.x.x') }}
+      # run_exports:
+      #   # openssl's versioning is X.Y.Z(rev), where rev is really the patch release ID
+      #   #    This pin allows the patch release to be >= the build-time openssl version.
+      #   - {{ pin_subpackage('openssl', max_pin='x.x.x') }}
     requirements:
       build:
         - {{ compiler('c') }}

@@ -35,9 +35,9 @@ fi
 pushd build/cmake
 
 if [[ "$FEATURE_STATIC" == "1" ]]; then
-  STATIC_ARGS="-DZSTD_BUILD_STATIC=ON -DZSTD_BUILD_SHARED=OFF"
+  STATIC_ARGS="-DZSTD_BUILD_STATIC=ON -DZSTD_BUILD_SHARED=OFF -DZSTD_BUILD_TESTS=1"
 else
-  STATIC_ARGS="-DZSTD_BUILD_STATIC=OFF -DZSTD_BUILD_SHARED=ON"
+  STATIC_ARGS="-DZSTD_BUILD_STATIC=OFF -DZSTD_BUILD_SHARED=ON -DZSTD_BUILD_TESTS=0"
 fi;
 
 FULL_AR=`which ${AR}`
@@ -48,7 +48,6 @@ cmake -G"${CMAKE_GENERATOR}"             \
       -DCMAKE_AR=${FULL_AR}              \
       -DZSTD_LEGACY_SUPPORT=1            \
       -DZSTD_BUILD_PROGRAMS=0            \
-      -DZSTD_BUILD_TESTS=1               \
       -DZSTD_BUILD_CONTRIB=0             \
       -DZSTD_PROGRAMS_LINK_SHARED=ON     \
       ${STATIC_ARGS}                     \

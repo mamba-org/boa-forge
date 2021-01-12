@@ -15,8 +15,8 @@ source:
 build:
   number: 1
   # fix run exports for static libs ...
-  run_exports:
-    - '{{ pin_subpackage(name, max_pin="x.x") }}'
+  # run_exports:
+  #   - '{{ pin_subpackage(name, max_pin="x.x") }}'
   skip:
     - win
 
@@ -34,14 +34,15 @@ features:
   - name: static
     default: false
 
-test:
-  commands:
-      # Check for headers.
-      - test -f "${PREFIX}/include/ev.h"
-      - test -f "${PREFIX}/include/ev++.h"
-      - test ! -f "${PREFIX}/include/event.h"
-      - test ! -f "${PREFIX}/lib/libev.a"
-      - sel(unix): test -f "${PREFIX}/lib/libev${SHLIBEXT}"
+# test:
+#   commands:
+#       # Check for headers.
+#       - test -f "${PREFIX}/include/ev.h"
+#       - test -f "${PREFIX}/include/ev++.h"
+#       # TODO
+#       # - test ! -f "${PREFIX}/include/event.h"
+#       # - test ! -f "${PREFIX}/lib/libev.a"
+#       # - sel(unix): test -f "${PREFIX}/lib/libev${SHLIBEXT}"
 
 about:
   home: http://software.schmorp.de/pkg/libev.html

@@ -70,3 +70,8 @@ if [[ "${CONDA_BUILD_CROSS_COMPILATION}" != "1" ]]; then
 fi
 
 make install
+
+if [[ "${FEATURE_STATIC}" == "1" ]]; then
+  rm -rf $PREFIX/lib/libcrypto.so*
+  rm -rf $PREFIX/lib/libssl.so*
+fi

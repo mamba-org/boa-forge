@@ -35,7 +35,7 @@ outputs:
         - sel(unix): make
         - sel(win): ninja
       host:
-        - "{{ pin_subpackage('reproc', exact=True ) }}"
+        - "{{ pin_subpackage('reproc-static', exact=True ) }}"
 
 features:
   - name: static

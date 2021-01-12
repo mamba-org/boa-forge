@@ -25,13 +25,13 @@ fi
 ./configure \
     --prefix=${PREFIX} \
     --host=${HOST} \
+    --with-ssl=${PREFIX} \
     $(feature $FEATURE_LDAP --enable-ldap --disable-ldap) \
     $(feature $FEATURE_KRB5 --with-gssapi=${PREFIX} "") \
     $(feature $FEATURE_HTTP2 --with-nghttp2=${PREFIX} --without-nghttp2) \
     $(feature $FEATURE_ZLIB --with-zlib=${PREFIX} --without-zlib) \
     $(feature $FEATURE_SSH2 --with-libssh2=${PREFIX} --without-libssh2) \
     --with-ca-bundle=${PREFIX}/ssl/cacert.pem \
-    --without-ssl \
     ${BUILD_TYPE}
 
 make -j${CPU_COUNT} ${VERBOSE_AT}

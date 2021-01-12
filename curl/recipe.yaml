@@ -19,7 +19,7 @@ requirements:
     - sel(unix): perl
     - sel(unix): pkg-config
   host:
-    - openssl
+    - openssl-static
 
 features:
   - name: ldap
@@ -28,24 +28,25 @@ features:
     description: use libnghttp2 for http2 support
     requirements:
       host:
-        - libnghttp2
+        - libnghttp2-static
   - name: ssh2
     description: use ssh2 for ssh2 support
     requirements:
       host:
-        - libssh2
+        - libssh2-static
+    default: true
   - name: zlib
     description: use zlib for gzip compression support
     requirements:
       host:
-        - zlib
+        - zlib-static
     default: true
   - name: krb5
     description: use krb5 (gss) for FTP
     requirements:
       host:
-        - krb5
-    default: true
+        - krb5-static
+    default: false
   - name: static
     default: false
 

@@ -14,8 +14,8 @@ source:
 build:
   number: 1
   skip: true  # [win]
-  run_exports:
-    - {{ pin_subpackage(name, max_pin='x.x') }}
+  # run_exports:
+  #   - {{ pin_subpackage(name, max_pin='x.x') }}
 
 requirements:
   build:

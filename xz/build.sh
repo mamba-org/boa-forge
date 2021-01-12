@@ -1,6 +1,7 @@
 #!/bin/bash
 
-autoreconf -vfi
+# TODO?!
+# autoreconf -vfi
 
 if [[ "${FEATURE_STATIC}" == "1" ]]; then
     BUILD_TYPE="--enable-static --disable-shared"

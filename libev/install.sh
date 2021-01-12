@@ -3,3 +3,5 @@
 if [[ "$PKG_NAME" != *-libevent ]]; then
 	rm "${PREFIX}/include/event.h"
 fi
+
+rm "${PREFIX}/include/event.h"

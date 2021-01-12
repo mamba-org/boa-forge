@@ -24,9 +24,9 @@ source:
 
 build:
   number: 0
-  run_exports:
-    # https://abi-laboratory.pro/index.php?view=timeline&l=libarchive
-    - '{{ pin_subpackage("libarchive", max_pin="x.x") }}'
+  # run_exports:
+  #   # https://abi-laboratory.pro/index.php?view=timeline&l=libarchive
+  #   - '{{ pin_subpackage("libarchive", max_pin="x.x") }}'
   skip:
     - win and vc<14
 
@@ -56,89 +56,89 @@ features:
     default: true
     requirements:
       host:
-        - zlib
+        - zlib-static
       run:
-        - zlib
+        - zlib-static
 
   - name: zstd
     default: true
     requirements:
       host:
-        - zstd
+        - zstd-static
       run:
-        - zstd
+        - zstd-static
 
   - name: openssl
     default: true
     requirements:
       host:
-        - openssl
+        - openssl-static
       run:
-        - openssl
+        - openssl-static
 
   - name: lzo
     default: true
     requirements:
       host:
-        - lzo
+        - lzo-static
       run:
-        - lzo
+        - lzo-static
 
   - name: xz
     default: true
     requirements:
       host:
-        - xz
+        - xz-static
       run:
-        - xz
+        - xz-static
 
   - name: bzip2
     default: true
     requirements:
       host:
-        - bzip2
+        - bzip2-static
       run:
-        - bzip2
+        - bzip2-static
 
   - name: lz4
     default: true
     requirements:
       host:
-        - lz4-c
+        - lz4-c-static
       run:
-        - lz4-c
+        - lz4-c-static
 
   - name: xml2
     default: true
     requirements:
       host:
-        - libxml2
+        - libxml2-static
       run:
-        - libxml2
+        - libxml2-static
 
   - name: static
     default: false
 
-test:
-  files:
-  - test/hello_world.xar
-  commands:
-    # Verify pkg-config file is in place.
-  - sel(unix): test -f "${PREFIX}/lib/pkgconfig/libarchive.pc"
+# test:
+#   files:
+#   - test/hello_world.xar
+#   commands:
+#     # Verify pkg-config file is in place.
+#   - sel(unix): test -f "${PREFIX}/lib/pkgconfig/libarchive.pc"
 
-    # Verify headers are in place.
-  - sel(unix): test -f "${PREFIX}/include/archive.h"
-  - sel(unix): test -f "${PREFIX}/include/archive_entry.h"
+#     # Verify headers are in place.
+#   - sel(unix): test -f "${PREFIX}/include/archive.h"
+#   - sel(unix): test -f "${PREFIX}/include/archive_entry.h"
 
-    # Verify libraries are in place.
-  - sel(unix): test -f "${PREFIX}/lib/libarchive.a"
-  - sel(unix): test -f "${PREFIX}/lib/libarchive${SHLIB_EXT}"
+#   # Verify libraries are in place.
+#   # - sel(unix): test -f "${PREFIX}/lib/libarchive.a"
+#   # - sel(unix): test -f "${PREFIX}/lib/libarchive${SHLIB_EXT}"
 
-    # Check for commands
-  - bsdcat --version
-  - bsdcpio --version
-  - bsdtar --version
-  - bsdtar -tf test/hello_world.xar
+#     # Check for commands
+#   - bsdcat --version
+#   - bsdcpio --version
+#   - bsdtar --version
+#   - bsdtar -tf test/hello_world.xar
 
 about:
   home: http://www.libarchive.org/

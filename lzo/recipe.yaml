@@ -12,9 +12,9 @@ source:
 
 build:
   number: 0
-  run_exports:
-    # excellent compat: https://abi-laboratory.pro/tracker/timeline/lzo/
-  - '{{ pin_subpackage("lzo") }}'
+  # run_exports:
+  #   # excellent compat: https://abi-laboratory.pro/tracker/timeline/lzo/
+  # - '{{ pin_subpackage("lzo") }}'
 
 requirements:
   build:
@@ -26,16 +26,16 @@ features:
   - name: static
     default: false
 
-test:
-  commands:
-  - sel(unix): test -f ${PREFIX}/include/lzo/lzoconf.h
-  - sel(unix): test -f ${PREFIX}/lib/liblzo{{ version_major }}.a
-  - sel(not win): test -f ${PREFIX}/lib/liblzo{{ version_major }}${SHLIB_EXT}
+# test:
+#   commands:
+#   - sel(unix): test -f ${PREFIX}/include/lzo/lzoconf.h
+#   # - sel(unix): test -f ${PREFIX}/lib/liblzo{{ version_major }}.a
+#   # - sel(not win): test -f ${PREFIX}/lib/liblzo{{ version_major }}${SHLIB_EXT}
 
-  - sel(win): if not exist %PREFIX%\\Library\\include\\lzo\\lzoconf.h exit 1
-  - sel(win): if not exist %PREFIX%\\Library\\lib\\lzo{{ version_major }}.lib exit 1
-  - sel(win): if not exist %PREFIX%\\Library\\lib\\lzo{{ version_major }}_dllimport.lib exit 1
-  - sel(win): if not exist %PREFIX%\\Library\\bin\\lzo{{ version_major }}.dll exit 1
+#   - sel(win): if not exist %PREFIX%\\Library\\include\\lzo\\lzoconf.h exit 1
+#   # - sel(win): if not exist %PREFIX%\\Library\\lib\\lzo{{ version_major }}.lib exit 1
+#   # - sel(win): if not exist %PREFIX%\\Library\\lib\\lzo{{ version_major }}_dllimport.lib exit 1
+#   # - sel(win): if not exist %PREFIX%\\Library\\bin\\lzo{{ version_major }}.dll exit 1
 
 about:
   home: http://www.oberhumer.com/opensource/lzo/
