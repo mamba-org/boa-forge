@@ -12,7 +12,7 @@ fi
 if [ "$(uname)" == "Darwin" ]; then
     WITH_ICONV="--with-iconv"
 else
-    WITH_ICONV=""
+    WITH_ICONV="--without-iconv"
 fi
 
 ${SRC_DIR}/configure --prefix=${PREFIX} ${BUILD_TYPE}                             \

@@ -36,10 +36,12 @@ requirements:
     - sel(unix): zlib-static
     - sel(unix): yaml-cpp-static
     - sel(unix): libarchive-static
-    - sel(unix): libcurl-static
+    - sel(unix): curl-static
     - sel(unix): libssh2-static
     - sel(unix): libsolv-static
     - sel(unix): openssl-static
+    - sel(unix): reproc-cpp-static
+    - sel(unix): reproc-static
 
 features:
   - name: static
