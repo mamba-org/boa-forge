@@ -57,7 +57,7 @@ jobs:
         shell: bash -l -eo pipefail {0}
         run: |
           cd micromamba_recipe
-          boa build . --features [static]
+          boa build .
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
