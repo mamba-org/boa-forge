@@ -1,0 +1,80 @@
+context:
+  version: 0.7.7
+
+package:
+  name: micromamba
+  version: '{{ version }}'
+
+source:
+  - url: https://github.com/mamba-org/mamba/archive/{{ version }}.tar.gz
+    sha256: b56e772c3351138490a0bd3529adc959afbaa3fc3fd83af5e9d856a8a4f9a797
+  - path: CLI11.hpp
+    folder: include/mamba/CLI.hpp
+
+build:
+  number: 1
+  ignore_run_exports:
+    - sel(unix): libcurl
+    - sel(unix): libarchive
+    - sel(linux): libgcc-ng
+    - sel(linux): libstdcxx-ng
+
+requirements:
+  build:
+    - '{{ compiler("c") }}'
+    - '{{ compiler("cxx") }}'
+    - cmake
+    - sel(unix): make
+    - sel(win): ninja
+    - sel(win): vcpkg
+  host:
+    - cli11
+    - cpp-filesystem
+    - nlohmann_json
+    - sel(unix): bzip2-static
+    - sel(unix): zstd-static
+    - sel(unix): zlib-static
+    - sel(unix): yaml-cpp-static
+    - sel(unix): libarchive-static
+    - sel(unix): libcurl-static
+    - sel(unix): libssh2-static
+    - sel(unix): libsolv-static
+    - sel(unix): openssl-static
+
+features:
+  - name: static
+    default: false
+
+test:
+  commands:
+    - sel(unix): test -f $PREFIX/bin/micromamba
+    - micromamba --help
+
+about:
+  home: https://github.com/TheSnakePit/mamba
+  license_file:
+    - LICENSE
+    - CURL_LICENSE.txt
+    - LIBARCHIVE_LICENSE.txt
+    - KRB5_LICENSE.txt
+    - LIBSOLV_LICENSE.txt
+    - LIBOPENSSL_LICENSE.txt
+    - CLI11_LICENSE.txt
+    - NLOHMANN_JSON_LICENSE.txt
+    - ZSTD_LICENSE.txt
+    - LIBLZ4_LICENSE.txt
+    - C_ARES_LICENSE.txt
+    - LIBEV_LICENSE.txt
+    - CPP_FILESYSTEM_LICENSE.txt
+    - LIBNGHTTP2_LICENSE.txt
+  license: BSD-3-Clause AND MIT AND OpenSSL
+  license_family: BSD
+  summary: Micromamba is a tiny version of mamba, the fast conda package installer.
+  dev_url: https://github.com/TheSnakePit/mamba
+
+extra:
+  recipe-maintainers:
+    - wolfv
+    - SylvainCorlay
+    - JohanMabille
+
