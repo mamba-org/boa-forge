@@ -21,6 +21,11 @@ jobs:
         shell: bash -l -eo pipefail {0}
         run: |
           boa build bzip2 --features [static]
+      - name: build libiconv
+        shell: bash -l -eo pipefail {0}
+        run: |
+          boa build libiconv --features [static]
+        if: runner.os == 'macOS'
       - name: build zstd
         shell: bash -l -eo pipefail {0}
         run: |
