@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build_libraries:
+    runs-on: [windows-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - name: install mamba
+        uses: mamba-org/provision-with-micromamba@main
+      - name: build zlib
+        shell: bash -l -eo pipefail {0}
+        run: |
+          boa build zlib --features [static]
+      # - name: build bzip2
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build bzip2 --features [static]
+      # - name: build zstd
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build zstd --features [static]
+      # - name: build yaml-cpp
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build yaml-cpp --features [static]
+      # - name: build reproc
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build reproc --features [static]
+      # - name: build libarchive
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]"
+      # - name: build openssl
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build openssl --features [static]
+      # - name: build libssh2
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build libssh2 --features [static]
+      # - name: build libsolv
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build libsolv --features [static]
+      # - name: build curl
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build curl --features [static]
+      # - name: build micromamba
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     cd micromamba_recipe
+      #     boa build .
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: micromamba_pkgs
+      #     path: /home/runner/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
