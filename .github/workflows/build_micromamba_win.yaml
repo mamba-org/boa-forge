@@ -14,7 +14,7 @@ jobs:
       - name: install mamba
         uses: mamba-org/provision-with-micromamba@main
       - name: build zlib
-        shell: bash -l -eo pipefail {0}
+        shell: powershell
         run: |
           boa build zlib --features [static]
       # - name: build bzip2
