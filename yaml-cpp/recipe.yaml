@@ -16,9 +16,6 @@ build:
   # run_exports:
   #   - '{{ pin_subpackage("yaml-cpp", max_pin="x.x") }}'
 
-  skip:
-    - win
-
 requirements:
   build:
     - '{{ compiler("c") }}'

@@ -22,7 +22,9 @@ outputs:
   - package:
       name: reproc
     build:
-      script: build.sh
+      script:
+        -  sel(unix): build_c.sh
+        -  sel(win): build_c.bat
     requirements:
       build:
         - '{{ compiler("c") }}'
@@ -32,7 +34,9 @@ outputs:
   - package:
       name: reproc-cpp
     build:
-      script: build_cpp.sh
+      script:
+        -  sel(unix): build_cpp.sh
+        -  sel(win): build_cpp.bat
     requirements:
       build:
         - '{{ compiler("c") }}'

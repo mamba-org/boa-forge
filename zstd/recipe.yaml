@@ -21,8 +21,6 @@ build:
     #  Working smoothly since 1.4.x
     # - '{{ pin_subpackage("zstd", max_pin="x.x") }}'
 
-  skip:
-    - win
 requirements:
   build:
     - '{{ compiler("c") }}'
