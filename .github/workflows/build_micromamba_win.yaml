@@ -16,11 +16,11 @@ jobs:
       - name: build zlib
         shell: powershell
         run: |
-          boa build zlib --features [static]
-      # - name: build bzip2
-      #   shell: bash -l -eo pipefail {0}
-      #   run: |
-      #     boa build bzip2 --features [static]
+          boa build zlib --features "[static]"
+      - name: build bzip2
+        shell: powershell
+        run: |
+          boa build bzip2 --features "[static]"
       # - name: build zstd
       #   shell: bash -l -eo pipefail {0}
       #   run: |
@@ -58,7 +58,7 @@ jobs:
       #   run: |
       #     cd micromamba_recipe
       #     boa build .
-      # - uses: actions/upload-artifact@v2
-      #   with:
-      #     name: micromamba_pkgs
-      #     path: /home/runner/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+      - uses: actions/upload-artifact@v2
+        with:
+          name: micromamba_pkgs
+          path: /home/runner/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
