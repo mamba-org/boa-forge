@@ -482,12 +482,28 @@ def render_recursive(dict_or_array, context_dict, jenv):
     if isinstance(dict_or_array, collections.abc.Mapping):
         for key, value in dict_or_array.items():
             if isinstance(value, str):
-                tmpl = jenv.from_string(value)
-                dict_or_array[key] = tmpl.render(context_dict)
+                try:
+                    tmpl = jenv.from_string(value)
+                    dict_or_array[key] = tmpl.render(context_dict)
+                except jinja2.exceptions.UndefinedError as e:
+                    pass
             elif isinstance(value, collections.abc.Mapping):
                 render_recursive(dict_or_array[key], context_dict, jenv)
             elif isinstance(value, collections.abc.Iterable):
                 render_recursive(dict_or_array[key], context_dict, jenv)
+    elif isinstance(dict_or_array, collections.abc.Iterable):
+        for i in range(len(dict_or_array)):
+            value = dict_or_array[i]
+            if isinstance(value, str):
+                try:
+                    tmpl = jenv.from_string(value)
+                    dict_or_array[i] = tmpl.render(context_dict)
+                except jinja2.exceptions.UndefinedError as e:
+                    pass
+            elif isinstance(value, collections.abc.Mapping):
+                render_recursive(value, context_dict, jenv)
+            elif isinstance(value, collections.abc.Iterable):
+                render_recursive(value, context_dict, jenv)
 
 def normalize_recipe(ydoc):
     # normalizing recipe:
@@ -605,7 +621,7 @@ def get_updated_raw_yaml(recipe_path):
         if "sha256" in context_dict:
             raw_yaml["context"]["sha256"] = sha256_hash_for_version
         else:
-            if type(raw_yaml["source"]) == list:
+            if isinstance(raw_yaml["source"], list):
                 raw_yaml["source"][0]["sha256"] = sha256_hash_for_version
             else:
                 raw_yaml["source"]["sha256"] = sha256_hash_for_version
