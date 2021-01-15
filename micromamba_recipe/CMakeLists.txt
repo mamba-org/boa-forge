@@ -47,6 +47,10 @@ if (STATIC_DEPENDENCIES AND UNIX)
         libreproc.a
     )
 
+    if (APPLE)
+        list(APPEND MAMBA_DEPENDENCIES_LIBS libiconv.a)
+    endif()
+
     set(FINAL_LIBS "")
     foreach(LIB ${MAMBA_DEPENDENCIES_LIBS})
         set(TMP_LIB "TMP_LIB-NOTFOUND")
