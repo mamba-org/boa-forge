@@ -1,5 +1,5 @@
 context:
-  version: 1.2.11
+  version: '1.2.11'
 
 package:
   name: zlib
@@ -18,9 +18,9 @@ build:
 
 requirements:
   build:
-  - '{{ compiler("c") }}'
-  - sel(win): cmake
-  - sel(unix): make
+    - '{{ compiler("c") }}'
+    - sel(win): cmake
+    - sel(unix): make
 
 features:
   - name: static
@@ -46,8 +46,8 @@ about:
 
 extra:
   recipe-maintainers:
-  - groutr
-  - msarahan
-  - ocefpaf
-  - mingwandroid
+    - groutr
+    - msarahan
+    - ocefpaf
+    - mingwandroid
 

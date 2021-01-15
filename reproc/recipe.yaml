@@ -1,5 +1,5 @@
 context:
-  version: 14.2.0
+  version: 14.2.1
 
 package:
   name: reproc
@@ -11,6 +11,12 @@ source:
 
 build:
   number: 0
+
+test:
+  commands:
+features:
+  - name: static
+    default: false
 
 outputs:
   - package:
@@ -36,15 +42,6 @@ outputs:
         - sel(win): ninja
       host:
         - "{{ pin_subpackage('reproc-static', exact=True ) }}"
-
-features:
-  - name: static
-    default: false
-
-test:
-  commands:
-    # - sel(unix): test -f $PREFIX/bin/micromamba
-    # - micromamba --help
 
 about:
   home: https://github.com/DaanDeMeyer/reproc

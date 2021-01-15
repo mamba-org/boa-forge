@@ -1,5 +1,5 @@
 context:
-  version: 5.2.5
+  version: '5.2.5'
 
 package:
   name: xz

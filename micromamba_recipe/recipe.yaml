@@ -1,5 +1,5 @@
 context:
-  version: 0.7.7
+  version: 0.7.8
 
 package:
   name: micromamba
@@ -43,14 +43,14 @@ requirements:
     - sel(unix): reproc-cpp-static
     - sel(unix): reproc-static
 
-features:
-  - name: static
-    default: false
-
 test:
   commands:
     - sel(unix): test -f $PREFIX/bin/micromamba
     - micromamba --help
+
+features:
+  - name: static
+    default: false
 
 about:
   home: https://github.com/TheSnakePit/mamba

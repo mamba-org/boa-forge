@@ -1,6 +1,6 @@
 context:
   name: libsolv
-  version: 0.7.16
+  version: '0.7.16'
   sha256: ed1753255792e9ae0582a1904c4baba5801036ef3efd559b65027e14ee1ea282
 
 package:
