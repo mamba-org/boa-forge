@@ -589,14 +589,13 @@ def is_new_version_available(raw_yaml, context_dict, rendered_yaml):
                 return True, download_version
     return False, current_version
 
-def get_new_url_for_new_version(raw_yaml, rendered_yaml, context_dict, version_available, new_version):
-    raw_yaml = copy.deepcopy(raw_yaml)
-    context_dict = copy.deepcopy(context_dict)
-    raw_yaml["context"]["version"] = new_version
-    context_dict["version"] = new_version
-    if version_available:
-        rendered_yaml = get_rendered_yaml(raw_yaml, context_dict)
-    return rendered_yaml["source"][0]["url"]
+def get_new_url_for_new_version(raw_yaml, context_dict, new_version):
+    yaml = copy.deepcopy(raw_yaml)
+    context = copy.deepcopy(context_dict)
+    yaml["context"]["version"] = new_version
+    context["version"] = new_version
+    rendered = get_rendered_yaml(yaml, context)
+    return rendered["source"][0]["url"]
 
 def get_sha256(url: str) -> Optional[str]:
     try:
@@ -607,18 +606,27 @@ def get_sha256(url: str) -> Optional[str]:
 
 def get_updated_raw_yaml(recipe_path):
     raw_yaml, context_dict = get_raw_yaml(recipe_path)
-    rendered_yaml = get_rendered_yaml(raw_yaml, context_dict)
-    if "sha256" in context_dict:
-        sha256_hash_for_current = context_dict["sha256"]
+
+    yaml    = copy.deepcopy(raw_yaml)
+    context = copy.deepcopy(context_dict)
+    rendered_yaml = get_rendered_yaml(yaml, context)
+
+    if "sha256" in context:
+        sha256_hash_for_current = context["sha256"]
     else:
         sha256_hash_for_current = rendered_yaml["source"][0]["sha256"]
-    version_available, new_version = is_new_version_available(raw_yaml, context_dict, rendered_yaml)
-    url_for_version = get_new_url_for_new_version(raw_yaml, rendered_yaml, context_dict, version_available, new_version)
+
+    version_available, new_version = is_new_version_available(yaml, context, rendered_yaml)
+    if not version_available:
+        return raw_yaml
+
+    url_for_version = get_new_url_for_new_version(yaml, context, new_version)
     sha256_hash_for_version = get_sha256(url_for_version)
+
     if version_available and sha256_hash_for_version is not None and sha256_hash_for_version != sha256_hash_for_current:
         raw_yaml["context"]["version"] = new_version
-        context_dict["version"] = new_version
-        if "sha256" in context_dict:
+        context["version"] = new_version
+        if "sha256" in context:
             raw_yaml["context"]["sha256"] = sha256_hash_for_version
         else:
             if isinstance(raw_yaml["source"], list):
