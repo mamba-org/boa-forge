@@ -559,6 +559,7 @@ def get_rendered_yaml(raw_yaml, context_dict):
     return rendered_yaml
 
 def is_new_version_available(raw_yaml, context_dict, rendered_yaml):
+    raw_yaml = copy.deepcopy(raw_yaml)
     current_version = rendered_yaml["package"]["version"]
     github_url = Github().get_url(rendered_yaml)
     if github_url is not None:
@@ -573,6 +574,8 @@ def is_new_version_available(raw_yaml, context_dict, rendered_yaml):
     return False, current_version
 
 def get_new_url_for_new_version(raw_yaml, rendered_yaml, context_dict, version_available, new_version):
+    raw_yaml = copy.deepcopy(raw_yaml)
+    context_dict = copy.deepcopy(context_dict)
     raw_yaml["context"]["version"] = new_version
     context_dict["version"] = new_version
     if version_available:
@@ -596,7 +599,9 @@ def get_updated_raw_yaml(recipe_path):
     version_available, new_version = is_new_version_available(raw_yaml, context_dict, rendered_yaml)
     url_for_version = get_new_url_for_new_version(raw_yaml, rendered_yaml, context_dict, version_available, new_version)
     sha256_hash_for_version = get_sha256(url_for_version)
-    if sha256_hash_for_version is not None and sha256_hash_for_version != sha256_hash_for_current:
+    if version_available and sha256_hash_for_version is not None and sha256_hash_for_version != sha256_hash_for_current:
+        raw_yaml["context"]["version"] = new_version
+        context_dict["version"] = new_version
         if "sha256" in context_dict:
             raw_yaml["context"]["sha256"] = sha256_hash_for_version
         else:
