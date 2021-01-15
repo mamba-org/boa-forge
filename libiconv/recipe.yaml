@@ -30,11 +30,11 @@ requirements:
     - sel(win): m2-patch
     - sel(unix): make
 
-test:
-  commands:
-    - sel(not win): iconv --help
-    - sel(not win): conda inspect linkages -p $PREFIX $PKG_NAME
-    - sel(osx): conda inspect objects -p $PREFIX $PKG_NAME
+# test:
+#   commands:
+#     - sel(not win): iconv --help
+#     - sel(not win): conda inspect linkages -p $PREFIX $PKG_NAME
+#     - sel(osx): conda inspect objects -p $PREFIX $PKG_NAME
 
 features:
   - name: static
