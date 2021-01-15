@@ -27,8 +27,6 @@ build:
   # run_exports:
   #   # https://abi-laboratory.pro/index.php?view=timeline&l=libarchive
   #   - '{{ pin_subpackage("libarchive", max_pin="x.x") }}'
-  skip:
-    - win and vc<14
 
 requirements:
   build:
