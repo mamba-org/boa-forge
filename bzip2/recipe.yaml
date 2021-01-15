@@ -9,7 +9,7 @@ source:
   url: https://sourceware.org/pub/bzip2/bzip2-{{ version }}.tar.gz
   sha256: ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269
   patches:
-  - 0001-cross.patch
+    - 0001-cross.patch
 
 build:
   number: 0
@@ -18,9 +18,9 @@ build:
 
 requirements:
   build:
-  - '{{ compiler("c") }}'
-  - sel(win): jom
-  - sel(unix): make
+    - '{{ compiler("c") }}'
+    - sel(win): jom
+    - sel(unix): make
 
 features:
   - name: static
@@ -67,10 +67,10 @@ about:
 
 extra:
   recipe-maintainers:
-  - jakirkham
-  - jjhelmus
-  - pelson
-  - jlanga
-  - mingwandroid
-  - msarahan
+    - jakirkham
+    - jjhelmus
+    - pelson
+    - jlanga
+    - mingwandroid
+    - msarahan
 

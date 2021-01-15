@@ -1,5 +1,5 @@
 context:
-  version: 3.4.3
+  version: 3.5.1
 
 package:
   name: libarchive
@@ -7,20 +7,20 @@ package:
 
 source:
   url: https://github.com/libarchive/libarchive/archive/v{{ version }}.tar.gz
-  sha256: 19556c1c67aacdff547fd719729630444dbc7161c63eca661a310676a022bb01
+  sha256: 6d92e669e259a55a0119c135873469778f2718acbe605717f9d341487b4d0cba
   patches:
-  - patches/0001-Add-lib-to-CMAKE_FIND_LIBRARY_PREFIXES-for-lzma.patch
-  - patches/0003-VC9-compatibility-test-for-BCryptDeriveKeyPBKDF2.patch
-  - patches/0004-VC9-compatibility-define-BCRYPT_SUCCESS.patch
+    - patches/0001-Add-lib-to-CMAKE_FIND_LIBRARY_PREFIXES-for-lzma.patch
+    - patches/0003-VC9-compatibility-test-for-BCryptDeriveKeyPBKDF2.patch
+    - patches/0004-VC9-compatibility-define-BCRYPT_SUCCESS.patch
     # This should not be applied in general. It exists so I can build it for
     # debugging Visual Studio where warnings are errors for some reason.
     # Hiding warnings is poor practice.
     # - patches/0005-VC9-compatibility-ignore-some-warnings.patch
-  - patches/0006-VC-openssl-define-inline-as-__inline.patch
+    - patches/0006-VC-openssl-define-inline-as-__inline.patch
     # These warnings are errors when compiling lz-4 support
-  - patches/0007-CMake-VC9-compatibility-ignore-some-warnings.patch
-  - patches/0008-VC9-compatibility-remove-C99.patch
-  - patches/0009-CMake-Force-Multi-threaded-DLL-runtime.patch
+    - patches/0007-CMake-VC9-compatibility-ignore-some-warnings.patch
+    - patches/0008-VC9-compatibility-remove-C99.patch
+    - patches/0009-CMake-Force-Multi-threaded-DLL-runtime.patch
 
 build:
   number: 0
@@ -149,7 +149,7 @@ about:
 
 extra:
   recipe-maintainers:
-  - jakirkham
-  - mingwandroid
-  - ocefpaf
+    - jakirkham
+    - mingwandroid
+    - ocefpaf
 

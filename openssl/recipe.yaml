@@ -15,6 +15,10 @@ source:
 build:
   number: 0
 
+features:
+  - name: static
+    default: false
+
 outputs:
   - package:
       name: openssl
@@ -46,10 +50,6 @@ outputs:
     #     - sel(win): copy NUL checksum.txt
     #     - sel(unix): touch checksum.txt
     #     - openssl sha256 checksum.txt
-
-features:
-  - name: static
-    default: false
 
 about:
   home: http://www.openssl.org/
