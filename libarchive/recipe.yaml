@@ -47,9 +47,9 @@ requirements:
     - sel(win): m2-patch
   host:
     - sel(win and vc<14): msinttypes
-    - sel(osx): libiconv
+    - sel(osx): libiconv-static
   run:
-    - sel(osx): libiconv
+    - sel(osx): libiconv-static
 
 features:
   - name: zlib
