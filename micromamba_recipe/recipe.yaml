@@ -1,5 +1,5 @@
 context:
-  version: 0.7.7
+  version: 0.7.8
 
 package:
   name: micromamba
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://github.com/mamba-org/mamba/archive/{{ version }}.tar.gz
-    sha256: b56e772c3351138490a0bd3529adc959afbaa3fc3fd83af5e9d856a8a4f9a797
+    sha256: 5c763f9ecab86c171c9cc781a8dc2f1b218863d52a26748f0237b71f6fc54a00
   - path: CLI11.hpp
     folder: include/mamba/CLI.hpp
 
@@ -43,14 +43,14 @@ requirements:
     - sel(unix): reproc-cpp-static
     - sel(unix): reproc-static
 
-features:
-  - name: static
-    default: false
-
 test:
   commands:
     - sel(unix): test -f $PREFIX/bin/micromamba
     - micromamba --help
+
+features:
+  - name: static
+    default: false
 
 about:
   home: https://github.com/TheSnakePit/mamba

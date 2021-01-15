@@ -1,5 +1,5 @@
 context:
-  version: '2.10'
+  version: '3.0'
   version_major: '2'
 
 package:
@@ -18,9 +18,9 @@ build:
 
 requirements:
   build:
-  - '{{ compiler("c") }}'
-  - cmake
-  - make
+    - '{{ compiler("c") }}'
+    - cmake
+    - make
 
 features:
   - name: static
@@ -49,6 +49,6 @@ about:
 
 extra:
   recipe-maintainers:
-  - rmax
-  - ocefpaf
+    - rmax
+    - ocefpaf
 
