@@ -89,7 +89,7 @@ class Github(VersionFromFeed):
         return f"https://github.com/{package_owner}/{gh_package_name}/releases.atom"
 
 def ensure_list(x):
-    if not type(x) is list:
+    if not isinstance(x, list):
         return [x]
     else:
         return x
@@ -294,7 +294,7 @@ def normalize_recipe(ydoc):
 
 def get_raw_yaml(recipe_path):
     f = open(recipe_path, 'r')
-    loader = get_yaml_loader(typ="safe")
+    loader = get_yaml_loader(typ="rt")
     raw_yaml = loader.load(f)
     context_dict = raw_yaml.get("context") or {}
     return raw_yaml, context_dict
