@@ -1,5 +1,5 @@
 context:
-  version: 14.2.0
+  version: 14.2.1
 
 package:
   name: reproc
@@ -7,10 +7,16 @@ package:
 
 source:
   - url: https://github.com/DaanDeMeyer/reproc/archive/v{{ version }}.tar.gz
-    sha256: dd6165722f6a478b695b8a6b91d50ce7d2b1f934220d02757deb5b0b716bf970
+    sha256: f75f0524bdbf03813c126655f83d9c1b6a5b695c8e840bd62cd7aa61a96c66e3
 
 build:
   number: 0
+
+test:
+  commands:
+features:
+  - name: static
+    default: false
 
 outputs:
   - package:
@@ -36,15 +42,6 @@ outputs:
         - sel(win): ninja
       host:
         - "{{ pin_subpackage('reproc-static', exact=True ) }}"
-
-features:
-  - name: static
-    default: false
-
-test:
-  commands:
-    # - sel(unix): test -f $PREFIX/bin/micromamba
-    # - micromamba --help
 
 about:
   home: https://github.com/DaanDeMeyer/reproc
