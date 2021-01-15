@@ -1,10 +1,10 @@
 import abc, re, copy
-import feedparser
+import feedparser, subprocess
 import collections.abc
-from typing import Optional
+from typing import Optional, List, cast, Iterator, Set
 from conda.models.version import VersionOrder
 
-import ruamel, jinja2, requests, time, hashlib, math
+import ruamel, jinja2, requests, time, hashlib, math, functools
 from ruamel.yaml import YAML
 from collections import OrderedDict
 from multiprocessing import Process, Pipe
@@ -41,6 +41,192 @@ class AbstractSource(abc.ABC):
     @abc.abstractmethod
     def get_url(self, meta_yaml) -> Optional[str]:
         pass
+
+def _split_alpha_num(ver: str) -> List[str]:
+    for i, c in enumerate(ver):
+        if c.isalpha():
+            return [ver[0:i], ver[i:]]
+    return [ver]
+
+def next_version(ver: str, increment_alpha: bool = False) -> Iterator[str]:
+    ver_split = []
+    ver_dot_split = ver.split(".")
+    n_dot = len(ver_dot_split)
+    for idot, sdot in enumerate(ver_dot_split):
+
+        ver_under_split = sdot.split("_")
+        n_under = len(ver_under_split)
+        for iunder, sunder in enumerate(ver_under_split):
+
+            ver_dash_split = sunder.split("-")
+            n_dash = len(ver_dash_split)
+            for idash, sdash in enumerate(ver_dash_split):
+
+                for el in _split_alpha_num(sdash):
+                    ver_split.append(el)
+
+                if idash < n_dash - 1:
+                    ver_split.append("-")
+
+            if iunder < n_under - 1:
+                ver_split.append("_")
+
+        if idot < n_dot - 1:
+            ver_split.append(".")
+
+    for k in reversed(range(len(ver_split))):
+        try:
+            t = int(ver_split[k])
+            is_num = True
+        except Exception:
+            is_num = False
+
+        if is_num:
+            ver_split[k] = str(t + 1)
+            yield "".join(ver_split)
+            ver_split[k] = "0"
+        elif increment_alpha and ver_split[k].isalpha() and len(ver_split[k]) == 1:
+            ver_split[k] = chr(ord(ver_split[k]) + 1)
+            yield "".join(ver_split)
+            ver_split[k] = "a"
+        else:
+            continue
+
+def url_exists(url: str) -> bool:
+    try:
+        output = subprocess.check_output(
+            ["wget", "--spider", url],
+            stderr=subprocess.STDOUT,
+            timeout=1,
+        )
+    except Exception:
+        return False
+    # For FTP servers an exception is not thrown
+    if "No such file" in output.decode("utf-8"):
+        return False
+    if "not retrieving" in output.decode("utf-8"):
+        return False
+
+    return True
+
+
+def url_exists_swap_exts(url: str):
+    if url_exists(url):
+        return True, url
+
+    # TODO this is too expensive
+    # from conda_forge_tick.url_transforms import gen_transformed_urls
+    # for new_url in gen_transformed_urls(url):
+    #     if url_exists(new_url):
+    #         return True, new_url
+
+    return False, None
+
+
+def urls_from_meta(meta_yaml) -> Set[str]:
+    source = meta_yaml["source"]
+    sources = []
+    if not isinstance(source, List):
+        sources = [source]
+    else:
+        sources = source
+    urls = set()
+    for s in sources:
+        if "url" in s:
+            # if it is a list for instance
+            if not isinstance(s["url"], str):
+                urls.update(s["url"])
+            else:
+                urls.add(s["url"])
+    return urls
+
+
+class BaseRawURL(AbstractSource):
+    name = "BaseRawURL"
+    next_ver_func = None
+
+    def get_url(self, raw_yaml, context_dict, meta_yaml) -> Optional[str]:
+        # this while statement runs until a bad version is found
+        # then it uses the previous one
+        orig_urls = urls_from_meta(meta_yaml)
+        print("orig urls: %s", orig_urls)
+        current_ver = meta_yaml["package"]["version"]
+        current_sha256 = None
+        orig_ver = current_ver
+        found = True
+        count = 0
+        max_count = 10
+
+        while found and count < max_count:
+            found = False
+            for next_ver in self.next_ver_func(current_ver):
+                print("trying version: %s", next_ver)
+
+                raw_yaml["context"]["version"] = next_ver
+                context_dict["version"] = next_ver
+                new_meta = get_rendered_yaml(raw_yaml, context_dict)
+
+                new_urls = urls_from_meta(new_meta)
+                if len(new_urls) == 0:
+                    print("No URL in meta.yaml")
+                    return None
+
+                print("parsed new version: %s", new_meta["package"]["version"])
+                url_to_use = None
+                for url in new_urls:
+                    # this URL looks bad if these things happen
+                    if (
+                        str(new_meta["package"]["version"]) != next_ver
+                        or url in orig_urls
+                    ):
+                        print(
+                            "skipping url '%s' due to "
+                            "\n    %s = %s\n    %s = %s",
+                            url,
+                            'str(new_meta["package"]["version"]) != next_ver',
+                            str(new_meta["package"]["version"]) != next_ver,
+                            "url in orig_urls",
+                            url in orig_urls,
+                        )
+                        continue
+
+                    print("trying url: %s", url)
+                    _exists, _url_to_use = url_exists_swap_exts(url)
+                    if not _exists:
+                        print(
+                            "version %s does not exist for url %s",
+                            next_ver,
+                            url,
+                        )
+                        continue
+                    else:
+                        url_to_use = _url_to_use
+
+                if url_to_use is not None:
+                    found = True
+                    count = count + 1
+                    current_ver = next_ver
+                    new_sha256 = get_sha256(url_to_use)
+                    if new_sha256 is None or new_sha256 == current_sha256:
+                        return None
+                    current_sha256 = new_sha256
+                    print("version %s is ok for url %s", current_ver, url_to_use)
+                    break
+
+        if count == max_count:
+            return None
+        if current_ver != orig_ver:
+            print("using version %s", current_ver)
+            return current_ver
+        return None
+
+    def get_version(self, url: str) -> str:
+        return url
+
+
+class RawURL(BaseRawURL):
+    name = "RawURL"
+    next_ver_func = functools.partial(next_version, increment_alpha=False)
 
 class VersionFromFeed(AbstractSource):
     ver_prefix_remove = ["release-", "releases%2F", "v_", "v.", "v"]
@@ -313,13 +499,18 @@ def get_rendered_yaml(raw_yaml, context_dict):
     rendered_yaml = normalize_recipe(rendered_yaml)
     return rendered_yaml
 
-def is_new_version_available(rendered_yaml):
+def is_new_version_available(raw_yaml, context_dict, rendered_yaml):
     current_version = rendered_yaml["package"]["version"]
     github_url = Github().get_url(rendered_yaml)
     if github_url is not None:
         github_version = Github().get_version(github_url)
         if VersionOrder(github_version) > VersionOrder(current_version):
             return True, github_version
+    else:
+        download_version = RawURL().get_url(raw_yaml, context_dict, rendered_yaml)
+        if download_version is not None:
+            if VersionOrder(download_version) > VersionOrder(current_version):
+                return True, download_version
     return False, current_version
 
 def get_new_url_for_new_version(raw_yaml, rendered_yaml, context_dict, version_available, new_version):
@@ -339,15 +530,21 @@ def get_sha256(url: str) -> Optional[str]:
 def get_updated_raw_yaml(recipe_path):
     raw_yaml, context_dict = get_raw_yaml(recipe_path)
     rendered_yaml = get_rendered_yaml(raw_yaml, context_dict)
-    version_available, new_version = is_new_version_available(rendered_yaml)
+    if "sha256" in context_dict:
+        sha256_hash_for_current = context_dict["sha256"]
+    else:
+        sha256_hash_for_current = rendered_yaml["source"][0]["sha256"]
+    version_available, new_version = is_new_version_available(raw_yaml, context_dict, rendered_yaml)
     url_for_version = get_new_url_for_new_version(raw_yaml, rendered_yaml, context_dict, version_available, new_version)
     sha256_hash_for_version = get_sha256(url_for_version)
-    sha256_hash_for_current = rendered_yaml["source"][0]["sha256"]
     if sha256_hash_for_version is not None and sha256_hash_for_version != sha256_hash_for_current:
-        if type(raw_yaml["source"]) == list:
-            raw_yaml["source"][0]["sha256"] = sha256_hash_for_version
+        if "sha256" in context_dict:
+            raw_yaml["context"]["sha256"] = sha256_hash_for_version
         else:
-            raw_yaml["source"]["sha256"] = sha256_hash_for_version
+            if type(raw_yaml["source"]) == list:
+                raw_yaml["source"][0]["sha256"] = sha256_hash_for_version
+            else:
+                raw_yaml["source"]["sha256"] = sha256_hash_for_version
     return raw_yaml
 
 if __name__ == "__main__":
