@@ -14,7 +14,7 @@ rem     ml64 -c -Foms\uptable.obj ms\uptable.asm
 rem     if errorlevel 1 exit 1
 rem )
 
-nmake
+nmake install
 if errorlevel 1 exit 1
 
 rem nmake -f ms\nt.mak
@@ -22,5 +22,9 @@ rem if errorlevel 1 exit 1
 rem nmake -f ms\ntdll.mak
 rem if errorlevel 1 exit 1
 
-nmake test
+rem nmake test
 if errorlevel 1 exit 1
+
+if not exist "%LIBRARY_LIB%" mkdir %LIBRARY_LIB%
+copy libcrypto_static.lib %LIBRARY_LIB%\libcrypto_static.lib
+copy libssl_static.lib %LIBRARY_LIB%\libssl_static.lib
