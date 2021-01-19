@@ -14,14 +14,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      - name: install mamba
+        uses: mamba-org/provision-with-micromamba@main
       - name: Cache build outputs
         uses: actions/cache@v2
         with:
           path: |
             /home/runner/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
           key: build-cache-${{ runner.os }}
-      - name: install mamba
-        uses: mamba-org/provision-with-micromamba@main
       - name: build zlib
         shell: bash -l -eo pipefail {0}
         run: |
