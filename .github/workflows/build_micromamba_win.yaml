@@ -25,6 +25,7 @@ jobs:
           cat > ~/.condarc <<EOL
           channels:
             - conda-forge
+            - defaults
           EOL
       - name: build zlib
         shell: powershell
