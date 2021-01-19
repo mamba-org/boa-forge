@@ -18,7 +18,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            /home/runner/micromamba/envs/buildenv/conda-bld/
+            /home/runner/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
           key: build-cache-${{ runner.os }}
       - name: install mamba
         uses: mamba-org/provision-with-micromamba@main
