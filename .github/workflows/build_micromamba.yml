@@ -22,6 +22,13 @@ jobs:
           path: |
             ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
           key: build-cache-${{ runner.os }}
+      - name: create .condarc
+        shell: bash
+        run: |
+          cat > ~/.condarc <<EOL
+          channels:
+            - conda-forge
+          EOL
       - name: build zlib
         shell: bash -l -eo pipefail {0}
         run: |
