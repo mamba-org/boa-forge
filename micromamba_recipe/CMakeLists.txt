@@ -77,46 +77,41 @@ if (STATIC_DEPENDENCIES AND UNIX)
 
 elseif (STATIC_DEPENDENCIES AND WIN32)
 
-    set(CMAKE_PREFIX_PATH "$ENV{VCPKG_ROOT}/installed/x64-windows-static/")
-
     # For Windows we have a vcpkg based build system right now.
     find_package(LibArchive REQUIRED)
-    find_package(CURL CONFIG REQUIRED)
+    find_library(CURL_LIBRARY libcurl_a.lib)
+
+    # find_package(CURL CONFIG REQUIRED)
     find_package(yaml-cpp CONFIG REQUIRED)
     find_package(nlohmann_json CONFIG REQUIRED)
-    find_package(LibLZMA CONFIG REQUIRED)
-    find_library(LZ4_LIBRARY NAMES lz4)
-    find_library(LZO2_LIBRARY NAMES lzo2)
+    # find_package(LibLZMA CONFIG REQUIRED)
+    # find_library(LZ4_LIBRARY NAMES lz4)
+    # find_library(LZO2_LIBRARY NAMES lzo2)
     find_package(zstd CONFIG REQUIRED)
-    find_library(BZIP2_LIBRARIES NAMES bz2)
+    find_library(BZIP2_LIBRARIES "bzip2_static.lib")
     find_library(CRYPTO_LIBRARIES NAMES libcrypto)
 
     find_library(LIBSOLV_STATIC_LIBRARIES NAMES solv_static)
     find_library(LIBSOLVEXT_STATIC_LIBRARIES NAMES solvext_static)
-    find_package(reproc++ CONFIG REQUIRED)
-
-    find_library(LIBXML2_LIBRARY NAMES libxml2)
-    find_library(ICONV_LIBRARY NAMES libiconv)
-    find_library(CHARSET_LIBRARY NAMES libcharset)
-    message("Found: ${LIBXML2_LIBRARY} ${ICONV_LIBRARY} ${CHARSET_LIBRARY}")
+    # find_package(reproc++ CONFIG REQUIRED)
+    find_library(REPROC_LIBRARY "reproc_static.lib")
+    find_library(REPROCPP_LIBRARY "reproc++_static.lib")
 
     target_link_libraries(micromamba PRIVATE
         ${CRYPTO_LIBRARIES}
         ${LibArchive_LIBRARY}
-        ${LIBXML2_LIBRARY}
-        ${ICONV_LIBRARY}
-        ${CHARSET_LIBRARY}
         libzstd
         ${LZ4_LIBRARY}
         ${LZO2_LIBRARY}
         ${BZIP2_LIBRARIES}
         ${LIBLZMA_LIBRARIES}
-        CURL::libcurl
+        ${CURL_LIBRARY}
         nlohmann_json::nlohmann_json
         ${YAML_CPP_LIBRARIES}
         ${LIBSOLV_STATIC_LIBRARIES}
         ${LIBSOLVEXT_STATIC_LIBRARIES}
-        reproc++
+        ${REPROC_LIBRARY}
+        ${REPROCPP_LIBRARY}
     )
 
     add_definitions("-DLIBARCHIVE_STATIC -DCURL_STATICLIB -DSOLV_STATIC_LIB")
