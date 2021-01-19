@@ -14,58 +14,66 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      - name: Cache build outputs
+        uses: actions/cache@v2
+        with:
+          path: |
+            /home/runner/micromamba/envs/buildenv/conda-bld/
+          key: build-cache-${{ runner.os }}
       - name: install mamba
         uses: mamba-org/provision-with-micromamba@main
       - name: build zlib
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build zlib --features [static]
+          boa build zlib --features [static] --skip-existing
       - name: build bzip2
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build bzip2 --features [static]
+          boa build bzip2 --features [static] --skip-existing
       - name: build libiconv
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build libiconv --features [static]
+          boa build libiconv --features [static] --skip-existing
         if: runner.os == 'macOS'
       - name: build zstd
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build zstd --features [static]
+          boa build zstd --features [static] --skip-existing
       - name: build yaml-cpp
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build yaml-cpp --features [static]
+          boa build yaml-cpp --features [static] --skip-existing
       - name: build reproc
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build reproc --features [static]
+          boa build reproc --features [static] --skip-existing
       - name: build libarchive
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]"
+          boa build libarchive \
+              --skip-existing \
+              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]"
       - name: build openssl
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build openssl --features [static]
+          boa build openssl --features [static] --skip-existing
       - name: build libssh2
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build libssh2 --features [static]
+          boa build libssh2 --features [static] --skip-existing
       - name: build libsolv
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build libsolv --features [static]
+          boa build libsolv --features [static] --skip-existing
       - name: build curl
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build curl --features [static]
+          boa build curl --features [static] --skip-existing
       - name: build micromamba
         shell: bash -l -eo pipefail {0}
         run: |
           cd micromamba_recipe
-          boa build .
+          boa build . --skip-existing
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
