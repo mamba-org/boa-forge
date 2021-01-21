@@ -12,7 +12,7 @@ source:
     folder: include/mamba/CLI.hpp
 
 build:
-  number: 1
+  number: 2
   ignore_run_exports:
     - sel(unix): libcurl
     - sel(unix): libarchive
