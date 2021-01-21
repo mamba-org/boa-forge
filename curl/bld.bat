@@ -1,29 +1,36 @@
-cd winbuild
+mkdir build
 
-if %ARCH% == 32 (
-    set ARCH_STRING=x86
-) else (
-    set ARCH_STRING=x64
-)
+cmake -GNinja ^
+      -DCMAKE_BUILD_TYPE=Release ^
+      -DBUILD_SHARED_LIBS=OFF ^
+      -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
+      -DCMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
+      -DCMAKE_USE_LIBSSH2=OFF ^
+      -DUSE_ZLIB=ON ^
+	  -DCURL_STATIC_CRT=ON ^
+	  %SRC_DIR%
+
+IF %ERRORLEVEL% NEQ 0 exit 1
+
+ninja install --verbose
 
 REM This is implicitly using WinSSL.  See Makefile.vc for more info.
-nmake /f Makefile.vc MODE=dll VC=%VS_MAJOR:"=% WITH_DEVEL=%LIBRARY_PREFIX% ^
-         WITH_ZLIB=dll WITH_SSH2=dll DEBUG=no ENABLE_IDN=no ENABLE_SSPI=yes ^
-         MACHINE=%ARCH_STRING%
-if errorlevel 1 exit 1
+rem nmake /f Makefile.vc MODE=dll VC=%VS_MAJOR:"=% WITH_DEVEL=%LIBRARY_PREFIX% ^
+rem          WITH_ZLIB=dll WITH_SSH2=dll DEBUG=no ENABLE_IDN=no ENABLE_SSPI=yes ^
+rem          MACHINE=%ARCH_STRING%
+rem if errorlevel 1 exit 1
 
+REM WITH_SSH2=static
 REM This is implicitly using WinSSL.  See Makefile.vc for more info.
-nmake /f Makefile.vc mode=static VC=%VS_MAJOR:"=% WITH_DEVEL=%LIBRARY_PREFIX% ^
-         WITH_ZLIB=dll WITH_SSH2=dll DEBUG=no ENABLE_IDN=no ENABLE_SSPI=yes ^
-         MACHINE=%ARCH_STRING%
-if errorlevel 1 exit 1
+rem nmake /f Makefile.vc mode=static VC=%VS_MAJOR:"=% WITH_DEVEL=%LIBRARY_PREFIX% ^
+rem          WITH_ZLIB=static DEBUG=no ENABLE_IDN=no ENABLE_SSPI=yes ^
+rem          MACHINE=%ARCH_STRING%
+rem if errorlevel 1 exit 1
 
-REM install static library
-copy ..\builds\libcurl-vc%VS_MAJOR:"=%-%ARCH_STRING%-release-static-zlib-dll-ssh2-dll-ipv6-sspi-winssl\lib\libcurl_a.lib %LIBRARY_PREFIX%\lib\libcurl_a.lib
-if %ERRORLEVEL% GTR 3 exit 1
+rem REM install static library
+rem robocopy ..\builds\libcurl-vc%VS_MAJOR:"=%-%ARCH_STRING%-release-static-zlib-static-ipv6-sspi-schannel\ %LIBRARY_PREFIX% *.* /E
+rem if %ERRORLEVEL% GTR 3 exit 1
 
-REM install everything else
-robocopy ..\builds\libcurl-vc%VS_MAJOR:"=%-%ARCH_STRING%-release-dll-zlib-dll-ssh2-dll-ipv6-sspi-winssl\ %LIBRARY_PREFIX% *.* /E
-if %ERRORLEVEL% GTR 3 exit 1
-
-exit 0
+rem REM install everything else
+rem robocopy ..\builds\libcurl-vc%VS_MAJOR:"=%-%ARCH_STRING%-release-dll-zlib-dll-ssh2-dll-ipv6-sspi-winssl\ %LIBRARY_PREFIX% *.* /E
+rem if %ERRORLEVEL% GTR 3 exit 1

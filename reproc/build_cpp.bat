@@ -3,25 +3,28 @@ cd build-cpp
 del CMakeCache.txt
 
 IF not x%PKG_NAME:static=%==x%PKG_NAME% (
-    set BUILD_TYPE="-DBUILD_SHARED_LIBS=OFF"
+    set BUILD_TYPE=-DBUILD_SHARED_LIBS=OFF
 ) ELSE (
-    set BUILD_TYPE="-DBUILD_SHARED_LIBS=ON"
+    set BUILD_TYPE=-DBUILD_SHARED_LIBS=ON
 )
 
+
 cmake .. ^
-      -G "NMake Makefiles" ^
+      -G "Ninja" ^
       -DCMAKE_BUILD_TYPE=Release ^
       -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
       -DCMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
       -DCMAKE_INSTALL_LIBDIR=lib ^
-      -DREPROC_TEST=ON ^
+      -DREPROC_TEST=OFF ^
+      -DREPROC_EXAMPLES=OFF ^
       -DREPROC++=ON ^
+      -DBUILD_SHARED_LIBS=OFF ^
+      -DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded" ^
       %BUILD_TYPE%
 
-nmake all
-nmake test
-nmake install
+rem ninja test
+ninja install  --verbose
 
-IF not x%PKG_NAME:static=%==x%PKG_NAME% (
-    REN %LIBRARY_PREFIX%\lib\reproc++.lib reproc++_static.lib
-)
+rem IF not x%PKG_NAME:static=%==x%PKG_NAME% (
+rem     REN %LIBRARY_PREFIX%\lib\reproc++.lib reproc++_static.lib
+rem )

@@ -14,4 +14,4 @@ cmake .. ^
     -D USE_VENDORED_CLI11=ON ^
     -G "Ninja"
 
-ninja install
+ninja install --verbose

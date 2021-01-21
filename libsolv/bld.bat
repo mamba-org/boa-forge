@@ -1,7 +1,7 @@
-set "CFLAGS= -MD"
+set "CFLAGS= -MT"
 echo %CFLAGS%
 
-set "CXXFLAGS= -MD"
+set "CXXFLAGS= -MT"
 echo %CXXFLAGS%
 
 mkdir build
@@ -39,9 +39,11 @@ cmake -G "Ninja" ^
       -D CMAKE_BUILD_TYPE=Release ^
       -D ENABLE_STATIC=ON ^
       -D DISABLE_SHARED=ON ^
+      -DCMAKE_C_FLAGS_RELEASE="${CMAKE_C_FLAGS_RELEASE} /MT" ^
+      -DCMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE} /MT" ^
       ..
 
 if errorlevel 1 exit 1
 
-ninja install
+ninja install --verbose
 if errorlevel 1 exit 1

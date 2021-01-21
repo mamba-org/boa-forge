@@ -20,7 +20,7 @@ source:
     # These warnings are errors when compiling lz-4 support
     - patches/0007-CMake-VC9-compatibility-ignore-some-warnings.patch
     - patches/0008-VC9-compatibility-remove-C99.patch
-    - patches/0009-CMake-Force-Multi-threaded-DLL-runtime.patch
+    # - patches/0009-CMake-Force-Multi-threaded-DLL-runtime.patch
 
 build:
   number: 0

@@ -78,40 +78,39 @@ if (STATIC_DEPENDENCIES AND UNIX)
 elseif (STATIC_DEPENDENCIES AND WIN32)
 
     # For Windows we have a vcpkg based build system right now.
-    find_package(LibArchive REQUIRED)
-    find_library(CURL_LIBRARY libcurl_a.lib)
+    find_library(LIBARCHIVE_LIBRARY archive_static.lib)
 
-    # find_package(CURL CONFIG REQUIRED)
+    find_package(CURL CONFIG REQUIRED)
     find_package(yaml-cpp CONFIG REQUIRED)
     find_package(nlohmann_json CONFIG REQUIRED)
     # find_package(LibLZMA CONFIG REQUIRED)
     # find_library(LZ4_LIBRARY NAMES lz4)
     # find_library(LZO2_LIBRARY NAMES lzo2)
-    find_package(zstd CONFIG REQUIRED)
-    find_library(BZIP2_LIBRARIES "bzip2_static.lib")
-    find_library(CRYPTO_LIBRARIES NAMES libcrypto)
+    find_library(LIBZSTD_LIBRARY NAMES zstd_static.lib)
+    find_library(BZIP2_LIBRARIES bz2.lib)
+    find_library(CRYPTO_LIBRARIES NAMES libcrypto_static)
 
     find_library(LIBSOLV_STATIC_LIBRARIES NAMES solv_static)
     find_library(LIBSOLVEXT_STATIC_LIBRARIES NAMES solvext_static)
-    # find_package(reproc++ CONFIG REQUIRED)
-    find_library(REPROC_LIBRARY "reproc_static.lib")
-    find_library(REPROCPP_LIBRARY "reproc++_static.lib")
+    find_package(reproc++ CONFIG REQUIRED)
+    # find_library(REPROC_LIBRARY "reproc_static.lib")
+    # find_library(REPROCPP_LIBRARY "reproc++_static.lib")
 
     target_link_libraries(micromamba PRIVATE
         ${CRYPTO_LIBRARIES}
-        ${LibArchive_LIBRARY}
-        libzstd
-        ${LZ4_LIBRARY}
-        ${LZO2_LIBRARY}
+        crypt32.lib
+        ${LIBARCHIVE_LIBRARY}
+        ${LIBZSTD_LIBRARY}
+        # ${LZ4_LIBRARY}
+        # ${LZO2_LIBRARY}
         ${BZIP2_LIBRARIES}
         ${LIBLZMA_LIBRARIES}
-        ${CURL_LIBRARY}
+        CURL::libcurl
         nlohmann_json::nlohmann_json
         ${YAML_CPP_LIBRARIES}
         ${LIBSOLV_STATIC_LIBRARIES}
         ${LIBSOLVEXT_STATIC_LIBRARIES}
-        ${REPROC_LIBRARY}
-        ${REPROCPP_LIBRARY}
+        reproc++
     )
 
     add_definitions("-DLIBARCHIVE_STATIC -DCURL_STATICLIB -DSOLV_STATIC_LIB")

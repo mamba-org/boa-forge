@@ -13,6 +13,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: install mamba
         uses: mamba-org/provision-with-micromamba@main
+        with:
+          environment-file: tickbot.yml
+
       - name: Cache build outputs
         uses: actions/cache@v2
         with:
@@ -30,43 +33,43 @@ jobs:
       - name: build zlib
         shell: powershell
         run: |
-          boa build zlib --features "[static]"
+          boa build zlib --features "[static]" --skip-existing
       - name: build bzip2
         shell: powershell
         run: |
-          boa build bzip2 --features "[static]"
+          boa build bzip2 --features "[static]" --skip-existing
       - name: build zstd
         shell: powershell
         run: |
-          boa build zstd --features "[static]"
+          boa build zstd --features "[static]" --skip-existing
       - name: build yaml-cpp
         shell: powershell
         run: |
-          boa build yaml-cpp --features "[static]"
+          boa build yaml-cpp --features "[static]" --skip-existing
       - name: build reproc
         shell: powershell
         run: |
-          boa build reproc --features "[static]"
+          boa build reproc --features "[static]" --skip-existing
       - name: build libarchive
         shell: powershell
         run: |
-          boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]"
+          boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" --skip-existing
       - name: build openssl
         shell: powershell
         run: |
-          boa build openssl --features [static]
-      - name: build libssh2
-        shell: powershell
-        run: |
-          boa build libssh2 --features [static]
+          boa build openssl --features "[static]" --skip-existing
+      # - name: build libssh2
+      #   shell: powershell
+      #   run: |
+      #     boa build libssh2 --features "[static]" --skip-existing
       - name: build libsolv
         shell: powershell
         run: |
-          boa build libsolv --features [static]
+          boa build libsolv --features "[static]" --skip-existing
       - name: build curl
         shell: powershell
         run: |
-          boa build curl --features [static]
+          boa build curl --features "[static]" --skip-existing
       - name: build micromamba
         shell: powershell
         run: |
