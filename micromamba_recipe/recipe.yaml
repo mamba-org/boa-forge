@@ -36,7 +36,7 @@ requirements:
     - yaml-cpp-static
     - libarchive-static
     - curl-static
-    - libssh2-static
+    - sel(not win): libssh2-static
     - libsolv-static
     - openssl-static
     - reproc-cpp-static
