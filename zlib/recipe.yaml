@@ -20,6 +20,7 @@ requirements:
   build:
     - '{{ compiler("c") }}'
     - sel(win): cmake
+    - sel(win): ninja
     - sel(unix): make
 
 features:

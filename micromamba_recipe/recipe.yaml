@@ -26,22 +26,21 @@ requirements:
     - cmake
     - sel(unix): make
     - sel(win): ninja
-    - sel(win): vcpkg
   host:
     - cli11
     - cpp-filesystem
     - nlohmann_json
-    - sel(unix): bzip2-static
-    - sel(unix): zstd-static
-    - sel(unix): zlib-static
-    - sel(unix): yaml-cpp-static
-    - sel(unix): libarchive-static
-    - sel(unix): curl-static
-    - sel(unix): libssh2-static
-    - sel(unix): libsolv-static
-    - sel(unix): openssl-static
-    - sel(unix): reproc-cpp-static
-    - sel(unix): reproc-static
+    - bzip2-static
+    - zstd-static
+    - zlib-static
+    - yaml-cpp-static
+    - libarchive-static
+    - curl-static
+    - sel(not win): libssh2-static
+    - libsolv-static
+    - openssl-static
+    - reproc-cpp-static
+    - reproc-static
 
 test:
   commands:
