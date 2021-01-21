@@ -46,8 +46,21 @@ cmake -G "Ninja" ^
       -DCMAKE_BUILD_TYPE=Release ^
       -DCMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS:BOOL=FALSE ^
       -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
-      -DCMAKE_C_FLAGS_RELEASE="%CFLAGS%" ^
-      -DENABLE_CNG=%ENABLE_CNG% ^
+      -DCMAKE_C_FLAGS_RELEASE="/MT /O2 /Ob2 /DNDEBUG" ^
+      -DCMAKE_CXX_FLAGS_RELEASE="/MT /O2 /Ob2 /DNDEBUG" ^
+      -DENABLE_BZip2=ON ^
+      -DENABLE_ZSTD=ON ^
+      -DENABLE_ZLIB=ON ^
+      -DENABLE_LZMA=OFF ^
+      -DENABLE_LIBB2=OFF ^
+      -DENABLE_LZ4=OFF ^
+      -DENABLE_LZO=OFF ^
+      -DENABLE_LIBXML2=OFF ^
+      -DENABLE_EXPAT=OFF ^
+      -DENABLE_PCREPOSIX=OFF ^
+      -DENABLE_LibGCC=OFF ^
+      -DENABLE_CNG=OFF ^
+      -DENABLE_ICONV=OFF ^
       .
 
 :build
@@ -70,7 +83,7 @@ if errorlevel 1 exit /b 1
 :: if errorlevel 1 exit 1
 
 :: Test extracting a 7z. This failed due to not using the multi-threaded DLL runtime, fixed by 0009-CMake-Force-Multi-threaded-DLL-runtime.patch
-powershell -command "& { (New-Object Net.WebClient).DownloadFile('http://download.qt.io/development_releases/prebuilt/llvmpipe/windows/opengl32sw-64-mesa_12_0_rc2.7z', 'opengl32sw-64-mesa_12_0_rc2.7z') }"
-if errorlevel 1 exit 1
-%LIBRARY_BIN%\bsdtar -xf opengl32sw-64-mesa_12_0_rc2.7z
-if errorlevel 1 exit 1
+rem powershell -command "& { (New-Object Net.WebClient).DownloadFile('http://download.qt.io/development_releases/prebuilt/llvmpipe/windows/opengl32sw-64-mesa_12_0_rc2.7z', 'opengl32sw-64-mesa_12_0_rc2.7z') }"
+rem if errorlevel 1 exit 1
+rem %LIBRARY_BIN%\bsdtar -xf opengl32sw-64-mesa_12_0_rc2.7z
+rem if errorlevel 1 exit 1

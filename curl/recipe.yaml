@@ -15,7 +15,9 @@ build:
 requirements:
   build:
     - "{{ compiler('c') }}"
-    - make
+    - sel(win): cmake
+    - sel(win): ninja
+    - sel(unix): make
     - sel(unix): perl
     - sel(unix): pkg-config
   host:
@@ -34,7 +36,7 @@ features:
     requirements:
       host:
         - libssh2-static
-    default: true
+    default: false
   - name: zlib
     description: use zlib for gzip compression support
     requirements:
