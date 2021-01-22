@@ -172,7 +172,7 @@ jobs:
       - name: Test with environment variables
         run: echo $TAG_NAME - $RELEASE_NAME
       - name: Extract micromamba binaries
-        shell: bash
+        shell: bash -x {0}
         run: |
           ls
           ls ~/micromamba_pkgs/
@@ -187,8 +187,11 @@ jobs:
           # tar -xvf micromamba-win.tar.bz2 -C micromamba-win
           # tar -xvf micromamba-osx.tar.bz2 -C micromamba-osx
 
-          cp ~/micromamba_pkgs/linux-64/micromamba-0.7.8-hb0f4dca_1.tar.bz2 ~/micromamba-linux.tar.bz2
-          tar -xvf ~/micromamba-linux.tar.bz2 -C ~/micromamba-linux
+          mkdir ~/micromamba-linux
+          cp ~/micromamba_pkgs/linux-64/micromamba-0.7.8-hb0f4dca_1.tar.bz2 ~/micromamba-linux/micromamba.tar.bz2
+          cd ~/micromamba-linux
+          tar -xvf micromamba.tar.bz2
+          ls
       - uses: actions/download-artifact@v2
         with:
           name: micromamba_pkgs
