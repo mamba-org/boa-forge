@@ -17,8 +17,23 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
-          curl https://github.com/mamba-org/boa-forge/suites/1879702483/artifacts/36686206?access_token=${REPO_TOKEN} -L -o micromamba_pkgs.zip
-          unzip micromamba_pkgs.zip -d micromamba_pkgs
+          owner="mamba-org"
+          repo="boa-forge"
+          tag="ARTIFACT_TAG"
+          artifact="ARTIFACT_NAME"
+          token="MY_ACCESS_TOKEN"
+          list_asset_url="https://api.github.com/repos/${owner}/${repo}/releases/tags/${tag}?access_token=${token}"
+
+
+          # get url for artifact with name==$artifact
+          asset_url=$(curl "${list_asset_url}" | jq ".assets[] | select(.name==\"${artifact}\") | .url" | sed 's/\"//g')
+
+          # download the artifact
+          curl -vLJO -H 'Accept: application/octet-stream' \
+           "${asset_url}?access_token=${token}"
+
+          # curl https://github.com/mamba-org/boa-forge/suites/1879702483/artifacts/36686206?access_token=${REPO_TOKEN} -L -o micromamba_pkgs.zip
+          # unzip micromamba_pkgs.zip -d micromamba_pkgs
 
           cp ./micromamba_pkgs/win-64/micromamba-0.7.9-h9490d1a_2.tar.bz2 ./micromamba-win.tar.bz2
           cp ./micromamba_pkgs/linux-64/micromamba-0.7.9-hb0f4dca_2.tar.bz2 ./micromamba-linux.tar.bz2

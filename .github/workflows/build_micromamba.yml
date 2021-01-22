@@ -30,58 +30,58 @@ jobs:
           channels:
             - conda-forge
           EOL
-      - name: build zlib
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build zlib --features [static] --skip-existing
-      - name: build bzip2
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build bzip2 --features [static] --skip-existing
-      - name: build libiconv
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libiconv --features [static] --skip-existing
-        if: runner.os == 'macOS'
-      - name: build zstd
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build zstd --features [static] --skip-existing
-      - name: build yaml-cpp
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build yaml-cpp --features [static] --skip-existing
-      - name: build reproc
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build reproc --features [static] --skip-existing
-      - name: build libarchive
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libarchive \
-              --skip-existing \
-              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]"
-      - name: build openssl
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build openssl --features [static] --skip-existing
-      - name: build libssh2
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libssh2 --features [static] --skip-existing
-      - name: build libsolv
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libsolv --features [static] --skip-existing
-      - name: build curl
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build curl --features [static] --skip-existing
-      - name: build micromamba
-        shell: bash -l -eo pipefail {0}
-        run: |
-          cd micromamba_recipe
-          boa build . --skip-existing
+      # - name: build zlib
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build zlib --features [static] --skip-existing
+      # - name: build bzip2
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build bzip2 --features [static] --skip-existing
+      # - name: build libiconv
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build libiconv --features [static] --skip-existing
+      #   if: runner.os == 'macOS'
+      # - name: build zstd
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build zstd --features [static] --skip-existing
+      # - name: build yaml-cpp
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build yaml-cpp --features [static] --skip-existing
+      # - name: build reproc
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build reproc --features [static] --skip-existing
+      # - name: build libarchive
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build libarchive \
+      #         --skip-existing \
+      #         --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]"
+      # - name: build openssl
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build openssl --features [static] --skip-existing
+      # - name: build libssh2
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build libssh2 --features [static] --skip-existing
+      # - name: build libsolv
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build libsolv --features [static] --skip-existing
+      # - name: build curl
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     boa build curl --features [static] --skip-existing
+      # - name: build micromamba
+      #   shell: bash -l -eo pipefail {0}
+      #   run: |
+      #     cd micromamba_recipe
+      #     boa build . --skip-existing
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -99,59 +99,59 @@ jobs:
           path: |
             ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
           key: build-cache-${{ runner.os }}
-      - name: create .condarc
-        shell: bash
-        run: |
-          cat > ~/.condarc <<EOL
-          channels:
-            - conda-forge
-            - defaults
-          EOL
-      - name: build zlib
-        shell: powershell
-        run: |
-          boa build zlib --features "[static]" --skip-existing
-      - name: build bzip2
-        shell: powershell
-        run: |
-          boa build bzip2 --features "[static]" --skip-existing
-      - name: build zstd
-        shell: powershell
-        run: |
-          boa build zstd --features "[static]" --skip-existing
-      - name: build yaml-cpp
-        shell: powershell
-        run: |
-          boa build yaml-cpp --features "[static]" --skip-existing
-      - name: build reproc
-        shell: powershell
-        run: |
-          boa build reproc --features "[static]" --skip-existing
-      - name: build libarchive
-        shell: powershell
-        run: |
-          boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" --skip-existing
-      - name: build openssl
-        shell: powershell
-        run: |
-          boa build openssl --features "[static]" --skip-existing
-      # - name: build libssh2
+      # - name: create .condarc
+      #   shell: bash
+      #   run: |
+      #     cat > ~/.condarc <<EOL
+      #     channels:
+      #       - conda-forge
+      #       - defaults
+      #     EOL
+      # - name: build zlib
       #   shell: powershell
       #   run: |
-      #     boa build libssh2 --features "[static]" --skip-existing
-      - name: build libsolv
-        shell: powershell
-        run: |
-          boa build libsolv --features "[static]" --skip-existing
-      - name: build curl
-        shell: powershell
-        run: |
-          boa build curl --features "[static]" --skip-existing
-      - name: build micromamba
-        shell: powershell
-        run: |
-          cd micromamba_recipe
-          boa build .  --skip-existing
+      #     boa build zlib --features "[static]" --skip-existing
+      # - name: build bzip2
+      #   shell: powershell
+      #   run: |
+      #     boa build bzip2 --features "[static]" --skip-existing
+      # - name: build zstd
+      #   shell: powershell
+      #   run: |
+      #     boa build zstd --features "[static]" --skip-existing
+      # - name: build yaml-cpp
+      #   shell: powershell
+      #   run: |
+      #     boa build yaml-cpp --features "[static]" --skip-existing
+      # - name: build reproc
+      #   shell: powershell
+      #   run: |
+      #     boa build reproc --features "[static]" --skip-existing
+      # - name: build libarchive
+      #   shell: powershell
+      #   run: |
+      #     boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" --skip-existing
+      # - name: build openssl
+      #   shell: powershell
+      #   run: |
+      #     boa build openssl --features "[static]" --skip-existing
+      # # - name: build libssh2
+      # #   shell: powershell
+      # #   run: |
+      # #     boa build libssh2 --features "[static]" --skip-existing
+      # - name: build libsolv
+      #   shell: powershell
+      #   run: |
+      #     boa build libsolv --features "[static]" --skip-existing
+      # - name: build curl
+      #   shell: powershell
+      #   run: |
+      #     boa build curl --features "[static]" --skip-existing
+      # - name: build micromamba
+      #   shell: powershell
+      #   run: |
+      #     cd micromamba_recipe
+      #     boa build .  --skip-existing
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -166,6 +166,16 @@ jobs:
         run: echo "name=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
       - name: Test with environment variables
         run: echo $TAG_NAME - $RELEASE_NAME
+      - name: Extract micromamba binaries
+        shell: bash -l -eo pipefail {0}
+        run: |
+          cp ./micromamba_pkgs/win-64/micromamba-0.7.9-h9490d1a_2.tar.bz2 ./micromamba-win.tar.bz2
+          cp ./micromamba_pkgs/linux-64/micromamba-0.7.9-hb0f4dca_2.tar.bz2 ./micromamba-linux.tar.bz2
+          cp ./micromamba_pkgs/osx-64/micromamba-0.7.9-h0dc7051_2.tar.bz2 ./micromamba-osx.tar.bz2
+
+          tar -xvf micromamba-win.tar.bz2 -C micromamba-win
+          tar -xvf micromamba-osx.tar.bz2 -C micromamba-osx
+          tar -xvf micromamba-linux.tar.bz2 -C micromamba-linux
       - uses: actions/download-artifact@v2
         with:
           name: micromamba_pkgs
@@ -184,3 +194,33 @@ jobs:
             - Second Change
           draft: false
           prerelease: false
+      - name: Upload Release Assets Win
+        id: upload-release-asset-win
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: micromamba-win/Library/bin/micromamba.exe
+          asset_name: micromamba.exe
+          # asset_content_type: application/exe
+      - name: Upload Release Assets Linux
+        id: upload-release-asset-linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: micromamba-linux/bin/micromamba
+          asset_name: micromamba-linux-64
+          # asset_content_type: application/exe
+      - name: Upload Release Assets OSX
+        id: upload-release-asset-osx
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: micromamba-osx/bin/micromamba
+          asset_name: micromamba-osx-64
+          # asset_content_type: application/exe
