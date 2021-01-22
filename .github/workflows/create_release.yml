@@ -17,8 +17,7 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
-          curl -H "Authorization: token ${REPO_TOKEN}" \
-                https://github.com/mamba-org/boa-forge/suites/1879702483/artifacts/36686206 -L -o micromamba_pkgs.zip
+          curl https://github.com/mamba-org/boa-forge/suites/1879702483/artifacts/36686206?access_token=${REPO_TOKEN} -L -o micromamba_pkgs.zip
           unzip micromamba_pkgs.zip -d micromamba_pkgs
 
           cp ./micromamba_pkgs/win-64/micromamba-0.7.9-h9490d1a_2.tar.bz2 ./micromamba-win.tar.bz2
