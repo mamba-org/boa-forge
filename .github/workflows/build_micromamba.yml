@@ -172,10 +172,15 @@ jobs:
       - name: Test with environment variables
         run: echo $TAG_NAME - $RELEASE_NAME
       - name: Extract micromamba binaries
-        shell: bash -l -eo pipefail {0}
+        shell: bash
         run: |
           ls
-          cp ~/micromamba_pkgs/linux-64/micromamba-0.7.9-hb0f4dca_2.tar.bz2 ./micromamba-linux.tar.bz2
+          ls ~/micromamba_pkgs/
+          ls ~/micromamba_pkgs/linux-64/
+          files=(~/micromamba_pkgs/linux-64/micromamba*)
+          cp "${files[0]}" ./micromamba-linux.tar.bz2
+
+          # cp ~/micromamba_pkgs/linux-64/micromamba-0.7.9-hb0f4dca_2.tar.bz2 ./micromamba-linux.tar.bz2
           # cp ~/micromamba_pkgs/win-64/micromamba-0.7.9-h9490d1a_2.tar.bz2 ./micromamba-win.tar.bz2
           # cp ~/micromamba_pkgs/osx-64/micromamba-0.7.9-h0dc7051_2.tar.bz2 ./micromamba-osx.tar.bz2
 
