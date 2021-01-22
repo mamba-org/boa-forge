@@ -151,7 +151,7 @@ jobs:
         shell: powershell
         run: |
           cd micromamba_recipe
-          boa build .
+          boa build .  --skip-existing
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
