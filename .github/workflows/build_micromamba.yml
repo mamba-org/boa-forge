@@ -11,7 +11,7 @@ jobs:
   build_libraries_unix:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]  # [macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -87,18 +87,18 @@ jobs:
           name: micromamba_pkgs
           path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
 
-  build_libraries_win:
-    runs-on: [windows-latest]
-    steps:
-      - uses: actions/checkout@v2
-      # - name: install mamba
-      #   uses: mamba-org/provision-with-micromamba@main
-      - name: Cache build outputs
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
-          key: build-cache-${{ runner.os }}
+  # build_libraries_win:
+  #   runs-on: [windows-latest]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     # - name: install mamba
+  #     #   uses: mamba-org/provision-with-micromamba@main
+  #     - name: Cache build outputs
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: |
+  #           ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
+  #         key: build-cache-${{ runner.os }}
       # - name: create .condarc
       #   shell: bash
       #   run: |
@@ -152,10 +152,10 @@ jobs:
       #   run: |
       #     cd micromamba_recipe
       #     boa build .  --skip-existing
-      - uses: actions/upload-artifact@v2
-        with:
-          name: micromamba_pkgs
-          path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: micromamba_pkgs
+      #     path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
   make_release_and_upload:
     needs: [build_libraries_win, build_libraries_unix]
     runs-on: ubuntu-latest
@@ -164,6 +164,8 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: micromamba_pkgs
+          path: ~/micromamba_pkgs
+
       - name: Get current date
         id: date
         run: echo "name=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
@@ -173,9 +175,9 @@ jobs:
         shell: bash -l -eo pipefail {0}
         run: |
           ls
-          cp ./micromamba_pkgs/win-64/micromamba-0.7.9-h9490d1a_2.tar.bz2 ./micromamba-win.tar.bz2
-          cp ./micromamba_pkgs/linux-64/micromamba-0.7.9-hb0f4dca_2.tar.bz2 ./micromamba-linux.tar.bz2
-          cp ./micromamba_pkgs/osx-64/micromamba-0.7.9-h0dc7051_2.tar.bz2 ./micromamba-osx.tar.bz2
+          cp ~/micromamba_pkgs/win-64/micromamba-0.7.9-h9490d1a_2.tar.bz2 ./micromamba-win.tar.bz2
+          cp ~/micromamba_pkgs/linux-64/micromamba-0.7.9-hb0f4dca_2.tar.bz2 ./micromamba-linux.tar.bz2
+          cp ~/micromamba_pkgs/osx-64/micromamba-0.7.9-h0dc7051_2.tar.bz2 ./micromamba-osx.tar.bz2
 
           tar -xvf micromamba-win.tar.bz2 -C micromamba-win
           tar -xvf micromamba-osx.tar.bz2 -C micromamba-osx
@@ -198,16 +200,6 @@ jobs:
             - Second Change
           draft: false
           prerelease: false
-      - name: Upload Release Assets Win
-        id: upload-release-asset-win
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: micromamba-win/Library/bin/micromamba.exe
-          asset_name: micromamba.exe
-          # asset_content_type: application/exe
       - name: Upload Release Assets Linux
         id: upload-release-asset-linux
         uses: actions/upload-release-asset@v1
@@ -218,13 +210,23 @@ jobs:
           asset_path: micromamba-linux/bin/micromamba
           asset_name: micromamba-linux-64
           # asset_content_type: application/exe
-      - name: Upload Release Assets OSX
-        id: upload-release-asset-osx
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: micromamba-osx/bin/micromamba
-          asset_name: micromamba-osx-64
-          # asset_content_type: application/exe
+      # - name: Upload Release Assets Win
+      #   id: upload-release-asset-win
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: micromamba-win/Library/bin/micromamba.exe
+      #     asset_name: micromamba.exe
+      #     # asset_content_type: application/exe
+      # - name: Upload Release Assets OSX
+      #   id: upload-release-asset-osx
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: micromamba-osx/bin/micromamba
+      #     asset_name: micromamba-osx-64
+      #     # asset_content_type: application/exe
