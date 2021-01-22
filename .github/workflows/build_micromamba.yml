@@ -177,8 +177,8 @@ jobs:
           ls
           ls ~/micromamba_pkgs/
           ls ~/micromamba_pkgs/linux-64/
-          files=(~/micromamba_pkgs/linux-64/micromamba*)
-          cp "${files[0]}" ./micromamba-linux.tar.bz2
+          # files=(~/micromamba_pkgs/linux-64/micromamba*)
+          # cp "${files[0]}" ./micromamba-linux.tar.bz2
 
           # cp ~/micromamba_pkgs/linux-64/micromamba-0.7.9-hb0f4dca_2.tar.bz2 ./micromamba-linux.tar.bz2
           # cp ~/micromamba_pkgs/win-64/micromamba-0.7.9-h9490d1a_2.tar.bz2 ./micromamba-win.tar.bz2
@@ -186,7 +186,9 @@ jobs:
 
           # tar -xvf micromamba-win.tar.bz2 -C micromamba-win
           # tar -xvf micromamba-osx.tar.bz2 -C micromamba-osx
-          tar -xvf micromamba-linux.tar.bz2 -C micromamba-linux
+
+          cp ~/micromamba_pkgs/linux-64/micromamba-0.7.8-hb0f4dca_1.tar.bz2 ~/micromamba-linux.tar.bz2
+          tar -xvf ~/micromamba-linux.tar.bz2 -C ~/micromamba-linux
       - uses: actions/download-artifact@v2
         with:
           name: micromamba_pkgs
@@ -212,7 +214,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: micromamba-linux/bin/micromamba
+          asset_path: ~/micromamba-linux/bin/micromamba
           asset_name: micromamba-linux-64
           # asset_content_type: application/exe
       # - name: Upload Release Assets Win
