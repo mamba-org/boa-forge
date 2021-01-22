@@ -9,6 +9,7 @@ cmake -G "Ninja" ^
       -D CMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
       -D CMAKE_BUILD_TYPE=Release ^
       -D BUILD_SHARED_LIBS=OFF ^
+      -D BZIP2_SKIP_TOOLS=ON ^
       ..
 
 ninja install --verbose
