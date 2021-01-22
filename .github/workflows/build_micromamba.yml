@@ -86,7 +86,6 @@ jobs:
           name: micromamba_pkgs
           path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
 
-jobs:
   build_libraries_win:
     runs-on: [windows-latest]
     steps:
