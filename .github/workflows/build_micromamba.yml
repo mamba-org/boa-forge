@@ -15,8 +15,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: install mamba
-        uses: mamba-org/provision-with-micromamba@main
+      # - name: install mamba
+      #   uses: mamba-org/provision-with-micromamba@main
       - name: Cache build outputs
         uses: actions/cache@v2
         with:
@@ -91,8 +91,8 @@ jobs:
     runs-on: [windows-latest]
     steps:
       - uses: actions/checkout@v2
-      - name: install mamba
-        uses: mamba-org/provision-with-micromamba@main
+      # - name: install mamba
+      #   uses: mamba-org/provision-with-micromamba@main
       - name: Cache build outputs
         uses: actions/cache@v2
         with:
@@ -161,6 +161,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/download-artifact@v2
+        with:
+          name: micromamba_pkgs
       - name: Get current date
         id: date
         run: echo "name=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
@@ -169,6 +172,7 @@ jobs:
       - name: Extract micromamba binaries
         shell: bash -l -eo pipefail {0}
         run: |
+          ls
           cp ./micromamba_pkgs/win-64/micromamba-0.7.9-h9490d1a_2.tar.bz2 ./micromamba-win.tar.bz2
           cp ./micromamba_pkgs/linux-64/micromamba-0.7.9-hb0f4dca_2.tar.bz2 ./micromamba-linux.tar.bz2
           cp ./micromamba_pkgs/osx-64/micromamba-0.7.9-h0dc7051_2.tar.bz2 ./micromamba-osx.tar.bz2
