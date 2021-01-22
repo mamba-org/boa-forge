@@ -7,7 +7,7 @@ on:
       - master
 
 jobs:
-  build_libraries:
+  build_libraries_unix:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -81,6 +81,77 @@ jobs:
         run: |
           cd micromamba_recipe
           boa build . --skip-existing
+      - uses: actions/upload-artifact@v2
+        with:
+          name: micromamba_pkgs
+          path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+
+jobs:
+  build_libraries_win:
+    runs-on: [windows-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - name: install mamba
+        uses: mamba-org/provision-with-micromamba@main
+      - name: Cache build outputs
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
+          key: build-cache-${{ runner.os }}
+      - name: create .condarc
+        shell: bash
+        run: |
+          cat > ~/.condarc <<EOL
+          channels:
+            - conda-forge
+            - defaults
+          EOL
+      - name: build zlib
+        shell: powershell
+        run: |
+          boa build zlib --features "[static]" --skip-existing
+      - name: build bzip2
+        shell: powershell
+        run: |
+          boa build bzip2 --features "[static]" --skip-existing
+      - name: build zstd
+        shell: powershell
+        run: |
+          boa build zstd --features "[static]" --skip-existing
+      - name: build yaml-cpp
+        shell: powershell
+        run: |
+          boa build yaml-cpp --features "[static]" --skip-existing
+      - name: build reproc
+        shell: powershell
+        run: |
+          boa build reproc --features "[static]" --skip-existing
+      - name: build libarchive
+        shell: powershell
+        run: |
+          boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" --skip-existing
+      - name: build openssl
+        shell: powershell
+        run: |
+          boa build openssl --features "[static]" --skip-existing
+      # - name: build libssh2
+      #   shell: powershell
+      #   run: |
+      #     boa build libssh2 --features "[static]" --skip-existing
+      - name: build libsolv
+        shell: powershell
+        run: |
+          boa build libsolv --features "[static]" --skip-existing
+      - name: build curl
+        shell: powershell
+        run: |
+          boa build curl --features "[static]" --skip-existing
+      - name: build micromamba
+        shell: powershell
+        run: |
+          cd micromamba_recipe
+          boa build .
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
