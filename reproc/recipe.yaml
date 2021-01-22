@@ -1,5 +1,5 @@
 context:
-  version: 14.2.1
+  version: 14.2.2
 
 package:
   name: reproc
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://github.com/DaanDeMeyer/reproc/archive/v{{ version }}.tar.gz
-    sha256: f75f0524bdbf03813c126655f83d9c1b6a5b695c8e840bd62cd7aa61a96c66e3
+    sha256: 27c88a913bf82ad3b5e4a03f621456d7300a7b77644b1a780c906d26fdd561f5
 
 build:
   number: 0
