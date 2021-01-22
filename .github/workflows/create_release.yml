@@ -47,7 +47,7 @@ jobs:
           draft: false
           prerelease: false
       - name: Upload Release Assets Win
-        id: upload-release-asset
+        id: upload-release-asset-win
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,7 +57,7 @@ jobs:
           asset_name: micromamba.exe
           # asset_content_type: application/exe
       - name: Upload Release Assets Linux
-        id: upload-release-asset
+        id: upload-release-asset-linux
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -67,7 +67,7 @@ jobs:
           asset_name: micromamba-linux-64
           # asset_content_type: application/exe
       - name: Upload Release Assets OSX
-        id: upload-release-asset
+        id: upload-release-asset-osx
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
