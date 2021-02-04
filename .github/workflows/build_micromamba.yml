@@ -170,6 +170,7 @@ jobs:
         run: echo "::set-output name=date_now::$(date +'%Y.%m.%d.%H%M')"
       - name: Extract micromamba binaries
         shell: bash -x {0}
+        id: get_micromamba
         run: |
           ls
           ls ~/micromamba_pkgs/
@@ -185,6 +186,8 @@ jobs:
           tar -xvf ./micromamba-linux.tar.bz2
           ls
 
+          echo "::set-output name=linux_pkg::${LINUX_PKG}"
+
           ### OSX
           cd ~/micromamba_pkgs/osx-64/
           OSX_PKG=$(python ~/get_latest_conda_package.py .)
@@ -195,6 +198,8 @@ jobs:
           cd /tmp/micromamba-osx
           tar -xvf ./micromamba-osx.tar.bz2
           ls
+
+          echo "::set-output name=osx_pkg::${OSX_PKG}"
 
           ### WIN
           cd ~/micromamba_pkgs/win-64/
@@ -207,6 +212,8 @@ jobs:
           tar -xvf ./micromamba-win.tar.bz2
           ls
 
+          echo "::set-output name=win_pkg::${WIN_PKG}"
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -216,10 +223,12 @@ jobs:
           tag_name: nightly-tag-${{ steps.date.outputs.date_now }}
           release_name: nightly-release-${{ steps.date.outputs.date_now }}
           body: |
-            Test 123.
-            Changes in this Release
-            - First Change
-            - Second Change
+            Nightly release of micromamba
+
+            Version:
+              Linux: ${{ steps.get_micromamba.outputs.linux_pkg }}
+              OS X: ${{ steps.get_micromamba.outputs.osx_pkg }}
+              Windows: ${{ steps.get_micromamba.outputs.win_pkg }}
           draft: false
           prerelease: false
       - name: Upload Release Assets Linux
