@@ -176,7 +176,7 @@ jobs:
           ls ~/micromamba_pkgs/linux-64/
 
           cd ~/micromamba_pkgs/linux-64/
-          LINUX_PKG=$(find . -name "micromamba*.tar.bz2"  -printf "%T@ %Tc %p\n" | sort -n | tail -n 1 | cut -d' ' -f7)
+          LINUX_PKG=$(python ~/get_latest_conda_package.py .)
           echo "For Linux selection: ${LINUX_PKG}"
           mkdir /tmp/micromamba-linux/
           cp $LINUX_PKG /tmp/micromamba-linux/micromamba-linux.tar.bz2
@@ -187,7 +187,7 @@ jobs:
 
           ### OSX
           cd ~/micromamba_pkgs/osx-64/
-          OSX_PKG=$(find . -name "micromamba*.tar.bz2"  -printf "%T@ %Tc %p\n" | sort -n | tail -n 1 | cut -d' ' -f7)
+          OSX_PKG=$(python ~/get_latest_conda_package.py .)
           echo "For OS X selection: ${OSX_PKG}"
           mkdir /tmp/micromamba-osx/
           cp $OSX_PKG /tmp/micromamba-osx/micromamba-osx.tar.bz2
@@ -198,7 +198,7 @@ jobs:
 
           ### WIN
           cd ~/micromamba_pkgs/win-64/
-          WIN_PKG=$(find . -name "micromamba*.tar.bz2"  -printf "%T@ %Tc %p\n" | sort -n | tail -n 1 | cut -d' ' -f7)
+          WIN_PKG=$(python ~/get_latest_conda_package.py .)
           echo "For WIN selection: ${WIN_PKG}"
           mkdir /tmp/micromamba-win/
           cp $WIN_PKG /tmp/micromamba-win/micromamba-win.tar.bz2
