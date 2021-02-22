@@ -22,10 +22,16 @@ else
     BUILD_TYPE="--disable-static --enable-shared"
 fi
 
+if [[ $target_platform =~ linux.* ]]; then
+    USESSL="--with-ssl=${PREFIX}"
+else
+    USESSL="--with-darwinssl --without-ssl"
+fi;
+
 ./configure \
     --prefix=${PREFIX} \
     --host=${HOST} \
-    --with-ssl=${PREFIX} \
+    ${USESSL} \
     $(feature $FEATURE_LDAP --enable-ldap --disable-ldap) \
     $(feature $FEATURE_KRB5 --with-gssapi=${PREFIX} "") \
     $(feature $FEATURE_HTTP2 --with-nghttp2=${PREFIX} --without-nghttp2) \

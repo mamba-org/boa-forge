@@ -10,7 +10,7 @@ source:
   sha256: 50552d4501c178e4cc68baaecc487f466a3d6d19bbf4e50a01869effb316d026
 
 build:
-  number: 1
+  number: 2
 
 requirements:
   build:
@@ -21,7 +21,7 @@ requirements:
     - sel(unix): perl
     - sel(unix): pkg-config
   host:
-    - openssl-static
+    - sel(linux): openssl-static
 
 features:
   - name: ldap
