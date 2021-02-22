@@ -49,6 +49,9 @@ if (STATIC_DEPENDENCIES AND UNIX)
 
     if (APPLE)
         list(APPEND MAMBA_DEPENDENCIES_LIBS libiconv.a)
+        list(REMOVE_ITEM MAMBA_DEPENDENCIES_LIBS libssl.a)
+        find_library(SECURITY_LIBRARY Security REQUIRED)
+        list(APPEND MAMBA_DEPENDENCIES_LIBS ${SECURITY_LIBRARY})
     endif()
 
     set(FINAL_LIBS "")
