@@ -190,7 +190,14 @@ jobs:
         id: get_micromamba
         run: |
           python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba
+      - uses: mukunku/tag-exists-action@v1.0.0
+        id: check_if_release_exists
+        with:
+          tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: ncipollo/release-action@v1
+        if: steps.check_if_release_exists.outputs.exists == false
         with:
           artifacts: "/tmp/micromamba-bins/*"
           tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
@@ -204,7 +211,6 @@ jobs:
               Windows: ${{ steps.get_micromamba.outputs.win_64_pkg }}
 
           token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Extract micromamba-nightly binaries
         shell: bash -x {0}
         id: get_micromamba_nightly
