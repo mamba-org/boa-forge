@@ -20,7 +20,7 @@ def sha256(fn):
             fo.write(sha256_hash.hexdigest())
 
 archs = ["linux-64", "osx-64", "win-64"]
-folder = "~/Downloads/{arch}/"
+folder = "~/micromamba_pkgs/{arch}/"
 
 def get_version_file(folder, pkg_name="micromamba"):
     mms = glob.glob(expanduser(f'{folder}/{pkg_name}*'))
