@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  # push:
+  # pull_request:
+  #   branches:
+  #     - master
+
+jobs:
+  test_osx:
+    strategy:
+      matrix:
+        os: [macos-10.13, macos-10.15, macos-11.0]
+    steps:
+      - name: get micromamba release
+        shell: bash -l -eo pipefail {0}
+        run: |
+          URL=`curl --silent "https://api.github.com/repos/mamba-org/boa-forge/releases/latest" | jq -r '.assets[] | select(.name == "micromamba-osx-64").browser_download_url'`
+          echo "DOWNLOADING $URL"
+          curl -L $URL -o micromamba
+          ./micromamba shell init -s bash -p ~/microenv
+      - name: make python env
+        shell: bash -l -eo pipefail {0}
+        run: |
+          micromamba create -n py38 python=3.8 wheel -c conda-forge
+          micromamba activate py38
+          python --version
+          wheel --help
