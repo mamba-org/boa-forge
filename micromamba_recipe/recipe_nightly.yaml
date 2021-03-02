@@ -1,6 +1,6 @@
 package:
   name: micromamba-nightly
-  version: {{ environ.get("NIGHTLY_VERSION") }}
+  version: '{{ environ.get("NIGHTLY_VERSION") }}'
 
 source:
   - git_url: https://github.com/mamba-org/mamba

@@ -86,7 +86,7 @@ jobs:
         shell: bash -l -eo pipefail {0}
         run: |
           export NIGHTLY_VERSION=`date +%y.%-m.%-d`
-          cp micromamba_recipe\recipe_nightly.yaml micromamba_recipe\recipe.yaml
+          cp micromamba_recipe/recipe_nightly.yaml micromamba_recipe/recipe.yaml
           cd micromamba_recipe
           boa build . --skip-existing
       - uses: actions/upload-artifact@v2
