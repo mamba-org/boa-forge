@@ -8,7 +8,7 @@ from shutil import copyfile
 # Python program to find SHA256 hash string of a file
 import hashlib
 
-pkg_name = sys.argv[1]
+pkg_name = sys.argv[1].strip()
 
 def sha256(fn):
     sha256_hash = hashlib.sha256()
@@ -33,6 +33,7 @@ def get_version_file(folder, pkg_name="micromamba"):
         fpath, version, build = m.rsplit('-', 2)
         print(os.path.basename(fpath), pkg_name)
         if os.path.basename(fpath) != pkg_name:
+            print("Skipping ... ", os.path.basename(fpath))
             continue
 
         build_num = int(build.rsplit('_', 1)[-1])
