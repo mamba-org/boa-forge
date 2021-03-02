@@ -42,23 +42,34 @@ def get_version_file(folder, pkg_name="micromamba"):
     def assemble_file(v):
         return f"{v[0]}-{v[1]}-{v[3]}.tar.bz2"
 
+    if not versions:
+        return None
+
     v = max(versions)
 
     print(assemble_file(v))
 
     return assemble_file(v), v[1]
 
+found_archs = []
 for arch in archs:
-    pkg_file, version = get_version_file(folder.format(arch=arch), pkg_name)
+    vf = get_version_file(folder.format(arch=arch), pkg_name)
+    if not vf:
+        print(f"skipping {arch}")
+        continue
+    else:
+        found_archs.append(arch)
+        pkg_file, version = vf
+
     print(f"::set-output name={arch.replace('-', '_')}_pkg::{pkg_file}")
-    if arch == "linux-64":
+    if len(found_archs) == 1:
         print(f"::set-output name=micromamba_version::{version}")
 
     os.makedirs(f"/tmp/micromamba-{arch}", exist_ok=True)
     with tarfile.open(pkg_file, "r:bz2") as f:
         f.extractall(f"/tmp/micromamba-{arch}/")
 
-for arch in archs:
+for arch in found_archs:
     os.makedirs(f"/tmp/micromamba-bins/{arch}/", exist_ok=True)
     if arch.startswith("win"):
         outfile = f"/tmp/micromamba-bins/{pkg_name}-{arch}.exe"
