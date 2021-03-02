@@ -20,7 +20,7 @@ def sha256(fn):
             fo.write(sha256_hash.hexdigest())
 
 archs = ["linux-64", "osx-64", "win-64"]
-folder = "~/micromamba_pkgs/{arch}/"
+folder = "/home/runner/micromamba_pkgs/{arch}/"
 
 def get_version_file(folder, pkg_name="micromamba"):
     mms = glob.glob(expanduser(f'{folder}/{pkg_name}*'))
@@ -31,7 +31,7 @@ def get_version_file(folder, pkg_name="micromamba"):
         m = m[:-len('.tar.bz2')]  # remove tar.bz2 ending
 
         fpath, version, build = m.rsplit('-', 2)
-
+        print(os.path.basename(fpath), pkg_name)
         if os.path.basename(fpath) != pkg_name:
             continue
 
@@ -60,10 +60,10 @@ for arch in archs:
 for arch in archs:
     os.makedirs(f"/tmp/micromamba-bins/{arch}/", exist_ok=True)
     if arch.startswith("win"):
-        outfile = f"/tmp/micromamba-bins/micromamba-{arch}.exe"
+        outfile = f"/tmp/micromamba-bins/{pkg_name}-{arch}.exe"
         copyfile(f"/tmp/micromamba-{arch}/Library/bin/micromamba.exe", outfile)
     else:
-        outfile = f"/tmp/micromamba-bins/micromamba-{arch}"
+        outfile = f"/tmp/micromamba-bins/{pkg_name}-{arch}"
         copyfile(f"/tmp/micromamba-{arch}/bin/micromamba", outfile)
         st = os.stat(outfile)
         os.chmod(outfile, st.st_mode | stat.S_IEXEC)
