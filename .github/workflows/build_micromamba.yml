@@ -194,7 +194,7 @@ jobs:
         with:
           artifacts: "/tmp/micromamba-bins/*"
           tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
-          name: micromamba ${{ steps.date.outputs.micromamba_version }}
+          name: micromamba ${{ steps.get_micromamba.outputs.micromamba_version }}
           body: |
             Nightly release of micromamba
 
