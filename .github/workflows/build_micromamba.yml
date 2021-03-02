@@ -82,6 +82,13 @@ jobs:
         run: |
           cd micromamba_recipe
           boa build . --skip-existing
+      - name: build micromamba-nightly
+        shell: bash -l -eo pipefail {0}
+        run: |
+          export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
+          cp micromamba_recipe/recipe_nightly.yaml micromamba_recipe/recipe.yaml
+          cd micromamba_recipe
+          boa build . --skip-existing
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -152,6 +159,13 @@ jobs:
         run: |
           cd micromamba_recipe
           boa build .  --skip-existing
+      - name: build micromamba-nightly
+        shell: powershell
+        run: |
+          $Env:NIGHTLY_VERSION=Get-Date -F y.M.d.Hmm
+          cp micromamba_recipe\recipe_nightly.yaml micromamba_recipe\recipe.yaml
+          cd micromamba_recipe
+          boa build .  --skip-existing
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -175,93 +189,51 @@ jobs:
         shell: bash -x {0}
         id: get_micromamba
         run: |
-          ls
-          ls ~/micromamba_pkgs/
-          ls ~/micromamba_pkgs/linux-64/
-
-          export GET_VERSION_SCRIPT=$GITHUB_WORKSPACE/get_latest_conda_package.py
-          cd ~/micromamba_pkgs/linux-64/
-          LINUX_PKG=$(python $GET_VERSION_SCRIPT .)
-          echo "For Linux selection: ${LINUX_PKG}"
-          mkdir /tmp/micromamba-linux/
-          cp $LINUX_PKG /tmp/micromamba-linux/micromamba-linux.tar.bz2
-
-          cd /tmp/micromamba-linux
-          tar -xvf ./micromamba-linux.tar.bz2
-          ls
-
-          echo "::set-output name=linux_pkg::${LINUX_PKG}"
-
-          ### OSX
-          cd ~/micromamba_pkgs/osx-64/
-          OSX_PKG=$(python $GET_VERSION_SCRIPT .)
-          echo "For OS X selection: ${OSX_PKG}"
-          mkdir /tmp/micromamba-osx/
-          cp $OSX_PKG /tmp/micromamba-osx/micromamba-osx.tar.bz2
-
-          cd /tmp/micromamba-osx
-          tar -xvf ./micromamba-osx.tar.bz2
-          ls
-
-          echo "::set-output name=osx_pkg::${OSX_PKG}"
-
-          ### WIN
-          cd ~/micromamba_pkgs/win-64/
-          WIN_PKG=$(python $GET_VERSION_SCRIPT .)
-          echo "For WIN selection: ${WIN_PKG}"
-          mkdir /tmp/micromamba-win/
-          cp $WIN_PKG /tmp/micromamba-win/micromamba-win.tar.bz2
-
-          cd /tmp/micromamba-win
-          tar -xvf ./micromamba-win.tar.bz2
-          ls
-
-          echo "::set-output name=win_pkg::${WIN_PKG}"
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba
+      - uses: mukunku/tag-exists-action@v1.0.0
+        id: check_if_release_exists
+        with:
+          tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "Release ${{ steps.get_micromamba.outputs.micromamba_version }} exists ${{ steps.check_if_release_exists.outputs.exists }}"
+      - uses: ncipollo/release-action@v1
+        if: steps.check_if_release_exists.outputs.exists == 'false'
         with:
-          tag_name: nightly-tag-${{ steps.date.outputs.date_now }}
-          release_name: nightly-release-${{ steps.date.outputs.date_now }}
+          artifacts: "/tmp/micromamba-bins/*"
+          tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
+          name: micromamba ${{ steps.get_micromamba.outputs.micromamba_version }}
+          body: |
+            Release of micromamba
+
+            Version: ${{ steps.get_micromamba.outputs.micromamba_version }}
+
+            Checksums:
+              Linux:   ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_64 }}
+              OS X:    ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_64 }}
+              Windows: ${{ steps.get_micromamba.outputs.micromamba_sha_val_win_64 }}
+
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract micromamba-nightly binaries
+        shell: bash -x {0}
+        id: get_micromamba_nightly
+        run: |
+          rm -rf /tmp/micromamba-bins
+          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "/tmp/micromamba-bins/*"
+          tag: micromamba-nightly-${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
+          name: micromamba nightly ${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
+          prerelease: true
           body: |
             Nightly release of micromamba
 
-            Version:
-              Linux: ${{ steps.get_micromamba.outputs.linux_pkg }}
-              OS X: ${{ steps.get_micromamba.outputs.osx_pkg }}
-              Windows: ${{ steps.get_micromamba.outputs.win_pkg }}
-          draft: false
-          prerelease: false
-      - name: Upload Release Assets Linux
-        id: upload-release-asset-linux
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /tmp/micromamba-linux/bin/micromamba
-          asset_name: micromamba-linux-64
-          asset_content_type: application/exe
-      - name: Upload Release Assets Win
-        id: upload-release-asset-win
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /tmp/micromamba-win/Library/bin/micromamba.exe
-          asset_name: micromamba-win-64.exe
-          asset_content_type: application/exe
-      - name: Upload Release Assets OSX
-        id: upload-release-asset-osx
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /tmp/micromamba-osx/bin/micromamba
-          asset_name: micromamba-osx-64
-          asset_content_type: application/exe
+            Version: ${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
+
+            Checksums:
+              Linux:   ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_linux_64 }}
+              OS X:    ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_osx_64 }}
+              Windows: ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_win_64 }}
+
+          token: ${{ secrets.GITHUB_TOKEN }}
