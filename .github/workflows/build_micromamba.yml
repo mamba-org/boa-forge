@@ -82,6 +82,13 @@ jobs:
         run: |
           cd micromamba_recipe
           boa build . --skip-existing
+      - name: build micromamba-nightly
+        shell: bash -l -eo pipefail {0}
+        run: |
+          export NIGHTLY_VERSION=`date +%y.%-m.%-d`
+          cp micromamba_recipe\recipe_nightly.yaml micromamba_recipe\recipe.yaml
+          cd micromamba_recipe
+          boa build . --skip-existing
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -152,6 +159,13 @@ jobs:
         run: |
           cd micromamba_recipe
           boa build .  --skip-existing
+      - name: build micromamba-nightly
+        shell: powershell
+        run: |
+          $Env:NIGHTLY_VERSION=Get-Date -F y.M.d
+          cp micromamba_recipe\recipe_nightly.yaml micromamba_recipe\recipe.yaml
+          cd micromamba_recipe
+          boa build .  --skip-existing
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -175,64 +189,22 @@ jobs:
         shell: bash -x {0}
         id: get_micromamba
         run: |
-          ls
-          ls ~/micromamba_pkgs/
-          ls ~/micromamba_pkgs/linux-64/
-
-          export GET_VERSION_SCRIPT=$GITHUB_WORKSPACE/get_latest_conda_package.py
-          cd ~/micromamba_pkgs/linux-64/
-          LINUX_PKG=$(python $GET_VERSION_SCRIPT .)
-          echo "For Linux selection: ${LINUX_PKG}"
-          mkdir /tmp/micromamba-linux/
-          cp $LINUX_PKG /tmp/micromamba-linux/micromamba-linux.tar.bz2
-
-          cd /tmp/micromamba-linux
-          tar -xvf ./micromamba-linux.tar.bz2
-          ls
-
-          echo "::set-output name=linux_pkg::${LINUX_PKG}"
-
-          ### OSX
-          cd ~/micromamba_pkgs/osx-64/
-          OSX_PKG=$(python $GET_VERSION_SCRIPT .)
-          echo "For OS X selection: ${OSX_PKG}"
-          mkdir /tmp/micromamba-osx/
-          cp $OSX_PKG /tmp/micromamba-osx/micromamba-osx.tar.bz2
-
-          cd /tmp/micromamba-osx
-          tar -xvf ./micromamba-osx.tar.bz2
-          ls
-
-          echo "::set-output name=osx_pkg::${OSX_PKG}"
-
-          ### WIN
-          cd ~/micromamba_pkgs/win-64/
-          WIN_PKG=$(python $GET_VERSION_SCRIPT .)
-          echo "For WIN selection: ${WIN_PKG}"
-          mkdir /tmp/micromamba-win/
-          cp $WIN_PKG /tmp/micromamba-win/micromamba-win.tar.bz2
-
-          cd /tmp/micromamba-win
-          tar -xvf ./micromamba-win.tar.bz2
-          ls
-
-          echo "::set-output name=win_pkg::${WIN_PKG}"
-
+          python $GITHUB_WORKSPACE/get_latest_conda_package.py
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: nightly-tag-${{ steps.date.outputs.date_now }}
-          release_name: nightly-release-${{ steps.date.outputs.date_now }}
+          tag_name: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
+          release_name: micromamba-release-${{ steps.date.outputs.micromamba_version }}
           body: |
             Nightly release of micromamba
 
             Version:
-              Linux: ${{ steps.get_micromamba.outputs.linux_pkg }}
-              OS X: ${{ steps.get_micromamba.outputs.osx_pkg }}
-              Windows: ${{ steps.get_micromamba.outputs.win_pkg }}
+              Linux:   ${{ steps.get_micromamba.outputs.linux_64_pkg }}
+              OS X:    ${{ steps.get_micromamba.outputs.osx_64_pkg }}
+              Windows: ${{ steps.get_micromamba.outputs.win_64_pkg }}
           draft: false
           prerelease: false
       - name: Upload Release Assets Linux

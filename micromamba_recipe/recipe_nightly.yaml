@@ -1,0 +1,79 @@
+package:
+  name: micromamba-nightly
+  version: {{ environ.get("NIGHTLY_VERSION") }}
+
+source:
+  - git_url: https://github.com/mamba-org/mamba
+    git_rev: master
+    git_depth: 1 # (Defaults to -1/not shallow)
+  - path: CLI11.hpp
+    folder: include/mamba/CLI.hpp
+
+build:
+  number: 0
+  ignore_run_exports:
+    - sel(unix): libcurl
+    - sel(unix): libarchive
+    - sel(linux): libgcc-ng
+    - sel(linux): libstdcxx-ng
+
+requirements:
+  build:
+    - '{{ compiler("c") }}'
+    - '{{ compiler("cxx") }}'
+    - cmake
+    - sel(unix): make
+    - sel(win): ninja
+  host:
+    - cli11
+    - cpp-filesystem
+    - nlohmann_json
+    - bzip2-static
+    - zstd-static
+    - zlib-static
+    - yaml-cpp-static
+    - libarchive-static
+    - curl-static
+    - sel(not win): libssh2-static
+    - libsolv-static
+    - openssl-static
+    - reproc-cpp-static
+    - reproc-static
+
+test:
+  commands:
+    - sel(unix): test -f $PREFIX/bin/micromamba
+    - micromamba --help
+
+features:
+  - name: static
+    default: false
+
+about:
+  home: https://github.com/TheSnakePit/mamba
+  license_file:
+    - LICENSE
+    - CURL_LICENSE.txt
+    - LIBARCHIVE_LICENSE.txt
+    - KRB5_LICENSE.txt
+    - LIBSOLV_LICENSE.txt
+    - LIBOPENSSL_LICENSE.txt
+    - CLI11_LICENSE.txt
+    - NLOHMANN_JSON_LICENSE.txt
+    - ZSTD_LICENSE.txt
+    - LIBLZ4_LICENSE.txt
+    - C_ARES_LICENSE.txt
+    - LIBEV_LICENSE.txt
+    - CPP_FILESYSTEM_LICENSE.txt
+    - LIBNGHTTP2_LICENSE.txt
+  license: BSD-3-Clause AND MIT AND OpenSSL
+  license_family: BSD
+  summary: Micromamba is a tiny version of mamba, the fast conda package installer.
+  dev_url: https://github.com/TheSnakePit/mamba
+
+extra:
+  recipe-maintainers:
+    - wolfv
+    - SylvainCorlay
+    - JohanMabille
+
