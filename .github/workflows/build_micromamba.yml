@@ -189,7 +189,7 @@ jobs:
         shell: bash -x {0}
         id: get_micromamba
         run: |
-          python $GITHUB_WORKSPACE/get_latest_conda_package.py
+          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "/tmp/micromamba-bins/*"
