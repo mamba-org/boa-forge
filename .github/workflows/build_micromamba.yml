@@ -196,8 +196,9 @@ jobs:
           tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "Release ${{ steps.get_micromamba.outputs.micromamba_version }} exists ${{ steps.check_if_release_exists.outputs.exists }}"
       - uses: ncipollo/release-action@v1
-        if: steps.check_if_release_exists.outputs.exists == false
+        if: "!steps.check_if_release_exists.outputs.exists"
         with:
           artifacts: "/tmp/micromamba-bins/*"
           tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
@@ -205,10 +206,12 @@ jobs:
           body: |
             Release of micromamba
 
-            Version:
-              Linux:   ${{ steps.get_micromamba.outputs.linux_64_sha_val }}
-              OS X:    ${{ steps.get_micromamba.outputs.osx_64_sha_val }}
-              Windows: ${{ steps.get_micromamba.outputs.win_64_sha_val }}
+            Version: ${{ steps.get_micromamba.outputs.micromamba_version }}
+
+            Checksums:
+              Linux:   ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_linux_64 }}
+              OS X:    ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_osx_64 }}
+              Windows: ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_win_64 }}
 
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract micromamba-nightly binaries
@@ -226,9 +229,11 @@ jobs:
           body: |
             Nightly release of micromamba
 
-            Version:
-              Linux:   ${{ steps.get_micromamba_nightly.outputs.linux_64_sha_val }}
-              OS X:    ${{ steps.get_micromamba_nightly.outputs.osx_64_sha_val }}
-              Windows: ${{ steps.get_micromamba_nightly.outputs.win_64_sha_val }}
+            Version: ${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
+
+            Checksums:
+              Linux:   ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_linux_64 }}
+              OS X:    ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_osx_64 }}
+              Windows: ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_win_64 }}
 
           token: ${{ secrets.GITHUB_TOKEN }}
