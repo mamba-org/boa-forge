@@ -198,7 +198,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "Release ${{ steps.get_micromamba.outputs.micromamba_version }} exists ${{ steps.check_if_release_exists.outputs.exists }}"
       - uses: ncipollo/release-action@v1
-        if: "!steps.check_if_release_exists.outputs.exists"
+        if: steps.check_if_release_exists.outputs.exists == 'false'
         with:
           artifacts: "/tmp/micromamba-bins/*"
           tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
