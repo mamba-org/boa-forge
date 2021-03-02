@@ -16,8 +16,10 @@ def sha256(fn):
         # Read and update hash string value in blocks of 4K
         for byte_block in iter(lambda: f.read(4096),b""):
             sha256_hash.update(byte_block)
+        digest = sha256_hash.hexdigest()
         with open(fn + ".sha256", "w") as fo:
-            fo.write(sha256_hash.hexdigest())
+            fo.write(digest)
+    return digest
 
 archs = ["linux-64", "osx-64", "win-64"]
 folder = "/home/runner/micromamba_pkgs/{arch}/"
@@ -80,7 +82,7 @@ for arch in found_archs:
         st = os.stat(outfile)
         os.chmod(outfile, st.st_mode | stat.S_IEXEC)
 
-    sha256(outfile)
-
+    digest = sha256(outfile)
     print(f"::set-output name=micromamba_bin_{arch.replace('-', '_')}::{outfile}")
     print(f"::set-output name=micromamba_sha_{arch.replace('-', '_')}::{outfile}.sha256")
+    print(f"::set-output name=micromamba_sha_val_{arch.replace('-', '_')}::{digest}")

@@ -11,7 +11,7 @@ jobs:
   build_libraries_unix:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -85,7 +85,7 @@ jobs:
       - name: build micromamba-nightly
         shell: bash -l -eo pipefail {0}
         run: |
-          export NIGHTLY_VERSION=`date +%y.%-m.%-d`
+          export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
           cp micromamba_recipe/recipe_nightly.yaml micromamba_recipe/recipe.yaml
           cd micromamba_recipe
           boa build . --skip-existing
@@ -162,7 +162,7 @@ jobs:
       - name: build micromamba-nightly
         shell: powershell
         run: |
-          $Env:NIGHTLY_VERSION=Get-Date -F y.M.d
+          $Env:NIGHTLY_VERSION=Get-Date -F y.M.d.Hmm
           cp micromamba_recipe\recipe_nightly.yaml micromamba_recipe\recipe.yaml
           cd micromamba_recipe
           boa build .  --skip-existing
@@ -171,7 +171,7 @@ jobs:
           name: micromamba_pkgs
           path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
   make_release_and_upload:
-    needs: [build_libraries_unix] # , build_libraries_win]
+    needs: [build_libraries_unix, build_libraries_win]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -206,9 +206,9 @@ jobs:
             Release of micromamba
 
             Version:
-              Linux:   ${{ steps.get_micromamba.outputs.linux_64_pkg }}
-              OS X:    ${{ steps.get_micromamba.outputs.osx_64_pkg }}
-              Windows: ${{ steps.get_micromamba.outputs.win_64_pkg }}
+              Linux:   ${{ steps.get_micromamba.outputs.linux_64_sha_val }}
+              OS X:    ${{ steps.get_micromamba.outputs.osx_64_sha_val }}
+              Windows: ${{ steps.get_micromamba.outputs.win_64_sha_val }}
 
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract micromamba-nightly binaries
@@ -222,12 +222,13 @@ jobs:
           artifacts: "/tmp/micromamba-bins/*"
           tag: micromamba-nightly-${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
           name: micromamba nightly ${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
+          prerelease: true
           body: |
             Nightly release of micromamba
 
             Version:
-              Linux:   ${{ steps.get_micromamba_nightly.outputs.linux_64_pkg }}
-              OS X:    ${{ steps.get_micromamba_nightly.outputs.osx_64_pkg }}
-              Windows: ${{ steps.get_micromamba_nightly.outputs.win_64_pkg }}
+              Linux:   ${{ steps.get_micromamba_nightly.outputs.linux_64_sha_val }}
+              OS X:    ${{ steps.get_micromamba_nightly.outputs.osx_64_sha_val }}
+              Windows: ${{ steps.get_micromamba_nightly.outputs.win_64_sha_val }}
 
           token: ${{ secrets.GITHUB_TOKEN }}
