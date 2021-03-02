@@ -1,0 +1,71 @@
+name: Test Micromamba Release
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test_osx:
+    strategy:
+      matrix:
+        os: [macos-10.15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: get micromamba release
+        shell: bash -l -eo pipefail {0}
+        run: |
+          URL=`curl --silent "https://api.github.com/repos/mamba-org/boa-forge/releases/latest" | jq -r '.assets[] | select(.name == "micromamba-osx-64").browser_download_url'`
+          echo "DOWNLOADING $URL"
+          curl -L $URL -o micromamba
+          chmod u+x ./micromamba
+          ./micromamba shell init -s bash -p ~/microenv
+      - name: make python env
+        shell: bash -l -eo pipefail {0}
+        run: |
+          micromamba create -n py38 python=3.8 wheel -c conda-forge -vvv
+          micromamba activate py38
+          python --version
+          wheel --help
+  test_linux:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: get micromamba release
+        shell: bash -l -eo pipefail {0}
+        run: |
+          URL=`curl --silent "https://api.github.com/repos/mamba-org/boa-forge/releases/latest" | jq -r '.assets[] | select(.name == "micromamba-linux-64").browser_download_url'`
+          echo "DOWNLOADING $URL"
+          curl -L $URL -o micromamba
+          chmod u+x ./micromamba
+      - name: run micromamba
+        shell: bash -l -eo pipefail {0}
+        run: |
+          ls -al
+          echo $(pwd)
+          for TEST_IMAGE_NAME in "ubuntu:20.04" "ubuntu:19.10" "ubuntu:16.04" "ubuntu:18.04" "centos:7" "centos:6" "debian:buster" "fedora:33" "archlinux:latest"; do
+            echo "============= Test installer on ${TEST_IMAGE_NAME} ============="
+            export DOCKER_ARCH="amd64"
+            docker run --rm -v "$(pwd):/construct" \
+              "${DOCKER_ARCH}/${TEST_IMAGE_NAME}" sh -c "/construct/micromamba create -p /testenv xtensor -c conda-forge -v"
+          done
+  test_win:
+    strategy:
+      matrix:
+        os: [windows-2016, windows-2019]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: get micromamba release
+        shell: bash
+        run: |
+          URL=`curl --silent "https://api.github.com/repos/mamba-org/boa-forge/releases/latest" | jq -r '.assets[] | select(.name == "micromamba-win-64.exe").browser_download_url'`
+          echo "DOWNLOADING $URL"
+          curl -L $URL -o micromamba.exe
+      - name: run micromamba
+        shell: powershell
+        run: |
+          ./micromamba.exe create -n test xtensor -c conda-forge
