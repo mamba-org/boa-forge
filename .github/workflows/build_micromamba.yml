@@ -291,6 +291,11 @@ jobs:
           repository: mamba-org/mamba
           ref: master
           path: upstream-mamba
+      - uses: actions/checkout@v2
+        with:
+          repository: conda-incubator/conda-lock
+          ref: master
+          path: conda-lock
       - uses: actions/download-artifact@v2
         with:
           name: micromamba_pkgs
@@ -326,6 +331,39 @@ jobs:
           mkdir $CONDA_PREFIX
           $TEST_MAMBA_EXE install xtensor -c conda-forge
           pytest upstream-mamba/test/micromamba/
+
+      - name: Run conda-lock tests
+        shell: bash
+        continue-on-error: true
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+
+          if [[ $RUNNER_OS == "Linux" ]]; then
+            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}
+          elif [[ $RUNNER_OS == "macOS" ]]; then
+            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
+          fi
+
+          mv $TEST_MAMBA_EXE ./micromamba
+
+          export CONDA_PREFIX=$(pwd)/mambaroot
+          export MAMBA_ROOT_PREFIX=$(pwd)/mambaroot
+          mkdir -p $CONDA_PREFIX
+          export PATH=$(pwd):$CONDA_PREFIX/bin/:$PATH
+
+          ./micromamba install mamba pip pytest-cov pytest-xdist -c conda-forge
+
+          cd conda-lock
+          python -m pip install ensureconda==1.2.1
+          python -m pip install -r requirements.txt
+          python -m pip install -r requirements-dev.txt
+          python -m pip install .
+
+          cp -a tests "${RUNNER_TEMP}/"
+          pushd "${RUNNER_TEMP}"
+          export TMPDIR="${RUNNER_TEMP}"
+
+          pytest --showlocals -vrsx --cov=conda_lock tests
 
   make_release_and_upload:
     needs: [test_release_smoketests, test_bootstrap_win, test_bootstrap_linux, test_bootstrap_osx]
