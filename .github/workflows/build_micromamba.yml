@@ -182,6 +182,10 @@ jobs:
         os: [macos-10.15]
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
       - uses: actions/download-artifact@v2
         with:
           name: micromamba_pkgs
@@ -212,6 +216,10 @@ jobs:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
       - uses: actions/download-artifact@v2
         with:
           name: micromamba_pkgs
@@ -249,6 +257,10 @@ jobs:
         os: [windows-2016, windows-2019]
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
       - uses: actions/download-artifact@v2
         with:
           name: micromamba_pkgs
@@ -283,11 +295,6 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.8'
-      # - name: Extract micromamba binaries
-      #   shell: bash -x {0}
-      #   id: get_micromamba
-      #   run: |
-      #     python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba
       - name: Extract micromamba-nightly binaries
         shell: bash -x {0}
         id: get_micromamba_nightly
