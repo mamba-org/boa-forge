@@ -86,6 +86,7 @@ for arch in found_archs:
         st = os.stat(outfile)
         os.chmod(outfile, st.st_mode | stat.S_IEXEC)
 
+    outfile = outfile.replace('\\', '/')
     digest = sha256(outfile)
     print(f"::set-output name=micromamba_bin_{arch.replace('-', '_')}::{outfile}")
     print(f"::set-output name=micromamba_sha_{arch.replace('-', '_')}::{outfile}.sha256")
