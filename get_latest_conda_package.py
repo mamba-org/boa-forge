@@ -22,10 +22,10 @@ def sha256(fn):
     return digest
 
 archs = ["linux-64", "osx-64", "win-64"]
-folder = "/home/runner/micromamba_pkgs/{arch}/"
+folder = expanduser("~/micromamba_pkgs/{arch}/")
 
 def get_version_file(folder, pkg_name="micromamba"):
-    mms = glob.glob(expanduser(f'{folder}/{pkg_name}*'))
+    mms = glob.glob(f'{folder}/{pkg_name}*')
     print("Folder: ", folder)
     print(mms)
     versions = []
