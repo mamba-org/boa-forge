@@ -1,4 +1,4 @@
-name: CI
+name: Build, Test and Release
 
 on:
   workflow_dispatch:
@@ -194,11 +194,14 @@ jobs:
         shell: bash -x {0}
         id: get_micromamba
         run: |
+          ls -al ~/micromamba_pkgs
+          ls -al ~/micromamba_pkgs/osx-64
+          ls -al ~/micromamba_pkgs/linux-64
           python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
       - name: get micromamba release
         shell: bash -l -eo pipefail {0}
         run: |
-          MAMBA_EXE="${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}"
+          MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_osx_64 }}"
           chmod u+x $MAMBA_EXE
           $MAMBA_EXE shell init -s bash -p ~/microenv
       - name: make python env
@@ -233,7 +236,7 @@ jobs:
       - name: get micromamba release
         shell: bash -l -eo pipefail {0}
         run: |
-          MAMBA_EXE="${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}"
+          MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_linux_64 }}"
           chmod u+x $MAMBA_EXE
           $MAMBA_EXE shell init -s bash -p ~/microenv
       - name: run micromamba
@@ -241,7 +244,7 @@ jobs:
         run: |
           ls -al
           echo $(pwd)
-          TMP_MAMBA_EXE="${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}"
+          TMP_MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_linux_64 }}"
           cp $TMP_MAMBA_EXE ./micromamba
           for TEST_IMAGE_NAME in "ubuntu:20.04" "ubuntu:19.10" "ubuntu:16.04" "ubuntu:18.04" "centos:7" "centos:6" "debian:buster" "fedora:33" "archlinux:latest"; do
             echo "============= Test installer on ${TEST_IMAGE_NAME} ============="
@@ -273,7 +276,7 @@ jobs:
       - name: run micromamba
         shell: powershell
         run: |
-          ${{ steps.get_micromamba_nightly.outputs.micromamba_bin_win_64 }} create -n test xtensor -c conda-forge
+          ${{ steps.get_micromamba.outputs.micromamba_bin_win_64 }} create -n test xtensor -c conda-forge
 
   test_release_smoketests:
     needs: [build_libraries_unix, build_libraries_win]
