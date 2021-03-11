@@ -320,6 +320,7 @@ jobs:
   make_release_and_upload:
     needs: [test_release_smoketests, test_bootstrap_win, test_bootstrap_linux, test_bootstrap_osx]
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v2
