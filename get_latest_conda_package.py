@@ -7,6 +7,9 @@ import stat
 from shutil import copyfile
 # Python program to find SHA256 hash string of a file
 import hashlib
+import tempfile
+
+tmpdir = tempfile.gettempdir()
 
 pkg_name = sys.argv[1].strip()
 
@@ -22,10 +25,10 @@ def sha256(fn):
     return digest
 
 archs = ["linux-64", "osx-64", "win-64"]
-folder = "/home/runner/micromamba_pkgs/{arch}/"
+folder = expanduser("~/micromamba_pkgs/{arch}/")
 
 def get_version_file(folder, pkg_name="micromamba"):
-    mms = glob.glob(expanduser(f'{folder}/{pkg_name}*'))
+    mms = glob.glob(f'{folder}/{pkg_name}*')
     print("Folder: ", folder)
     print(mms)
     versions = []
@@ -67,21 +70,23 @@ for arch in archs:
     if len(found_archs) == 1:
         print(f"::set-output name=micromamba_version::{version}")
 
-    os.makedirs(f"/tmp/micromamba-{arch}", exist_ok=True)
+    os.makedirs(os.path.join(tmpdir, f"micromamba-{arch}"), exist_ok=True)
     with tarfile.open(pkg_file, "r:bz2") as f:
-        f.extractall(f"/tmp/micromamba-{arch}/")
+        f.extractall(os.path.join(tmpdir, f"micromamba-{arch}/"))
 
 for arch in found_archs:
-    os.makedirs(f"/tmp/micromamba-bins/{arch}/", exist_ok=True)
+
+    os.makedirs(os.path.join(tmpdir, f"micromamba-bins/{arch}/"), exist_ok=True)
     if arch.startswith("win"):
-        outfile = f"/tmp/micromamba-bins/{pkg_name}-{arch}.exe"
-        copyfile(f"/tmp/micromamba-{arch}/Library/bin/micromamba.exe", outfile)
+        outfile = os.path.join(tmpdir, f"micromamba-bins/{pkg_name}-{arch}.exe")
+        copyfile(os.path.join(tmpdir, f"micromamba-{arch}/Library/bin/micromamba.exe"), outfile)
     else:
-        outfile = f"/tmp/micromamba-bins/{pkg_name}-{arch}"
-        copyfile(f"/tmp/micromamba-{arch}/bin/micromamba", outfile)
+        outfile = os.path.join(tmpdir, f"micromamba-bins/{pkg_name}-{arch}")
+        copyfile(os.path.join(tmpdir, f"micromamba-{arch}/bin/micromamba"), outfile)
         st = os.stat(outfile)
         os.chmod(outfile, st.st_mode | stat.S_IEXEC)
 
+    outfile = outfile.replace('\\', '/')
     digest = sha256(outfile)
     print(f"::set-output name=micromamba_bin_{arch.replace('-', '_')}::{outfile}")
     print(f"::set-output name=micromamba_sha_{arch.replace('-', '_')}::{outfile}.sha256")

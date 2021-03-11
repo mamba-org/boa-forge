@@ -1,11 +1,11 @@
-name: CI
+name: Build, Test and Release
 
 on:
   workflow_dispatch:
   push:
-  pull_request:
-    branches:
-      - master
+  # pull_request:
+  #   branches:
+  #     - master
 
 jobs:
   build_libraries_unix:
@@ -170,9 +170,205 @@ jobs:
         with:
           name: micromamba_pkgs
           path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
-  make_release_and_upload:
+
+  #########
+  # TESTS #
+  #########
+
+  test_bootstrap_osx:
+    needs: [build_libraries_unix]
+    strategy:
+      matrix:
+        os: [macos-10.15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - uses: actions/download-artifact@v2
+        with:
+          name: micromamba_pkgs
+          path: ~/micromamba_pkgs
+      - name: Extract micromamba binaries
+        shell: bash -x {0}
+        id: get_micromamba
+        run: |
+          ls -al ~/micromamba_pkgs
+          ls -al ~/micromamba_pkgs/osx-64
+          ls -al ~/micromamba_pkgs/linux-64
+          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
+      - name: get micromamba release
+        shell: bash -l -eo pipefail {0}
+        run: |
+          MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_osx_64 }}"
+          chmod u+x $MAMBA_EXE
+          $MAMBA_EXE shell init -s bash -p ~/microenv
+      - name: make python env
+        shell: bash -l -eo pipefail {0}
+        run: |
+          micromamba create -n py38 python=3.8 wheel -c conda-forge -vvv
+          micromamba activate py38
+          python --version
+          wheel --help
+
+  test_bootstrap_linux:
+    needs: [build_libraries_unix]
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - uses: actions/download-artifact@v2
+        with:
+          name: micromamba_pkgs
+          path: ~/micromamba_pkgs
+      - name: Extract micromamba binaries
+        shell: bash -x {0}
+        id: get_micromamba
+        run: |
+          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
+
+      - name: get micromamba release
+        shell: bash -l -eo pipefail {0}
+        run: |
+          MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_linux_64 }}"
+          chmod u+x $MAMBA_EXE
+          $MAMBA_EXE shell init -s bash -p ~/microenv
+      - name: run micromamba
+        shell: bash -l -eo pipefail {0}
+        run: |
+          ls -al
+          echo $(pwd)
+          TMP_MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_linux_64 }}"
+          cp $TMP_MAMBA_EXE ./micromamba
+          for TEST_IMAGE_NAME in "ubuntu:20.04" "ubuntu:19.10" "ubuntu:16.04" "ubuntu:18.04" "centos:7" "centos:6" "debian:buster" "fedora:33" "archlinux:latest"; do
+            echo "============= Test installer on ${TEST_IMAGE_NAME} ============="
+            export DOCKER_ARCH="amd64"
+            docker run --rm -v "$(pwd):/construct" \
+              "${DOCKER_ARCH}/${TEST_IMAGE_NAME}" sh -c "/construct/micromamba create -p /testenv xtensor -c conda-forge -v --ssl-verify=false"
+          done
+
+  test_bootstrap_win:
+    needs: [build_libraries_win]
+    strategy:
+      matrix:
+        os: [windows-2016, windows-2019]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - uses: actions/download-artifact@v2
+        with:
+          name: micromamba_pkgs
+          path: ~/micromamba_pkgs
+      - name: Extract micromamba binaries
+        shell: bash -x {0}
+        id: get_micromamba
+        run: |
+          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
+      - name: run micromamba
+        shell: powershell
+        run: |
+          ${{ steps.get_micromamba.outputs.micromamba_bin_win_64 }} create -n test xtensor -c conda-forge
+
+  test_release_smoketests:
     needs: [build_libraries_unix, build_libraries_win]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: mamba-org/mamba
+          ref: master
+          path: upstream-mamba
+      - uses: actions/checkout@v2
+        with:
+          repository: conda-incubator/conda-lock
+          ref: master
+          path: conda-lock
+      - uses: actions/download-artifact@v2
+        with:
+          name: micromamba_pkgs
+          path: ~/micromamba_pkgs
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Extract micromamba-nightly binaries
+        shell: bash -x {0}
+        id: get_micromamba_nightly
+        run: |
+          rm -rf /tmp/micromamba-bins
+          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
+      - name: Install py deps
+        shell: bash
+        run: |
+          python -m pip install pytest requests
+      - name: Run tests on micromamba nightly
+        shell: bash
+        env:
+          RUNNER_OS: ${{ runner.os }}
+        run: |
+          if [[ $RUNNER_OS == "Linux" ]]; then
+            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}
+          elif [[ $RUNNER_OS == "macOS" ]]; then
+            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
+          elif [[ $RUNNER_OS == "Windows" ]]; then
+            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_win_64 }}
+          fi
+          chmod u+x $TEST_MAMBA_EXE
+          export CONDA_PREFIX=$(pwd)/mambaroot
+          export MAMBA_ROOT_PREFIX=$(pwd)/mambaroot
+          mkdir $CONDA_PREFIX
+          $TEST_MAMBA_EXE install xtensor -c conda-forge
+          pytest upstream-mamba/test/micromamba/
+
+      - name: Run conda-lock tests
+        shell: bash
+        continue-on-error: true
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+
+          if [[ $RUNNER_OS == "Linux" ]]; then
+            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}
+          elif [[ $RUNNER_OS == "macOS" ]]; then
+            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
+          fi
+
+          mv $TEST_MAMBA_EXE ./micromamba
+
+          export CONDA_PREFIX=$(pwd)/mambaroot
+          export MAMBA_ROOT_PREFIX=$(pwd)/mambaroot
+          mkdir -p $CONDA_PREFIX
+          export PATH=$(pwd):$CONDA_PREFIX/bin/:$PATH
+
+          ./micromamba install mamba pip pytest-cov pytest-xdist -c conda-forge
+
+          cd conda-lock
+          python -m pip install ensureconda==1.2.1
+          python -m pip install -r requirements.txt
+          python -m pip install -r requirements-dev.txt
+          python -m pip install .
+
+          cp -a tests "${RUNNER_TEMP}/"
+          pushd "${RUNNER_TEMP}"
+          export TMPDIR="${RUNNER_TEMP}"
+
+          pytest --showlocals -vrsx --cov=conda_lock tests
+
+  make_release_and_upload:
+    needs: [test_release_smoketests, test_bootstrap_win, test_bootstrap_linux, test_bootstrap_osx]
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v2
