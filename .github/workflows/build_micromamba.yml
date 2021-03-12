@@ -19,8 +19,8 @@ jobs:
             target_platform: linux-aarch64
           - os: macos-latest
             target_platform: osx-64
-          - os: macos-latest
-            target_platform: osx-arm64
+          # - os: macos-latest
+          #   target_platform: osx-arm64
 
     runs-on: ${{ matrix.os }}
     env:
