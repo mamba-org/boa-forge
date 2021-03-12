@@ -418,9 +418,10 @@ jobs:
             Version: ${{ steps.get_micromamba.outputs.micromamba_version }}
 
             Checksums:
-              Linux:   ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_64 }}
-              OS X:    ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_64 }}
-              Windows: ${{ steps.get_micromamba.outputs.micromamba_sha_val_win_64 }}
+              Linux 64:      ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_64 }}
+              Linux aarch64: ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_aarch64 }}
+              OS X:          ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_64 }}
+              Windows:       ${{ steps.get_micromamba.outputs.micromamba_sha_val_win_64 }}
 
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract micromamba-nightly binaries
@@ -441,8 +442,9 @@ jobs:
             Version: ${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
 
             Checksums:
-              Linux:   ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_linux_64 }}
-              OS X:    ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_osx_64 }}
-              Windows: ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_win_64 }}
+              Linux 64:      ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_linux_64 }}
+              Linux aarch64: ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_linux_aarch64 }}
+              OS X:          ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_osx_64 }}
+              Windows:       ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_win_64 }}
 
           token: ${{ secrets.GITHUB_TOKEN }}
