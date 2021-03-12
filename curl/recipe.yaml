@@ -20,6 +20,7 @@ requirements:
     - sel(unix): make
     - sel(unix): perl
     - sel(unix): pkg-config
+    - sel(unix): libtool
   host:
     - sel(linux): openssl-static
 

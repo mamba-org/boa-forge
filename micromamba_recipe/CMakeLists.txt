@@ -92,8 +92,9 @@ if (STATIC_DEPENDENCIES AND UNIX)
 
     if (APPLE)
         find_library(SECURITY_LIBRARY Security)
-        message("Found library: ${SECURITY_LIBRARY}")
-        list(APPEND FINAL_LIBS ${SECURITY_LIBRARY})
+        find_library(COREFOUNDATION_LIBRARY CoreFoundation)
+        message("Found library:\n  - ${SECURITY_LIBRARY}\n  - ${COREFOUNDATION_LIBRARY}")
+        list(APPEND FINAL_LIBS ${COREFOUNDATION_LIBRARY} ${SECURITY_LIBRARY})
     endif()
 
     message("  Found static dependencies:")
