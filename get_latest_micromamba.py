@@ -38,11 +38,11 @@ if len(sys.argv) >= 2:
 
 plat = platform.system()
 if plat == "Linux":
-    plat = "linux"
+    plat = "linux-64"
 elif plat == "Darwin":
-    plat = "osx"
+    plat = "osx-64"
 elif plat == "Windows":
-    plat = "win"
+    plat = "win-64"
 
 if not nightly:
     url = "https://api.github.com/repos/mamba-org/boa-forge/releases/latest"

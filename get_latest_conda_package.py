@@ -24,7 +24,7 @@ def sha256(fn):
             fo.write(digest)
     return digest
 
-archs = ["linux-64", "osx-64", "win-64"]
+archs = ["linux-64", "osx-64", "win-64", "linux-aarch64", "osx-arm64"]
 folder = expanduser("~/micromamba_pkgs/{arch}/")
 
 def get_version_file(folder, pkg_name="micromamba"):
