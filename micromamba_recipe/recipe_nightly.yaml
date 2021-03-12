@@ -43,7 +43,7 @@ requirements:
 test:
   commands:
     - sel(unix): test -f $PREFIX/bin/micromamba
-    - micromamba --help
+    - sel(build_platform == target_platform): micromamba --help
 
 features:
   - name: static

@@ -2,7 +2,7 @@ name: Build, Test and Release
 
 on:
   workflow_dispatch:
-  push:
+  # push:
   # pull_request:
   #   branches:
   #     - master
