@@ -2,7 +2,7 @@ name: Build, Test and Release
 
 on:
   workflow_dispatch:
-  # push:
+  push:
   # pull_request:
   #   branches:
   #     - master
@@ -10,9 +10,21 @@ on:
 jobs:
   build_libraries_unix:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            target_platform: linux-64
+          - os: ubuntu-latest
+            target_platform: linux-aarch64
+          - os: macos-latest
+            target_platform: osx-64
+          - os: macos-latest
+            target_platform: osx-arm64
+
     runs-on: ${{ matrix.os }}
+    env:
+      TARGET_PLATFORM: ${{ matrix.target_platform }}
     steps:
       - uses: actions/checkout@v2
       - name: install mamba
@@ -33,62 +45,63 @@ jobs:
       - name: build zlib
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build zlib --features [static] --skip-existing
+          boa build zlib --features [static] --skip-existing --target-platform $TARGET_PLATFORM
       - name: build bzip2
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build bzip2 --features [static] --skip-existing
+          boa build bzip2 --features [static] --skip-existing --target-platform $TARGET_PLATFORM
       - name: build libiconv
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build libiconv --features [static] --skip-existing
+          boa build libiconv --features [static] --skip-existing --target-platform $TARGET_PLATFORM
         if: runner.os == 'macOS'
       - name: build zstd
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build zstd --features [static] --skip-existing
+          boa build zstd --features [static] --skip-existing --target-platform $TARGET_PLATFORM
       - name: build yaml-cpp
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build yaml-cpp --features [static] --skip-existing
+          boa build yaml-cpp --features [static] --skip-existing --target-platform $TARGET_PLATFORM
       - name: build reproc
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build reproc --features [static] --skip-existing
+          boa build reproc --features [static] --skip-existing --target-platform $TARGET_PLATFORM
       - name: build libarchive
         shell: bash -l -eo pipefail {0}
         run: |
           boa build libarchive \
               --skip-existing \
-              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]"
+              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
+              --target-platform $TARGET_PLATFORM
       - name: build openssl
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build openssl --features [static] --skip-existing
+          boa build openssl --features [static] --skip-existing --target-platform $TARGET_PLATFORM
       - name: build libssh2
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build libssh2 --features [static] --skip-existing
+          boa build libssh2 --features [static] --skip-existing --target-platform $TARGET_PLATFORM
       - name: build libsolv
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build libsolv --features [static] --skip-existing
+          boa build libsolv --features [static] --skip-existing --target-platform $TARGET_PLATFORM
       - name: build curl
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build curl --features [static] --skip-existing
+          boa build curl --features [static] --skip-existing --target-platform $TARGET_PLATFORM
       - name: build micromamba
         shell: bash -l -eo pipefail {0}
         run: |
           cd micromamba_recipe
-          boa build . --skip-existing
+          boa build . --skip-existing --target-platform $TARGET_PLATFORM
       - name: build micromamba-nightly
         shell: bash -l -eo pipefail {0}
         run: |
           export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
           cp micromamba_recipe/recipe_nightly.yaml micromamba_recipe/recipe.yaml
           cd micromamba_recipe
-          boa build . --skip-existing
+          boa build . --skip-existing --target-platform $TARGET_PLATFORM
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
