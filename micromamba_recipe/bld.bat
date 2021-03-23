@@ -1,4 +1,4 @@
-rem copy /Y %RECIPE_DIR%\CMakeLists.txt .\src\micromamba\CMakeLists.txt
+copy /Y %RECIPE_DIR%\CMakeLists.txt .\src\micromamba\CMakeLists.txt
 
 mkdir build
 cd build

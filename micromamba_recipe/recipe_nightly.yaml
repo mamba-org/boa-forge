@@ -8,6 +8,8 @@ source:
     git_depth: 1 # (Defaults to -1/not shallow)
   - path: CLI11.hpp
     folder: include/mamba/CLI.hpp
+  - path: CMakeListsNightly.txt
+    folder: src/micromamba/CMakeLists.txt
 
 build:
   number: 0

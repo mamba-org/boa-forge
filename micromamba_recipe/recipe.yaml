@@ -10,6 +10,8 @@ source:
     sha256: d331dc3af9a111e0a9c27f5067ad7d2f29ee7827952a92fecd4a713771c59d28
   - path: CLI11.hpp
     folder: include/mamba/CLI.hpp
+  - path: CMakeLists.txt
+    folder: src/micromamba/CMakeLists.txt
 
 build:
   number: 2

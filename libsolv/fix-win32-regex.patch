@@ -1,0 +1,14 @@
+diff --git a/win32/regex.h b/win32/regex.h
+index 7996b58b..06a10906 100644
+--- a/win32/regex.h
++++ b/win32/regex.h
+@@ -12,7 +12,8 @@ extern "C" {
+ #define CHARCLASS_NAME_MAX 14
+ #define RE_DUP_MAX 255
+ 
+-typedef size_t regoff_t;
++#include <BaseTsd.h>
++typedef SSIZE_T regoff_t;
+ // #include <bits/alltypes.h>
+ 
+ typedef struct re_pattern_buffer {
