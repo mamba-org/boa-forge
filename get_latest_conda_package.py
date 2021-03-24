@@ -50,7 +50,8 @@ def get_version_file(folder, pkg_name="micromamba"):
     if not versions:
         return None
 
-    v = max(versions)
+    # need to properly compare integers here!
+    v = max(versions, key= lambda vx: [[int(vpart) for vpart in vx[1].split('.')]])
 
     print(assemble_file(v))
 
