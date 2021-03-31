@@ -633,6 +633,7 @@ def get_updated_raw_yaml(recipe_path):
                 raw_yaml["source"][0]["sha256"] = sha256_hash_for_version
             else:
                 raw_yaml["source"]["sha256"] = sha256_hash_for_version
+        raw_yaml["build"]["number"] = 0
     return raw_yaml
 
 if __name__ == "__main__":
