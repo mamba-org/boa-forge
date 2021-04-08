@@ -1,7 +1,7 @@
 context:
   name: libsolv
-  version: 0.7.18
-  sha256: eae52c55c9a305ff2aada3169f2f4dacd9d87ffab4e6515c41dcb224c1aa814f
+  version: 0.7.19
+  sha256: 67e6a46e9e03410d3d27c963c0382881b064c50d2e7ca25860c515df3ca4dae1
 
 package:
   name: '{{ name|lower }}'
@@ -15,7 +15,7 @@ source:
     - sel(win): win_export_and_static_build.patch
 
 build:
-  number: 1
+  number: 0
   # run_exports:
   #   - '{{ pin_subpackage(name, max_pin="x.x") }}'
 
