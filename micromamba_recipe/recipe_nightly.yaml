@@ -7,7 +7,7 @@ source:
     git_rev: master
     git_depth: 1 # (Defaults to -1/not shallow)
   - path: CLI11.hpp
-    folder: include/mamba/CLI.hpp
+    folder: include/mamba/core/CLI.hpp
   - path: CMakeLists.txt
     folder: src/micromamba/CMakeLists.txt
 

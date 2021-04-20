@@ -9,7 +9,7 @@ source:
   - url: https://github.com/mamba-org/mamba/archive/{{ version }}.tar.gz
     sha256: 88cf4e93c9362d63b5a6214fe801b52c156455133784ff61df8de5af14a8e3fd
   - path: CLI11.hpp
-    folder: include/mamba/CLI.hpp
+    folder: include/mamba/core/CLI.hpp
   - path: CMakeLists.txt
     folder: src/micromamba/CMakeLists.txt
 
