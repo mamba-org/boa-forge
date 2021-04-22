@@ -1,5 +1,5 @@
 context:
-  version: 0.11.2
+  version: 0.11.3
 
 package:
   name: micromamba
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://github.com/mamba-org/mamba/archive/{{ version }}.tar.gz
-    sha256: 1433c8f09bef86b1d306b61ce9ae58009a05801c4ee039df86a61f87b64ffa20
+    sha256: bd55e90029e198971c344cabfb49e40d80c1e82dc9e88011587be1f40149e99b
   - path: CLI11.hpp
     folder: include/mamba/core/CLI.hpp
   - path: CMakeLists.txt
