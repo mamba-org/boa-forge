@@ -342,13 +342,14 @@ jobs:
             export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
           elif [[ $RUNNER_OS == "Windows" ]]; then
             export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_win_64 }}
+            export IGNORE_TESTS="--ignore=upstream-mamba/test/micromamba/test_activation.py --ignore=upstream-mamba/test/micromamba/test_shell.py"
           fi
           chmod u+x $TEST_MAMBA_EXE
           export CONDA_PREFIX=$(pwd)/mambaroot
           export MAMBA_ROOT_PREFIX=$(pwd)/mambaroot
           mkdir $CONDA_PREFIX
           $TEST_MAMBA_EXE install xtensor -c conda-forge
-          pytest upstream-mamba/test/micromamba/
+          pytest upstream-mamba/test/micromamba/ $IGNORE_TESTS
 
       - name: Run conda-lock tests
         shell: bash
