@@ -4,3 +4,4 @@ channels:
 dependencies:
   - boa
   - pip
+  - ruamel.yaml <0.17.6
