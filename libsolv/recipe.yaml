@@ -13,9 +13,10 @@ source:
   sha256: '{{ sha256 }}'
   patches:
     - sel(win): win_export_and_static_build.patch
+    - patch_conda_variant_handling.patch
 
 build:
-  number: 0
+  number: 1
   # run_exports:
   #   - '{{ pin_subpackage(name, max_pin="x.x") }}'
 
