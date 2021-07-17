@@ -9,7 +9,6 @@ cmake .. ^
     -D BUILD_SHARED=OFF ^
     -D STATIC_DEPENDENCIES=ON ^
     -D BUILD_BINDINGS=OFF ^
-    -D USE_VENDORED_CLI11=ON ^
     -G "Ninja"
 
 ninja install --verbose

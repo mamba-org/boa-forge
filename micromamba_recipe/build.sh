@@ -8,8 +8,7 @@ cmake ${CMAKE_ARGS} .. \
          -DBUILD_BINDINGS=OFF \
          -DBUILD_STATIC=ON \
          -DBUILD_SHARED=OFF \
-         -DSTATIC_DEPENDENCIES=ON \
-         -DUSE_VENDORED_CLI11=ON
+         -DSTATIC_DEPENDENCIES=ON
 
 make -j${CPU_COUNT}
 make install
