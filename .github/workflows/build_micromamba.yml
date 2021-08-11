@@ -326,6 +326,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install pytest requests pyyaml
+          python -m pip install git+https://github.com/conda/menuinst@1.4.17
       - name: Install zsh and xonsh on Linux
         shell: bash
         if: runner.os == 'Linux'
