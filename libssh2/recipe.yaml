@@ -9,13 +9,6 @@ source:
   url: https://www.libssh2.org/download/libssh2-{{ version }}.tar.gz
   sha256: 2d64e90f3ded394b91d3a2e774ca203a4179f69aebee03003e5a6fa621e41d51
   patches:
-    # patch for CVE-2019-17498
-    # https://nvd.nist.gov/vuln/detail/CVE-2019-17498
-    # patch from the Fedora project
-    # https://src.fedoraproject.org/rpms/libssh2/c/41525baf
-    # merged into upstream in with small modification in:
-    # https://github.com/libssh2/libssh2/pull/402
-    - 0001-libssh2-1.9.0-CVE-2019-17498.patch
     - 246c7cb0184b9e1a882c753b412825799c7a9118.patch
 
 build:
