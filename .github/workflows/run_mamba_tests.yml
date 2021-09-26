@@ -37,6 +37,11 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get install zsh xonsh fish -y
+      - name: Install fish on macOS
+        shell: bash
+        if: runner.os == 'macOS'
+        run: |
+          brew install fish
       - name: Setup env micromamba nightly release
         shell: bash
         env:
