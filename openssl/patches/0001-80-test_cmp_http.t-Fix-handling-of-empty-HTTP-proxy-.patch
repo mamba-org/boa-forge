@@ -1,0 +1,30 @@
+From 4b931c1cae86411b42c3573ebb40b76999eb9ade Mon Sep 17 00:00:00 2001
+From: "Dr. David von Oheimb" <David.von.Oheimb@siemens.com>
+Date: Mon, 13 Sep 2021 08:14:58 +0200
+Subject: [PATCH] 80-test_cmp_http.t: Fix handling of empty HTTP proxy string
+
+Fixes #16546
+
+Reviewed-by: Tomas Mraz <tomas@openssl.org>
+(Merged from https://github.com/openssl/openssl/pull/16593)
+---
+ test/recipes/80-test_cmp_http.t | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/test/recipes/80-test_cmp_http.t b/test/recipes/80-test_cmp_http.t
+index 7bd95337e8..92f11e8ac8 100644
+--- a/test/recipes/80-test_cmp_http.t
++++ b/test/recipes/80-test_cmp_http.t
+@@ -42,8 +42,8 @@ sub chop_dblquot { # chop any leading and trailing '"' (needed for Windows)
+     return $str;
+ }
+ 
+-my $proxy = "<EMPTY>";
+-$proxy = chop_dblquot($ENV{http_proxy} // $ENV{HTTP_PROXY} // $proxy);
++my $proxy = chop_dblquot($ENV{http_proxy} // $ENV{HTTP_PROXY} // "");
++$proxy = "<EMPTY>" if $proxy eq "";
+ $proxy =~ s{^https?://}{}i;
+ my $no_proxy = $ENV{no_proxy} // $ENV{NO_PROXY};
+ 
+-- 
+2.32.0.windows.2

@@ -1,5 +1,5 @@
 context:
-  version: 1.1.1i
+  version: 3.0.0
 
 package:
   name: openssl
@@ -7,10 +7,11 @@ package:
 
 source:
   url: http://www.openssl.org/source/openssl-{{ version }}.tar.gz
-  sha256: e8be6a35fe41d10603c3cc635e93289ed00bf34b79671a3a4de64fcee00d5242
+  sha256: 59eedfcb46c25214c9bd37ed6078297b4df01d012267fe9e9eee31f61bc70536
   patches:
-    - 0001-Don-t-use-USE_BCRYPTGENRANDOM-for-VS-older-than-2015.patch
-    # - gh12369.patch
+    # backport from openssl/openssl#16593 to simplify & future-proof build;
+    # can be dropped for any version after 3.0.0
+    - patches/0001-80-test_cmp_http.t-Fix-handling-of-empty-HTTP-proxy-.patch
 
 build:
   number: 0
