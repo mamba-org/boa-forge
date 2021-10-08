@@ -6,8 +6,8 @@ source:
   - git_url: https://github.com/mamba-org/mamba
     git_rev: master
     git_depth: 1 # (Defaults to -1/not shallow)
-  - path: CMakeLists.txt
-    folder: src/micromamba/CMakeListsNightly.txt
+  - path: CMakeListsNightly.txt
+    folder: src/micromamba/CMakeLists.txt
 
 build:
   number: 0
