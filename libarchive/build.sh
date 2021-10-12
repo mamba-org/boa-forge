@@ -13,6 +13,10 @@ if [ "$(uname)" == "Darwin" ]; then
     WITH_ICONV="--with-iconv"
 else
     WITH_ICONV="--without-iconv"
+    # link pthread for zstd
+    if [[ "${FEATURE_ZSTD}" == "1" ]]; then
+        export LDFLAGS="${LDFLAGS} -pthread"
+    fi
 fi
 
 ${SRC_DIR}/configure --prefix=${PREFIX} ${BUILD_TYPE}                             \

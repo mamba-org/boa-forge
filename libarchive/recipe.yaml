@@ -23,7 +23,7 @@ source:
     # - patches/0009-CMake-Force-Multi-threaded-DLL-runtime.patch
 
 build:
-  number: 0
+  number: 1
   # run_exports:
   #   # https://abi-laboratory.pro/index.php?view=timeline&l=libarchive
   #   - '{{ pin_subpackage("libarchive", max_pin="x.x") }}'
