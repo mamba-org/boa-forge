@@ -8,7 +8,6 @@ if [[ "${FEATURE_STATIC}" == "1" ]]; then
 else
     BUILD_TYPE="--disable-static --enable-shared"
 fi
-
 if [ "$(uname)" == "Darwin" ]; then
     WITH_ICONV="--with-iconv"
 else
