@@ -100,7 +100,7 @@ jobs:
         shell: bash -l -eo pipefail {0}
         run: |
           export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
-          cp micromamba_recipe/recipe_nightly.yaml micromamba_recipe/recipe.yaml
+          git apply micromamba_recipe/nightly.patch
           boa build micromamba_recipe --skip-existing --target-platform $TARGET_PLATFORM
       - uses: actions/upload-artifact@v2
         with:

@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: conda-incubator/conda-lock
-          ref: master
+          ref: main
           path: conda-lock
       - uses: actions/setup-python@v2
         with:
@@ -30,7 +30,7 @@ jobs:
       - name: Setup env micromamba nightly release
         shell: bash
         run: |
-          python -m pip install pytest requests  pytest-lazy-fixture
+          python -m pip install pytest requests pytest-lazy-fixture
           python -m pip install git+https://github.com/conda/menuinst@1.4.17
       - name: Install zsh, xonsh and fish on Linux
         shell: bash

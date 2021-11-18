@@ -1,0 +1,23 @@
+diff --git a/micromamba_recipe/recipe.yaml b/micromamba_recipe/recipe.yaml
+index db1edfe..b4c30c7 100644
+--- a/micromamba_recipe/recipe.yaml
++++ b/micromamba_recipe/recipe.yaml
+@@ -1,13 +1,11 @@
+-context:
+-  version: 0.18.0
+-
+ package:
+-  name: micromamba
+-  version: '{{ version }}'
++  name: micromamba-nightly
++  version: '{{ environ.get("NIGHTLY_VERSION") }}'
+ 
+ source:
+-  - url: https://github.com/mamba-org/mamba/archive/micromamba-{{ version }}.tar.gz
+-    sha256: a9f9c0f9b93fc3b007d0456f2b276e03826d6cb1a601102b9eef3f4647d11344
++  - git_url: https://github.com/mamba-org/mamba
++    git_rev: master
++    git_depth: 1 # (Defaults to -1/not shallow)
+   - patches:
+     - patches/libmamba.patch
+ 

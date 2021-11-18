@@ -1,15 +1,15 @@
 context:
-  version: 0.17.0
+  version: 0.18.0
 
 package:
   name: micromamba
   version: '{{ version }}'
 
 source:
-  - url: https://github.com/mamba-org/mamba/archive/{{ version }}.tar.gz
-    sha256: c5f4add077f41ca9ff905d95003cf793c59e9d6959f19a139325dc66c904733a
-  - path: CMakeLists.txt
-    folder: src/micromamba/CMakeLists.txt
+  - url: https://github.com/mamba-org/mamba/archive/micromamba-{{ version }}.tar.gz
+    sha256: a9f9c0f9b93fc3b007d0456f2b276e03826d6cb1a601102b9eef3f4647d11344
+  - patches:
+    - patches/libmamba.patch
 
 build:
   number: 0
@@ -18,6 +18,7 @@ build:
     - sel(unix): libarchive
     - sel(linux): libgcc-ng
     - sel(linux): libstdcxx-ng
+    - sel(unix): spdlog
 
 requirements:
   build:
@@ -30,6 +31,8 @@ requirements:
     - cli11
     - cpp-filesystem
     - nlohmann_json
+    - termcolor-cpp
+    - spdlog
     - bzip2-static
     - zstd-static
     - zlib-static
@@ -68,6 +71,8 @@ about:
     - LIBEV_LICENSE.txt
     - CPP_FILESYSTEM_LICENSE.txt
     - LIBNGHTTP2_LICENSE.txt
+    - TERMCOLOR_CPP_LICENSE.txt
+    - SPDLOG_LICENSE.txt
   license: BSD-3-Clause AND MIT AND OpenSSL
   license_family: BSD
   summary: Micromamba is a tiny version of mamba, the fast conda package installer.
