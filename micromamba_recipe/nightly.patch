@@ -1,5 +1,8 @@
+diff --git a/micromamba_recipe/nightly.patch b/micromamba_recipe/nightly.patch
+index f5e4061..e69de29 100644
+Binary files a/micromamba_recipe/nightly.patch and b/micromamba_recipe/nightly.patch differ
 diff --git a/micromamba_recipe/recipe.yaml b/micromamba_recipe/recipe.yaml
-index db1edfe..b4c30c7 100644
+index 8e6f951..407086b 100644
 --- a/micromamba_recipe/recipe.yaml
 +++ b/micromamba_recipe/recipe.yaml
 @@ -1,13 +1,11 @@
@@ -20,4 +23,4 @@ index db1edfe..b4c30c7 100644
 +    git_depth: 1 # (Defaults to -1/not shallow)
    - patches:
      - patches/libmamba.patch
- 
+     - patches/libmamba_linking.patch
