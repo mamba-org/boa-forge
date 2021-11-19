@@ -100,7 +100,7 @@ jobs:
         shell: bash -l -eo pipefail {0}
         run: |
           export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
-          git apply micromamba_recipe/nightly.patch
+          python micromamba_recipe/to_nightly.py
           boa build micromamba_recipe --skip-existing --target-platform $TARGET_PLATFORM
       - uses: actions/upload-artifact@v2
         with:
@@ -176,7 +176,7 @@ jobs:
         shell: powershell
         run: |
           $Env:NIGHTLY_VERSION=Get-Date -F y.M.d.Hmm
-          git apply micromamba_recipe/nightly.patch
+          python micromamba_recipe/to_nightly.py
           cd micromamba_recipe
           boa build .  --skip-existing
       - uses: actions/upload-artifact@v2

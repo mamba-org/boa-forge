@@ -1,6 +1,20 @@
 diff --git a/micromamba_recipe/nightly.patch b/micromamba_recipe/nightly.patch
-index f5e4061..e69de29 100644
-Binary files a/micromamba_recipe/nightly.patch and b/micromamba_recipe/nightly.patch differ
+index 71e25d9ce5c185be3a1e347d1c3e1139d2b07b01..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 939
+zcma)5QE!_t5Ps)ZoVtg$Vg?(C6L^ZIO<Sd@leTHno+4w;U=>VcoUB>Z|6W7VE}goi
+zFUIEXyZb)h=SnLDgw)!Bh&wH9--)giD~nREF*dqxT)T_b!pR28QyGCa72blHVMaNN
+zBIJ36Ne+xso@K#1ZG_!{(k%|JXeUf{x+PRz0oq{v{71-MPqY(V`(n+b_(8-1xyol=
+zL`LUy!OKSxgpe1xA6E#&@MM?e5(s<CQV9LZV7Uy4?2W@)R|EuLi+0exDS$?75z&AI
+zuom)0)HsEW=&*o41A7KJzq@<H!~Okv5CZ(2PY#nEV^6I{9Gb1Ry@_gc7iZU3A3uHn
+z{B!l=!`E+DU#`zCr*aU$&~L2VGa<0CZ2^sQ>!FBa@1$l^MzZhX$w{QQ^?nx%D;vGV
+zBNLHlL?b6`RR12O01S;tX1oBAt6Wl*mwBpWT2eZ%Xg1?2DU&%znl2Jvaal6KDPuG#
+zb3~P@jA!$TvDBN+3nbuKtzJoU1i%Eaxb;^o2IuYd^s~aXYYJfS1}@&C5}Vcy;CesH
+s*z|6s-M0O&%fQzleq#RF;82XGqjTKqa=M)TyZTpj)oOF2O?}9E07)z|v;Y7A
+
 diff --git a/micromamba_recipe/recipe.yaml b/micromamba_recipe/recipe.yaml
 index 8e6f951..407086b 100644
 --- a/micromamba_recipe/recipe.yaml
