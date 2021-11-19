@@ -176,7 +176,7 @@ jobs:
         shell: powershell
         run: |
           $Env:NIGHTLY_VERSION=Get-Date -F y.M.d.Hmm
-          cp micromamba_recipe\recipe_nightly.yaml micromamba_recipe\recipe.yaml
+          git apply micromamba_recipe/nightly.patch
           cd micromamba_recipe
           boa build .  --skip-existing
       - uses: actions/upload-artifact@v2
