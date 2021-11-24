@@ -10,7 +10,6 @@ source:
     git_tag: master
   - patches:
     - patches/libmamba.patch
-    - patches/libmamba_linking.patch
 
 build:
   number: 0
