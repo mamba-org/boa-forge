@@ -6,7 +6,7 @@ package:
   version: '{{ version }}'
 
 source:
-  - url: https://github.com/mamba-org/mamba.git
+  - git_url: https://github.com/mamba-org/mamba.git
     git_tag: master
   - patches:
     - patches/libmamba.patch
