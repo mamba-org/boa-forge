@@ -57,7 +57,7 @@ jobs:
           export MAMBA_ROOT_PREFIX=$(pwd)/mambaroot
           mkdir -p $CONDA_PREFIX
           ./micromamba install xtensor -c conda-forge
-          pytest upstream-mamba/test/micromamba/
+          pytest upstream-mamba/micromamba/tests
 
       - name: Run conda-lock tests
         shell: bash
