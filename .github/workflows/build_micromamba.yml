@@ -99,13 +99,13 @@ jobs:
       - name: build micromamba
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build micromamba_recipe --skip-existing --target-platform $TARGET_PLATFORM
+          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
       - name: build micromamba-nightly
         shell: bash -l -eo pipefail {0}
         run: |
           export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
-          python micromamba_recipe/to_nightly.py
-          boa build micromamba_recipe --skip-existing --target-platform $TARGET_PLATFORM
+          python micromamba/to_nightly.py
+          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -178,15 +178,13 @@ jobs:
       - name: build micromamba
         shell: powershell
         run: |
-          cd micromamba_recipe
-          boa build .  --skip-existing
+          boa build micromamba --skip-existing
       - name: build micromamba-nightly
         shell: powershell
         run: |
           $Env:NIGHTLY_VERSION=Get-Date -F y.M.d.Hmm
-          python micromamba_recipe/to_nightly.py
-          cd micromamba_recipe
-          boa build .  --skip-existing
+          python micromamba/to_nightly.py
+          boa build micromamba --skip-existing
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs

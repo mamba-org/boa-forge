@@ -19,7 +19,7 @@ build:
     - sel(unix): libarchive
     - sel(linux): libgcc-ng
     - sel(linux): libstdcxx-ng
-    - sel(unix): spdlog
+    - spdlog
 
 requirements:
   build:
