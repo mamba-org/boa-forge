@@ -9,8 +9,10 @@ source:
   - git_url: https://github.com/mamba-org/mamba.git
     git_tag: master
   - patches:
-    - patches/libmamba_install.patch
-    - patches/libmamba_deps.patch
+    - sel(unix): patches/libmamba_install.patch
+    - sel(unix): patches/libmamba_deps.patch
+    - sel(win): patches/libmamba_install_win.patch
+    - sel(win): patches/libmamba_deps_win.patch
 
 build:
   number: 0
