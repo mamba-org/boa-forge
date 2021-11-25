@@ -2,7 +2,7 @@
 import yaml
 
 if __name__ == '__main__':
-	with open('micromamba_recipe/recipe.yaml') as recipe_in:
+	with open('micromamba/recipe.yaml') as recipe_in:
 		y = yaml.safe_load(recipe_in)
 
 	y["source"][0] = {
@@ -17,5 +17,5 @@ if __name__ == '__main__':
 		'version': '{{ environ.get("NIGHTLY_VERSION") }}'
 	}
 
-	with open('micromamba_recipe/recipe.yaml', 'w') as recipe_out:
+	with open('micromamba/recipe.yaml', 'w') as recipe_out:
 		recipe_out.write(yaml.dump(y))

@@ -3,9 +3,9 @@ name: Build, Test and Release
 on:
   workflow_dispatch:
   push:
-  # pull_request:
-  #   branches:
-  #     - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build_libraries_unix:
@@ -29,12 +29,16 @@ jobs:
       - uses: actions/checkout@v2
       - name: install mamba
         uses: mamba-org/provision-with-micromamba@main
+      - name: generate cache timestamp
+        id: cache_timestamp
+        shell: bash -l {0}
+        run: echo ::set-output name=timestamp::"$(TZ=UTC date +%F)"
       - name: Cache build outputs
         uses: actions/cache@v2
         with:
           path: |
             ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
-          key: build-cache-${{ runner.os }}
+          key: build-cache-${{ runner.os }}-${{ matrix.target_platform }}-${{ steps.cache_timestamp.outputs.timestamp }}
       - name: create .condarc
         shell: bash -l -eo pipefail {0}
         run: |
@@ -95,13 +99,13 @@ jobs:
       - name: build micromamba
         shell: bash -l -eo pipefail {0}
         run: |
-          boa build micromamba_recipe --skip-existing --target-platform $TARGET_PLATFORM
+          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
       - name: build micromamba-nightly
         shell: bash -l -eo pipefail {0}
         run: |
           export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
-          python micromamba_recipe/to_nightly.py
-          boa build micromamba_recipe --skip-existing --target-platform $TARGET_PLATFORM
+          python micromamba/to_nightly.py
+          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -113,12 +117,16 @@ jobs:
       - uses: actions/checkout@v2
       - name: install mamba
         uses: mamba-org/provision-with-micromamba@main
+      - name: generate cache timestamp
+        id: cache_timestamp
+        shell: bash -l {0}
+        run: echo ::set-output name=timestamp::"$(TZ=UTC date +%F)"
       - name: Cache build outputs
         uses: actions/cache@v2
         with:
           path: |
             ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
-          key: build-cache-${{ runner.os }}
+          key: build-cache-${{ runner.os }}-${{ matrix.target_platform }}-${{ steps.cache_timestamp.outputs.timestamp }}
       - name: create .condarc
         shell: bash
         run: |
@@ -170,15 +178,13 @@ jobs:
       - name: build micromamba
         shell: powershell
         run: |
-          cd micromamba_recipe
-          boa build .  --skip-existing
+          boa build micromamba --skip-existing
       - name: build micromamba-nightly
         shell: powershell
         run: |
           $Env:NIGHTLY_VERSION=Get-Date -F y.M.d.Hmm
-          python micromamba_recipe/to_nightly.py
-          cd micromamba_recipe
-          boa build .  --skip-existing
+          python micromamba/to_nightly.py
+          boa build micromamba --skip-existing
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -258,12 +264,13 @@ jobs:
           ls -al
           echo $(pwd)
           TMP_MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_linux_64 }}"
-          cp $TMP_MAMBA_EXE ./micromamba
+          mkdir -p $HOME/mbins
+          cp $TMP_MAMBA_EXE $HOME/mbins/micromamba
           for TEST_IMAGE_NAME in "ubuntu:20.04" "ubuntu:19.10" "ubuntu:16.04" "ubuntu:18.04" "centos:7" "centos:6" "debian:buster" "fedora:33" "archlinux:latest"; do
             echo "============= Test installer on ${TEST_IMAGE_NAME} ============="
             export DOCKER_ARCH="amd64"
-            docker run --rm -v "$(pwd):/construct" \
-              "${DOCKER_ARCH}/${TEST_IMAGE_NAME}" sh -c "/construct/micromamba create -p /testenv xtensor -c conda-forge -v --ssl-verify=false"
+            docker run --rm -v "$HOME/mbins:/construct" \
+              "${DOCKER_ARCH}/${TEST_IMAGE_NAME}" sh -c "/construct/micromamba create -p ~/testenv xtensor -c conda-forge -v --ssl-verify=false"
           done
 
   test_bootstrap_win:
@@ -348,14 +355,14 @@ jobs:
             export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
           elif [[ $RUNNER_OS == "Windows" ]]; then
             export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_win_64 }}
-            export IGNORE_TESTS="--ignore=upstream-mamba/test/micromamba/test_activation.py --ignore=upstream-mamba/test/micromamba/test_shell.py"
+            export IGNORE_TESTS="--ignore=upstream-mamba/micromamba/tests/test_activation.py --ignore=upstream-mamba/micromamba/tests/test_shell.py"
           fi
           chmod u+x $TEST_MAMBA_EXE
           export CONDA_PREFIX=$(pwd)/mambaroot
           export MAMBA_ROOT_PREFIX=$(pwd)/mambaroot
           mkdir $CONDA_PREFIX
           $TEST_MAMBA_EXE install xtensor -c conda-forge
-          pytest upstream-mamba/test/micromamba/ $IGNORE_TESTS
+          pytest upstream-mamba/micromamba/tests $IGNORE_TESTS
 
       - name: Run conda-lock tests
         shell: bash
