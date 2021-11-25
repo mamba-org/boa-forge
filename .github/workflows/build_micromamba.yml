@@ -265,6 +265,7 @@ jobs:
           echo $(pwd)
           TMP_MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_linux_64 }}"
           cp $TMP_MAMBA_EXE ./micromamba
+          chmod 775 ./micromamba
           for TEST_IMAGE_NAME in "ubuntu:20.04" "ubuntu:19.10" "ubuntu:16.04" "ubuntu:18.04" "centos:7" "centos:6" "debian:buster" "fedora:33" "archlinux:latest"; do
             echo "============= Test installer on ${TEST_IMAGE_NAME} ============="
             export DOCKER_ARCH="amd64"
