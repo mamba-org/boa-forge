@@ -9,6 +9,7 @@ cmake -GNinja ^
       -DCMAKE_USE_LIBSSH2=OFF ^
       -DUSE_ZLIB=ON ^
       -DCURL_STATIC_CRT=ON ^
+      -DENABLE_UNICODE=ON ^
       %SRC_DIR%
 
 IF %ERRORLEVEL% NEQ 0 exit 1
