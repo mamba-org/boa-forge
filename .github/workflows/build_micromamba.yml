@@ -47,7 +47,7 @@ jobs:
             - conda-forge
           EOL
 
-          micromamba remove boa
+          micromamba remove boa --no-prune
           python -m pip install git+https://github.com/mamba-org/boa@master
       - name: build bzip2
         shell: bash -l -eo pipefail {0}
