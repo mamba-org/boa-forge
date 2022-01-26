@@ -8,10 +8,6 @@ package:
 source:
   url: http://www.openssl.org/source/openssl-{{ version }}.tar.gz
   sha256: c311ad853353bce796edad01a862c50a8a587f62e7e2100ef465ab53ec9b06d1
-  patches:
-    # backport from openssl/openssl#16593 to simplify & future-proof build;
-    # can be dropped for any version after 3.0.0
-    - patches/0001-80-test_cmp_http.t-Fix-handling-of-empty-HTTP-proxy-.patch
 
 build:
   number: 0
