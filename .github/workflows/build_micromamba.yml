@@ -48,8 +48,7 @@ jobs:
           EOL
 
           micromamba remove boa --no-prune
-          # python -m pip install git+https://github.com/mamba-org/boa@master
-          python -m pip install git+https://github.com/wolfv/boa@fix_multioutput
+          python -m pip install git+https://github.com/mamba-org/boa@master
       - name: build bzip2
         shell: bash -l -eo pipefail {0}
         run: |
