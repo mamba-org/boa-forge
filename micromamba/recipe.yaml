@@ -9,10 +9,8 @@ source:
   - url: https://github.com/mamba-org/mamba/archive/micromamba-{{ version }}.tar.gz
     sha256: 12a7494f9330fe84f1d895360742c5171f49532837e9b3749026f3fe2eacfaf1
   - patches:
-      - sel(unix): patches/libmamba_install.patch
-      - sel(unix): patches/libmamba_deps.patch
-      - sel(win): patches/libmamba_install_win.patch
-      - sel(win): patches/libmamba_deps_win.patch
+      - patches/libmamba_install.patch
+      - patches/libmamba_deps.patch
 
 build:
   number: 0
