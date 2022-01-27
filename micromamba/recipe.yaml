@@ -1,5 +1,5 @@
 context:
-  version: 0.18.2
+  version: 0.20.0
 
 package:
   name: micromamba
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://github.com/mamba-org/mamba/archive/micromamba-{{ version }}.tar.gz
-    sha256: 12a7494f9330fe84f1d895360742c5171f49532837e9b3749026f3fe2eacfaf1
+    sha256: 4ee6900fc248fb41389bb1a924703d3b580b1f9e388d319d2a3502dcc710a0c6
   - patches:
       - patches/libmamba_install.patch
       - patches/libmamba_deps.patch
@@ -45,6 +45,7 @@ requirements:
     - openssl-static
     - reproc-cpp-static
     - reproc-static
+    - sel(win): winreg
 
 test:
   commands:
