@@ -8,109 +8,109 @@ on:
       - master
 
 jobs:
-  build_libraries_unix:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target_platform: linux-64
-          - os: ubuntu-latest
-            target_platform: linux-aarch64
-          - os: macos-latest
-            target_platform: osx-64
-          - os: macos-latest
-            target_platform: osx-arm64
+  # build_libraries_unix:
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         - os: ubuntu-latest
+  #           target_platform: linux-64
+  #         - os: ubuntu-latest
+  #           target_platform: linux-aarch64
+  #         - os: macos-latest
+  #           target_platform: osx-64
+  #         - os: macos-latest
+  #           target_platform: osx-arm64
 
-    runs-on: ${{ matrix.os }}
-    env:
-      TARGET_PLATFORM: ${{ matrix.target_platform }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: install mamba
-        uses: mamba-org/provision-with-micromamba@main
-      - name: generate cache timestamp
-        id: cache_timestamp
-        shell: bash -l {0}
-        run: echo ::set-output name=timestamp::"$(TZ=UTC date +%F)"
-      - name: Cache build outputs
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
-          key: build-cache-${{ runner.os }}-${{ matrix.target_platform }}-${{ steps.cache_timestamp.outputs.timestamp }}
-      - name: create .condarc
-        shell: bash -l -eo pipefail {0}
-        run: |
-          cat > ~/.condarc <<EOL
-          channels:
-            - conda-forge
-          EOL
+  #   runs-on: ${{ matrix.os }}
+  #   env:
+  #     TARGET_PLATFORM: ${{ matrix.target_platform }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: install mamba
+  #       uses: mamba-org/provision-with-micromamba@main
+  #     - name: generate cache timestamp
+  #       id: cache_timestamp
+  #       shell: bash -l {0}
+  #       run: echo ::set-output name=timestamp::"$(TZ=UTC date +%F)"
+  #     - name: Cache build outputs
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: |
+  #           ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
+  #         key: build-cache-${{ runner.os }}-${{ matrix.target_platform }}-${{ steps.cache_timestamp.outputs.timestamp }}
+  #     - name: create .condarc
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         cat > ~/.condarc <<EOL
+  #         channels:
+  #           - conda-forge
+  #         EOL
 
-          micromamba remove boa --no-prune
-          python -m pip install git+https://github.com/mamba-org/boa@master
-      - name: build bzip2
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build bzip2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build libiconv
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libiconv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-        if: runner.os == 'macOS'
-      - name: build zlib
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build zlib --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build zstd
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build zstd --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build yaml-cpp
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build yaml-cpp --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build reproc
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build reproc --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build libarchive
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libarchive \
-              --skip-existing \
-              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
-              --target-platform $TARGET_PLATFORM
-      - name: build openssl
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build openssl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build libssh2
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libssh2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build libsolv
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libsolv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build curl
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build curl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build micromamba
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build micromamba-nightly
-        shell: bash -l -eo pipefail {0}
-        run: |
-          export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
-          python micromamba/to_nightly.py
-          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
-      - uses: actions/upload-artifact@v2
-        with:
-          name: micromamba_pkgs
-          path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+  #         micromamba remove boa --no-prune
+  #         python -m pip install git+https://github.com/mamba-org/boa@master
+  #     - name: build bzip2
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build bzip2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+  #     - name: build libiconv
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build libiconv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+  #       if: runner.os == 'macOS'
+  #     - name: build zlib
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build zlib --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+  #     - name: build zstd
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build zstd --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+  #     - name: build yaml-cpp
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build yaml-cpp --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+  #     - name: build reproc
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build reproc --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+  #     - name: build libarchive
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build libarchive \
+  #             --skip-existing \
+  #             --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
+  #             --target-platform $TARGET_PLATFORM
+  #     - name: build openssl
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build openssl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+  #     - name: build libssh2
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build libssh2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+  #     - name: build libsolv
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build libsolv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+  #     - name: build curl
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build curl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+  #     - name: build micromamba
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
+  #     - name: build micromamba-nightly
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
+  #         python micromamba/to_nightly.py
+  #         boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: micromamba_pkgs
+  #         path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
 
   build_libraries_win:
     runs-on: [windows-latest]
@@ -136,338 +136,338 @@ jobs:
             - conda-forge
             - defaults
           EOL
-      - name: build zlib
-        shell: powershell
-        run: |
-          boa build zlib --features "[static]" --skip-existing
-      - name: build bzip2
-        shell: powershell
-        run: |
-          boa build bzip2 --features "[static]" --skip-existing
-      - name: build zstd
-        shell: powershell
-        run: |
-          boa build zstd --features "[static]" --skip-existing
-      - name: build yaml-cpp
-        shell: powershell
-        run: |
-          boa build yaml-cpp --features "[static]" --skip-existing
+      # - name: build zlib
+      #   shell: powershell
+      #   run: |
+      #     boa build zlib --features "[static]" --skip-existing
+      # - name: build bzip2
+      #   shell: powershell
+      #   run: |
+      #     boa build bzip2 --features "[static]" --skip-existing
+      # - name: build zstd
+      #   shell: powershell
+      #   run: |
+      #     boa build zstd --features "[static]" --skip-existing
+      # - name: build yaml-cpp
+      #   shell: powershell
+      #   run: |
+      #     boa build yaml-cpp --features "[static]" --skip-existing
       - name: build reproc
         shell: powershell
         run: |
           boa build reproc --features "[static]" --skip-existing
-      - name: build libarchive
-        shell: powershell
-        run: |
-          boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" --skip-existing
-      - name: build openssl
-        shell: powershell
-        run: |
-          boa build openssl --features "[static]" --skip-existing
-      # - name: build libssh2
+      # - name: build libarchive
       #   shell: powershell
       #   run: |
-      #     boa build libssh2 --features "[static]" --skip-existing
-      - name: build libsolv
-        shell: powershell
-        run: |
-          boa build libsolv --features "[static]" --skip-existing
-      - name: build curl
-        shell: powershell
-        run: |
-          boa build curl --features "[static]" --skip-existing
-      - name: build micromamba
-        shell: powershell
-        run: |
-          boa build micromamba --skip-existing
-      - name: build micromamba-nightly
-        shell: powershell
-        run: |
-          $Env:NIGHTLY_VERSION=Get-Date -F y.M.d.Hmm
-          python micromamba/to_nightly.py
-          boa build micromamba --skip-existing
-      - uses: actions/upload-artifact@v2
-        with:
-          name: micromamba_pkgs
-          path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+      #     boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" --skip-existing
+      # - name: build openssl
+      #   shell: powershell
+      #   run: |
+      #     boa build openssl --features "[static]" --skip-existing
+      # # - name: build libssh2
+      # #   shell: powershell
+      # #   run: |
+      # #     boa build libssh2 --features "[static]" --skip-existing
+      # - name: build libsolv
+      #   shell: powershell
+      #   run: |
+      #     boa build libsolv --features "[static]" --skip-existing
+      # - name: build curl
+      #   shell: powershell
+      #   run: |
+      #     boa build curl --features "[static]" --skip-existing
+      # - name: build micromamba
+      #   shell: powershell
+      #   run: |
+      #     boa build micromamba --skip-existing
+      # - name: build micromamba-nightly
+      #   shell: powershell
+      #   run: |
+      #     $Env:NIGHTLY_VERSION=Get-Date -F y.M.d.Hmm
+      #     python micromamba/to_nightly.py
+      #     boa build micromamba --skip-existing
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: micromamba_pkgs
+      #     path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
 
   #########
   # TESTS #
   #########
 
-  test_bootstrap_osx:
-    needs: [build_libraries_unix]
-    strategy:
-      matrix:
-        os: [macos-10.15]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      - uses: actions/download-artifact@v2
-        with:
-          name: micromamba_pkgs
-          path: ~/micromamba_pkgs
-      - name: Extract micromamba binaries
-        shell: bash -x {0}
-        id: get_micromamba
-        run: |
-          ls -al ~/micromamba_pkgs
-          ls -al ~/micromamba_pkgs/osx-64
-          ls -al ~/micromamba_pkgs/linux-64
-          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
-      - name: get micromamba release
-        shell: bash -l -eo pipefail {0}
-        run: |
-          MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_osx_64 }}"
-          chmod u+x $MAMBA_EXE
-          $MAMBA_EXE shell init -s bash -p ~/microenv
-      - name: make python env
-        shell: bash -l -eo pipefail {0}
-        run: |
-          micromamba create -n py38 python=3.8 wheel -c conda-forge -vvv
-          micromamba activate py38
-          python --version
-          wheel --help
+  # test_bootstrap_osx:
+  #   needs: [build_libraries_unix]
+  #   strategy:
+  #     matrix:
+  #       os: [macos-10.15]
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-python@v2
+  #       with:
+  #         python-version: '3.8'
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         name: micromamba_pkgs
+  #         path: ~/micromamba_pkgs
+  #     - name: Extract micromamba binaries
+  #       shell: bash -x {0}
+  #       id: get_micromamba
+  #       run: |
+  #         ls -al ~/micromamba_pkgs
+  #         ls -al ~/micromamba_pkgs/osx-64
+  #         ls -al ~/micromamba_pkgs/linux-64
+  #         python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
+  #     - name: get micromamba release
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_osx_64 }}"
+  #         chmod u+x $MAMBA_EXE
+  #         $MAMBA_EXE shell init -s bash -p ~/microenv
+  #     - name: make python env
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         micromamba create -n py38 python=3.8 wheel -c conda-forge -vvv
+  #         micromamba activate py38
+  #         python --version
+  #         wheel --help
 
-  test_bootstrap_linux:
-    needs: [build_libraries_unix]
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      - uses: actions/download-artifact@v2
-        with:
-          name: micromamba_pkgs
-          path: ~/micromamba_pkgs
-      - name: Extract micromamba binaries
-        shell: bash -x {0}
-        id: get_micromamba
-        run: |
-          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
+  # test_bootstrap_linux:
+  #   needs: [build_libraries_unix]
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-python@v2
+  #       with:
+  #         python-version: '3.8'
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         name: micromamba_pkgs
+  #         path: ~/micromamba_pkgs
+  #     - name: Extract micromamba binaries
+  #       shell: bash -x {0}
+  #       id: get_micromamba
+  #       run: |
+  #         python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
 
-      - name: get micromamba release
-        shell: bash -l -eo pipefail {0}
-        run: |
-          MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_linux_64 }}"
-          chmod u+x $MAMBA_EXE
-          $MAMBA_EXE shell init -s bash -p ~/microenv
-      - name: run micromamba
-        shell: bash -l -eo pipefail {0}
-        run: |
-          ls -al
-          echo $(pwd)
-          TMP_MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_linux_64 }}"
-          mkdir -p $HOME/mbins
-          cp $TMP_MAMBA_EXE $HOME/mbins/micromamba
-          for TEST_IMAGE_NAME in "ubuntu:20.04" "ubuntu:19.10" "ubuntu:16.04" "ubuntu:18.04" "centos:7" "centos:6" "debian:buster" "fedora:33" "archlinux:latest"; do
-            echo "============= Test installer on ${TEST_IMAGE_NAME} ============="
-            export DOCKER_ARCH="amd64"
-            docker run --rm -v "$HOME/mbins:/construct" \
-              "${DOCKER_ARCH}/${TEST_IMAGE_NAME}" sh -c "/construct/micromamba create -p ~/testenv xtensor -c conda-forge -v --ssl-verify=false"
-          done
+  #     - name: get micromamba release
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_linux_64 }}"
+  #         chmod u+x $MAMBA_EXE
+  #         $MAMBA_EXE shell init -s bash -p ~/microenv
+  #     - name: run micromamba
+  #       shell: bash -l -eo pipefail {0}
+  #       run: |
+  #         ls -al
+  #         echo $(pwd)
+  #         TMP_MAMBA_EXE="${{ steps.get_micromamba.outputs.micromamba_bin_linux_64 }}"
+  #         mkdir -p $HOME/mbins
+  #         cp $TMP_MAMBA_EXE $HOME/mbins/micromamba
+  #         for TEST_IMAGE_NAME in "ubuntu:20.04" "ubuntu:19.10" "ubuntu:16.04" "ubuntu:18.04" "centos:7" "centos:6" "debian:buster" "fedora:33" "archlinux:latest"; do
+  #           echo "============= Test installer on ${TEST_IMAGE_NAME} ============="
+  #           export DOCKER_ARCH="amd64"
+  #           docker run --rm -v "$HOME/mbins:/construct" \
+  #             "${DOCKER_ARCH}/${TEST_IMAGE_NAME}" sh -c "/construct/micromamba create -p ~/testenv xtensor -c conda-forge -v --ssl-verify=false"
+  #         done
 
-  test_bootstrap_win:
-    needs: [build_libraries_win]
-    strategy:
-      matrix:
-        os: [windows-2016, windows-2019]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      - uses: actions/download-artifact@v2
-        with:
-          name: micromamba_pkgs
-          path: ~/micromamba_pkgs
-      - name: Extract micromamba binaries
-        shell: bash -x {0}
-        id: get_micromamba
-        run: |
-          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
-      - name: run micromamba
-        shell: powershell
-        run: |
-          ${{ steps.get_micromamba.outputs.micromamba_bin_win_64 }} create -n test xtensor -c conda-forge
+  # test_bootstrap_win:
+  #   needs: [build_libraries_win]
+  #   strategy:
+  #     matrix:
+  #       os: [windows-2016, windows-2019]
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-python@v2
+  #       with:
+  #         python-version: '3.8'
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         name: micromamba_pkgs
+  #         path: ~/micromamba_pkgs
+  #     - name: Extract micromamba binaries
+  #       shell: bash -x {0}
+  #       id: get_micromamba
+  #       run: |
+  #         python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
+  #     - name: run micromamba
+  #       shell: powershell
+  #       run: |
+  #         ${{ steps.get_micromamba.outputs.micromamba_bin_win_64 }} create -n test xtensor -c conda-forge
 
-  test_release_smoketests:
-    needs: [build_libraries_unix, build_libraries_win]
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
-        with:
-          repository: mamba-org/mamba
-          ref: master
-          path: upstream-mamba
-      - uses: actions/checkout@v2
-        with:
-          repository: conda-incubator/conda-lock
-          ref: main
-          path: conda-lock
-      - uses: actions/download-artifact@v2
-        with:
-          name: micromamba_pkgs
-          path: ~/micromamba_pkgs
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      - name: Extract micromamba-nightly binaries
-        shell: bash -x {0}
-        id: get_micromamba_nightly
-        run: |
-          rm -rf /tmp/micromamba-bins
-          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
-      - name: Install py deps
-        shell: bash
-        run: |
-          python -m pip install pytest requests pyyaml pytest-lazy-fixture
-          python -m pip install git+https://github.com/conda/menuinst@1.4.17
-      - name: Install zsh, xonsh and fish on Linux
-        shell: bash
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get install zsh xonsh fish -y
-      - name: Install fish on macOS
-        shell: bash
-        if: runner.os == 'macOS'
-        run: |
-          brew install fish
-      - name: Run tests on micromamba nightly
-        shell: bash
-        env:
-          RUNNER_OS: ${{ runner.os }}
-        run: |
-          if [[ $RUNNER_OS == "Linux" ]]; then
-            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}
-          elif [[ $RUNNER_OS == "macOS" ]]; then
-            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
-          elif [[ $RUNNER_OS == "Windows" ]]; then
-            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_win_64 }}
-            export IGNORE_TESTS="--ignore=upstream-mamba/micromamba/tests/test_activation.py --ignore=upstream-mamba/micromamba/tests/test_shell.py"
-          fi
-          chmod u+x $TEST_MAMBA_EXE
-          export CONDA_PREFIX=$(pwd)/mambaroot
-          export MAMBA_ROOT_PREFIX=$(pwd)/mambaroot
-          mkdir $CONDA_PREFIX
-          $TEST_MAMBA_EXE install xtensor -c conda-forge
-          pytest upstream-mamba/micromamba/tests $IGNORE_TESTS
+  # test_release_smoketests:
+  #   needs: [build_libraries_unix, build_libraries_win]
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, macos-latest, windows-latest]
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         repository: mamba-org/mamba
+  #         ref: master
+  #         path: upstream-mamba
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         repository: conda-incubator/conda-lock
+  #         ref: main
+  #         path: conda-lock
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         name: micromamba_pkgs
+  #         path: ~/micromamba_pkgs
+  #     - uses: actions/setup-python@v2
+  #       with:
+  #         python-version: '3.8'
+  #     - name: Extract micromamba-nightly binaries
+  #       shell: bash -x {0}
+  #       id: get_micromamba_nightly
+  #       run: |
+  #         rm -rf /tmp/micromamba-bins
+  #         python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
+  #     - name: Install py deps
+  #       shell: bash
+  #       run: |
+  #         python -m pip install pytest requests pyyaml pytest-lazy-fixture
+  #         python -m pip install git+https://github.com/conda/menuinst@1.4.17
+  #     - name: Install zsh, xonsh and fish on Linux
+  #       shell: bash
+  #       if: runner.os == 'Linux'
+  #       run: |
+  #         sudo apt-get install zsh xonsh fish -y
+  #     - name: Install fish on macOS
+  #       shell: bash
+  #       if: runner.os == 'macOS'
+  #       run: |
+  #         brew install fish
+  #     - name: Run tests on micromamba nightly
+  #       shell: bash
+  #       env:
+  #         RUNNER_OS: ${{ runner.os }}
+  #       run: |
+  #         if [[ $RUNNER_OS == "Linux" ]]; then
+  #           export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}
+  #         elif [[ $RUNNER_OS == "macOS" ]]; then
+  #           export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
+  #         elif [[ $RUNNER_OS == "Windows" ]]; then
+  #           export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_win_64 }}
+  #           export IGNORE_TESTS="--ignore=upstream-mamba/micromamba/tests/test_activation.py --ignore=upstream-mamba/micromamba/tests/test_shell.py"
+  #         fi
+  #         chmod u+x $TEST_MAMBA_EXE
+  #         export CONDA_PREFIX=$(pwd)/mambaroot
+  #         export MAMBA_ROOT_PREFIX=$(pwd)/mambaroot
+  #         mkdir $CONDA_PREFIX
+  #         $TEST_MAMBA_EXE install xtensor -c conda-forge
+  #         pytest upstream-mamba/micromamba/tests $IGNORE_TESTS
 
-      - name: Run conda-lock tests
-        shell: bash
-        continue-on-error: true
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        run: |
+  #     - name: Run conda-lock tests
+  #       shell: bash
+  #       continue-on-error: true
+  #       if: runner.os == 'Linux' || runner.os == 'macOS'
+  #       run: |
 
-          if [[ $RUNNER_OS == "Linux" ]]; then
-            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}
-          elif [[ $RUNNER_OS == "macOS" ]]; then
-            export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
-          fi
+  #         if [[ $RUNNER_OS == "Linux" ]]; then
+  #           export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}
+  #         elif [[ $RUNNER_OS == "macOS" ]]; then
+  #           export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
+  #         fi
 
-          mv $TEST_MAMBA_EXE ./micromamba
+  #         mv $TEST_MAMBA_EXE ./micromamba
 
-          export CONDA_PREFIX=$(pwd)/mambaroot
-          export MAMBA_ROOT_PREFIX=$(pwd)/mambaroot
-          mkdir -p $CONDA_PREFIX
-          export PATH=$(pwd):$CONDA_PREFIX/bin/:$PATH
+  #         export CONDA_PREFIX=$(pwd)/mambaroot
+  #         export MAMBA_ROOT_PREFIX=$(pwd)/mambaroot
+  #         mkdir -p $CONDA_PREFIX
+  #         export PATH=$(pwd):$CONDA_PREFIX/bin/:$PATH
 
-          ./micromamba install mamba pip pytest-cov pytest-xdist -c conda-forge
+  #         ./micromamba install mamba pip pytest-cov pytest-xdist -c conda-forge
 
-          cd conda-lock
-          python -m pip install ensureconda==1.2.1
-          python -m pip install -r requirements.txt
-          python -m pip install -r requirements-dev.txt
-          python -m pip install .
+  #         cd conda-lock
+  #         python -m pip install ensureconda==1.2.1
+  #         python -m pip install -r requirements.txt
+  #         python -m pip install -r requirements-dev.txt
+  #         python -m pip install .
 
-          cp -a tests "${RUNNER_TEMP}/"
-          pushd "${RUNNER_TEMP}"
-          export TMPDIR="${RUNNER_TEMP}"
+  #         cp -a tests "${RUNNER_TEMP}/"
+  #         pushd "${RUNNER_TEMP}"
+  #         export TMPDIR="${RUNNER_TEMP}"
 
-          pytest --showlocals -vrsx --cov=conda_lock tests
+  #         pytest --showlocals -vrsx --cov=conda_lock tests
 
-  make_release_and_upload:
-    needs: [test_release_smoketests, test_bootstrap_win, test_bootstrap_linux, test_bootstrap_osx]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-      - uses: actions/download-artifact@v2
-        with:
-          name: micromamba_pkgs
-          path: ~/micromamba_pkgs
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date_now::$(date +'%Y.%m.%d.%H%M')"
-      - name: Extract micromamba binaries
-        shell: bash -x {0}
-        id: get_micromamba
-        run: |
-          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba
-      - uses: mukunku/tag-exists-action@v1.0.0
-        id: check_if_release_exists
-        with:
-          tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "Release ${{ steps.get_micromamba.outputs.micromamba_version }} exists ${{ steps.check_if_release_exists.outputs.exists }}"
-      - uses: ncipollo/release-action@v1
-        if: steps.check_if_release_exists.outputs.exists == 'false'
-        with:
-          artifacts: "/tmp/micromamba-bins/*"
-          tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
-          name: micromamba ${{ steps.get_micromamba.outputs.micromamba_version }}
-          body: |
-            Release of micromamba
+  # make_release_and_upload:
+  #   needs: [test_release_smoketests, test_bootstrap_win, test_bootstrap_linux, test_bootstrap_osx]
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/master'
+  #   steps:
+  #     - uses: actions/checkout@v1
+  #     - uses: actions/setup-python@v2
+  #       with:
+  #         python-version: '3.x'
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         name: micromamba_pkgs
+  #         path: ~/micromamba_pkgs
+  #     - name: Get current date
+  #       id: date
+  #       run: echo "::set-output name=date_now::$(date +'%Y.%m.%d.%H%M')"
+  #     - name: Extract micromamba binaries
+  #       shell: bash -x {0}
+  #       id: get_micromamba
+  #       run: |
+  #         python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba
+  #     - uses: mukunku/tag-exists-action@v1.0.0
+  #       id: check_if_release_exists
+  #       with:
+  #         tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - run: echo "Release ${{ steps.get_micromamba.outputs.micromamba_version }} exists ${{ steps.check_if_release_exists.outputs.exists }}"
+  #     - uses: ncipollo/release-action@v1
+  #       if: steps.check_if_release_exists.outputs.exists == 'false'
+  #       with:
+  #         artifacts: "/tmp/micromamba-bins/*"
+  #         tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
+  #         name: micromamba ${{ steps.get_micromamba.outputs.micromamba_version }}
+  #         body: |
+  #           Release of micromamba
 
-            Version: ${{ steps.get_micromamba.outputs.micromamba_version }}
+  #           Version: ${{ steps.get_micromamba.outputs.micromamba_version }}
 
-            Checksums:
-              linux-64:      ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_64 }}
-              linux-aarch64: ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_aarch64 }}
-              osx-64:        ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_64 }}
-              osx-arm64:     ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_arm64 }}
-              win-64:        ${{ steps.get_micromamba.outputs.micromamba_sha_val_win_64 }}
+  #           Checksums:
+  #             linux-64:      ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_64 }}
+  #             linux-aarch64: ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_aarch64 }}
+  #             osx-64:        ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_64 }}
+  #             osx-arm64:     ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_arm64 }}
+  #             win-64:        ${{ steps.get_micromamba.outputs.micromamba_sha_val_win_64 }}
 
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract micromamba-nightly binaries
-        shell: bash -x {0}
-        id: get_micromamba_nightly
-        run: |
-          rm -rf /tmp/micromamba-bins
-          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
-      - uses: ncipollo/release-action@v1
-        with:
-          artifacts: "/tmp/micromamba-bins/*"
-          tag: micromamba-nightly-${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
-          name: micromamba nightly ${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
-          prerelease: true
-          body: |
-            Nightly release of micromamba
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Extract micromamba-nightly binaries
+  #       shell: bash -x {0}
+  #       id: get_micromamba_nightly
+  #       run: |
+  #         rm -rf /tmp/micromamba-bins
+  #         python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba-nightly
+  #     - uses: ncipollo/release-action@v1
+  #       with:
+  #         artifacts: "/tmp/micromamba-bins/*"
+  #         tag: micromamba-nightly-${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
+  #         name: micromamba nightly ${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
+  #         prerelease: true
+  #         body: |
+  #           Nightly release of micromamba
 
-            Version: ${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
+  #           Version: ${{ steps.get_micromamba_nightly.outputs.micromamba_version }}
 
-            Checksums:
-              linux-64:      ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_linux_64 }}
-              linux-aarch64: ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_linux_aarch64 }}
-              osx-64:        ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_osx_64 }}
-              osx-arm64:     ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_osx_arm64 }}
-              win-64:        ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_win_64 }}
+  #           Checksums:
+  #             linux-64:      ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_linux_64 }}
+  #             linux-aarch64: ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_linux_aarch64 }}
+  #             osx-64:        ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_osx_64 }}
+  #             osx-arm64:     ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_osx_arm64 }}
+  #             win-64:        ${{ steps.get_micromamba_nightly.outputs.micromamba_sha_val_win_64 }}
 
 
-          token: ${{ secrets.GITHUB_TOKEN }}
+  #         token: ${{ secrets.GITHUB_TOKEN }}
