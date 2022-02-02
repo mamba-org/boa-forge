@@ -16,7 +16,3 @@ for data in location.iterdir():
     strFile = str(data)
     if strFile.endswith('tar.bz2'):
         oras.push(target_platform, data)
-
-
-
-
