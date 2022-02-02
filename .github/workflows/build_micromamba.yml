@@ -60,49 +60,49 @@ jobs:
         run: |
           boa build libiconv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
         if: runner.os == 'macOS'
-      - name: build zlib
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build zlib --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build zstd
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build zstd --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build yaml-cpp
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build yaml-cpp --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build reproc
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build reproc --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build libarchive
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libarchive \
-              --skip-existing \
-              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
-              --target-platform $TARGET_PLATFORM
-      - name: build openssl
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build openssl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build libssh2
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libssh2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-#      - name: build libsolv
+#      - name: build zlib
 #        shell: bash -l -eo pipefail {0}
 #        run: |
-#          boa build libsolv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-#      - name: build curl
+#          boa build zlib --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build zstd
 #        shell: bash -l -eo pipefail {0}
 #        run: |
-#          boa build curl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-#      - name: build micromamba
+#          boa build zstd --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build yaml-cpp
 #        shell: bash -l -eo pipefail {0}
 #        run: |
-#          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
+#          boa build yaml-cpp --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build reproc
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build reproc --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build libarchive
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build libarchive \
+#              --skip-existing \
+#              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
+#              --target-platform $TARGET_PLATFORM
+#      - name: build openssl
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build openssl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build libssh2
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build libssh2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+##      - name: build libsolv
+##        shell: bash -l -eo pipefail {0}
+##        run: |
+##          boa build libsolv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+##      - name: build curl
+##        shell: bash -l -eo pipefail {0}
+##        run: |
+##          boa build curl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+##      - name: build micromamba
+##        shell: bash -l -eo pipefail {0}
+##        run: |
+##          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -113,128 +113,128 @@ jobs:
           echo ${{ secrets.GITHUB_TOKEN }} | oras login https://ghcr.io -u ${{ env.GITHUB_OWNER }} --password-stdin
           python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX}
         if: always()
-#
-#
-#  build_libraries_win:
-#    runs-on: [windows-latest]
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: install mamba
-#        uses: mamba-org/provision-with-micromamba@main
-#      - name: generate cache timestamp
-#        id: cache_timestamp
-#        shell: bash -l {0}
-#        run: echo ::set-output name=timestamp::"$(TZ=UTC date +%F)"
-#      - name: Cache build outputs
-#        uses: actions/cache@v2
-#        with:
-#          path: |
-#            ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
-#          key: build-cache2-${{ runner.os }}-${{ matrix.target_platform }}-${{ steps.cache_timestamp.outputs.timestamp }}
-#      - name: create .condarc
-#        shell: bash -l -eo pipefail {0}
-#        run: |
-#          cat > ~/.condarc <<EOL
-#          channels:
-#            - conda-forge
-#            - defaults
-#          EOL
-#
-#          micromamba remove boa --no-prune
-#          python -m pip install git+https://github.com/mamba-org/boa@master
-#
-#      - name: build zlib
-#        shell: powershell
-#        run: |
-#          boa build zlib --features "[static]" --skip-existing
-#      - name: build bzip2
-#        shell: powershell
-#        run: |
-#          boa build bzip2 --features "[static]" --skip-existing
-#      - name: build zstd
-#        shell: powershell
-#        run: |
-#          boa build zstd --features "[static]" --skip-existing
-#      - name: build yaml-cpp
-#        shell: powershell
-#        run: |
-#          boa build yaml-cpp --features "[static]" --skip-existing
-#      - name: build reproc
-#        shell: powershell
-#        run: |
-#          boa build reproc --features "[static]" --skip-existing
-#      - name: build libarchive
-#        shell: powershell
-#        run: |
-#          boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" --skip-existing
-#      - name: build openssl
-#        shell: powershell
-#        run: |
-#          boa build openssl --features "[static]" --skip-existing
-#      - name: build libsolv
-#        shell: powershell
-#        run: |
-#          boa build libsolv --features "[static]" --skip-existing
-#      - name: build curl
-#        shell: powershell
-#        run: |
-#          boa build curl --features "[static]" --skip-existing
-#      - name: build micromamba
-#        shell: powershell
-#        run: |
-#          boa build micromamba --skip-existing
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: micromamba_pkgs
-#          path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
-#      
-#
-#  make_release_and_upload:
-#    needs: [build_libraries_unix, build_libraries_win]
-#    runs-on: ubuntu-latest
-#    if: github.ref == 'refs/heads/master'
-#    steps:
-#      - uses: actions/checkout@v1
-#      - uses: actions/setup-python@v2
-#        with:
-#          python-version: '3.x'
-#      - uses: actions/download-artifact@v2
-#        with:
-#          name: micromamba_pkgs
-#          path: ~/micromamba_pkgs
-#      - name: Get current date
-#        id: date
-#        run: echo "::set-output name=date_now::$(date +'%Y.%m.%d.%H%M')"
-#      - name: Extract micromamba binaries
-#        shell: bash -x {0}
-#        id: get_micromamba
-#        run: |
-#          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba
-#      - uses: mukunku/tag-exists-action@v1.0.0
-#        id: check_if_release_exists
-#        with:
-#          tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      - run: echo "Release ${{ steps.get_micromamba.outputs.micromamba_version }} exists ${{ steps.check_if_release_exists.outputs.exists }}"
-#      - uses: ncipollo/release-action@v1
-#        if: steps.check_if_release_exists.outputs.exists == 'false'
-#        with:
-#          artifacts: "/tmp/micromamba-bins/*"
-#          tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
-#          name: micromamba ${{ steps.get_micromamba.outputs.micromamba_version }}
-#          body: |
-#            Release of micromamba
-#
-#            Version: ${{ steps.get_micromamba.outputs.micromamba_version }}
-#
-#            Checksums:
-#              linux-64:      ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_64 }}
-#              linux-aarch64: ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_aarch64 }}
-#              osx-64:        ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_64 }}
-#              osx-arm64:     ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_arm64 }}
-#              win-64:        ${{ steps.get_micromamba.outputs.micromamba_sha_val_win_64 }}
-#
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#
-#        
+##
+##
+##  build_libraries_win:
+##    runs-on: [windows-latest]
+##    steps:
+##      - uses: actions/checkout@v2
+##      - name: install mamba
+##        uses: mamba-org/provision-with-micromamba@main
+##      - name: generate cache timestamp
+##        id: cache_timestamp
+##        shell: bash -l {0}
+##        run: echo ::set-output name=timestamp::"$(TZ=UTC date +%F)"
+##      - name: Cache build outputs
+##        uses: actions/cache@v2
+##        with:
+##          path: |
+##            ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
+##          key: build-cache2-${{ runner.os }}-${{ matrix.target_platform }}-${{ steps.cache_timestamp.outputs.timestamp }}
+##      - name: create .condarc
+##        shell: bash -l -eo pipefail {0}
+##        run: |
+##          cat > ~/.condarc <<EOL
+##          channels:
+##            - conda-forge
+##            - defaults
+##          EOL
+##
+##          micromamba remove boa --no-prune
+##          python -m pip install git+https://github.com/mamba-org/boa@master
+##
+##      - name: build zlib
+##        shell: powershell
+##        run: |
+##          boa build zlib --features "[static]" --skip-existing
+##      - name: build bzip2
+##        shell: powershell
+##        run: |
+##          boa build bzip2 --features "[static]" --skip-existing
+##      - name: build zstd
+##        shell: powershell
+##        run: |
+##          boa build zstd --features "[static]" --skip-existing
+##      - name: build yaml-cpp
+##        shell: powershell
+##        run: |
+##          boa build yaml-cpp --features "[static]" --skip-existing
+##      - name: build reproc
+##        shell: powershell
+##        run: |
+##          boa build reproc --features "[static]" --skip-existing
+##      - name: build libarchive
+##        shell: powershell
+##        run: |
+##          boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" --skip-existing
+##      - name: build openssl
+##        shell: powershell
+##        run: |
+##          boa build openssl --features "[static]" --skip-existing
+##      - name: build libsolv
+##        shell: powershell
+##        run: |
+##          boa build libsolv --features "[static]" --skip-existing
+##      - name: build curl
+##        shell: powershell
+##        run: |
+##          boa build curl --features "[static]" --skip-existing
+##      - name: build micromamba
+##        shell: powershell
+##        run: |
+##          boa build micromamba --skip-existing
+##      - uses: actions/upload-artifact@v2
+##        with:
+##          name: micromamba_pkgs
+##          path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+##      
+##
+##  make_release_and_upload:
+##    needs: [build_libraries_unix, build_libraries_win]
+##    runs-on: ubuntu-latest
+##    if: github.ref == 'refs/heads/master'
+##    steps:
+##      - uses: actions/checkout@v1
+##      - uses: actions/setup-python@v2
+##        with:
+##          python-version: '3.x'
+##      - uses: actions/download-artifact@v2
+##        with:
+##          name: micromamba_pkgs
+##          path: ~/micromamba_pkgs
+##      - name: Get current date
+##        id: date
+##        run: echo "::set-output name=date_now::$(date +'%Y.%m.%d.%H%M')"
+##      - name: Extract micromamba binaries
+##        shell: bash -x {0}
+##        id: get_micromamba
+##        run: |
+##          python $GITHUB_WORKSPACE/get_latest_conda_package.py micromamba
+##      - uses: mukunku/tag-exists-action@v1.0.0
+##        id: check_if_release_exists
+##        with:
+##          tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
+##        env:
+##          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+##      - run: echo "Release ${{ steps.get_micromamba.outputs.micromamba_version }} exists ${{ steps.check_if_release_exists.outputs.exists }}"
+##      - uses: ncipollo/release-action@v1
+##        if: steps.check_if_release_exists.outputs.exists == 'false'
+##        with:
+##          artifacts: "/tmp/micromamba-bins/*"
+##          tag: micromamba-${{ steps.get_micromamba.outputs.micromamba_version }}
+##          name: micromamba ${{ steps.get_micromamba.outputs.micromamba_version }}
+##          body: |
+##            Release of micromamba
+##
+##            Version: ${{ steps.get_micromamba.outputs.micromamba_version }}
+##
+##            Checksums:
+##              linux-64:      ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_64 }}
+##              linux-aarch64: ${{ steps.get_micromamba.outputs.micromamba_sha_val_linux_aarch64 }}
+##              osx-64:        ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_64 }}
+##              osx-arm64:     ${{ steps.get_micromamba.outputs.micromamba_sha_val_osx_arm64 }}
+##              win-64:        ${{ steps.get_micromamba.outputs.micromamba_sha_val_win_64 }}
+##
+##          token: ${{ secrets.GITHUB_TOKEN }}
+##
+##        
