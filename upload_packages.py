@@ -3,8 +3,8 @@ from pathlib import Path
 from oras import Oras
 #initializations 
 owner = sys.argv[1]
-target_platform = str (sys.arg[2])
-conda_prefix = sys.arg[3]
+target_platform = str (sys.argv[2])
+conda_prefix = sys.argv[3]
 
 oras = Oras (owner, conda_prefix)
 
