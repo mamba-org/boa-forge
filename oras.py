@@ -23,7 +23,8 @@ class Oras:
         pkg_name, tag = getName_andTag(pkg)
 
         # upload the tar_bz2 file to the right url
-        push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {data}:application/octet-stream"
+        strData = str(data)
+        push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {strData}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
 
         logging.warning(f"Uploading <<{pkg_name}>> (from dir: << {self.conda_prefix} >> to link: <<{upload_url}>>")
