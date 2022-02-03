@@ -26,9 +26,11 @@ class Oras:
         strData = str(data)
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {strData}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
-        curr = Path.cwd()
-        logging.warning(f"Uploading <<{pkg_name}>> (from dir: << {self.conda_prefix} >> to link: <<{upload_url}>>")
-        logging.warning(f"current dir is <<{curr}>>")
+        cur = Path.cwd(data)
+        origin = "./" + pkg
+
+        logging.warning(f"Uploading <<{pkg}>>. path <<{origin} (from dir: << {self.conda_prefix} >> to link: <<{upload_url}>>")
+        logging.warning(f"current dir is <<{cur}>>")
         subprocess.run("ls -al", shell=True)
         subprocess.run(push_bz2, shell=True)
         logging.warning(f"Package <<{pkg_name}>> uploaded to: <<{upload_url}>>")
