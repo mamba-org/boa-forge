@@ -1,6 +1,8 @@
 import logging
 import subprocess
 from pathlib import Path
+from os import chdir
+
 
 def getName_andTag(pkg):
     name, version, hash = pkg.rsplit('-', 2)
@@ -26,7 +28,7 @@ class Oras:
         strData = str(data)
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {strData}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
-        Path.cwd(data)
+        chdir(data)
         cur = Path.cwd()
         origin = "./" + pkg
 
