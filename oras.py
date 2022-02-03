@@ -26,7 +26,8 @@ class Oras:
         strData = str(data)
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {strData}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
-        cur = Path.cwd(data)
+        Path.cwd(data)
+        cur = Path.cwd()
         origin = "./" + pkg
 
         logging.warning(f"Uploading <<{pkg}>>. path <<{origin} (from dir: << {self.conda_prefix} >> to link: <<{upload_url}>>")
