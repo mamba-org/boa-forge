@@ -28,11 +28,22 @@ class Oras:
         self.owner = github_owner
         self.conda_prefix = origin
         self.token = user_token
-        strSys = str(system)
-        logging.warning(f"Host is <<{strSys}>>")
-        if "osx" in strSys:
+        self.strSys = str(system)
+        logging.warning(f"Host is <<{self.strSys}>>")
+        if "osx" in self.strSys:
             install_on_OS()
-    
+
+
+    def __init__(self, github_owner, origin, system):
+        self.owner = github_owner
+        self.conda_prefix = origin
+        self.token = ""
+        self.strSys = str(system)
+#        logging.warning(f"Host is <<{self.strSys}>>")
+#        if "osx" in self.strSys:
+#           install_on_OS()
+
+
     def login(self):
         loginStr = f"echo {self.token} | oras login https://ghcr.io -u {self.owner} --password-stdin"
         subprocess.run(loginStr, shell=True)
@@ -43,17 +54,24 @@ class Oras:
         length = len(strData) - len(pkg)
         path = strData[:length]
         pkg_name, tag = getName_andTag(pkg)
-
         origin = "./" + pkg
 
         # upload the tar_bz2 file to the right url
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {origin}:application/octet-stream"
+        push_bz2_latest = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:latest {origin}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
         logging.warning(f"Cmd <<{push_bz2}>>")
         chdir(path)
         cur = Path.cwd()
-        
 
         logging.warning(f"Uploading <<{pkg}>>. path <<{origin} (from dir: << {self.conda_prefix} >> to link: <<{upload_url}>>")
         subprocess.run(push_bz2, shell=True)
+        subprocess.run(push_bz2_latest, shell=True)
         logging.warning(f"Package <<{pkg_name}>> uploaded to: <<{upload_url}>>")
+
+    def pull (self,pkg,tag, dir):
+        pullCmd = f"oras pull ghcr.io/{self.owner}/samples/{self.strSys}/{pkg}:{tag} --output {dir} -t \"application/octet-stream\""
+        
+        logging.warning(f"Pulling lattest of  <<{pkg}>>. with command: <<{pullCmd}>>")
+        subprocess.run(pullCmd, shell=True)
+        logging.warning(f"Latest version of  <<{pkg}>> pulled")
