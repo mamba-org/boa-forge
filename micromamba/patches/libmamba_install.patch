@@ -3,7 +3,7 @@ index 5f9ac91..dbc5bcd 100644
 --- a/libmamba/CMakeLists.txt
 +++ b/libmamba/CMakeLists.txt
 @@ -434,49 +434,3 @@ endif()
- 
+
  # Installation
  # ============
 -

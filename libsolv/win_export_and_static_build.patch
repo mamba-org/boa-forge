@@ -4,13 +4,13 @@ index f01c0238..48bdd1a1 100644
 +++ b/ext/CMakeLists.txt
 @@ -162,6 +162,9 @@ IF (WIN32)
  ENDIF ()
- 
+
  SET_TARGET_PROPERTIES(libsolvext PROPERTIES OUTPUT_NAME "solvext")
 +if (MSVC AND DISABLE_SHARED AND ENABLE_STATIC)
 +    SET_TARGET_PROPERTIES(libsolvext PROPERTIES OUTPUT_NAME "solvext_static")
 +endif()
  SET_TARGET_PROPERTIES(libsolvext PROPERTIES SOVERSION ${LIBSOLVEXT_SOVERSION})
- 
+
  INSTALL (FILES ${libsolvext_HEADERS} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/solv")
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 index bbf30bac..17b65eb3 100644
@@ -18,23 +18,23 @@ index bbf30bac..17b65eb3 100644
 +++ b/src/CMakeLists.txt
 @@ -62,6 +62,10 @@ IF (WIN32)
  ENDIF (WIN32)
- 
+
  SET_TARGET_PROPERTIES(libsolv PROPERTIES OUTPUT_NAME "solv")
 +if (MSVC AND DISABLE_SHARED AND ENABLE_STATIC)
 +    SET_TARGET_PROPERTIES(libsolv PROPERTIES OUTPUT_NAME "solv_static")
 +endif()
 +
  SET_TARGET_PROPERTIES(libsolv PROPERTIES SOVERSION ${LIBSOLV_SOVERSION})
- 
+
  INSTALL (FILES ${libsolv_HEADERS} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/solv")
 diff --git a/src/solvversion.c b/src/solvversion.c
 index d66e1958..7124c93e 100644
 --- a/src/solvversion.c
 +++ b/src/solvversion.c
 @@ -7,7 +7,7 @@
- 
+
  #include "solvversion.h"
- 
+
 -const char solv_version[] = LIBSOLV_VERSION_STRING;
 -int solv_version_major = LIBSOLV_VERSION_MAJOR;
 -int solv_version_minor = LIBSOLV_VERSION_MINOR;
@@ -50,7 +50,7 @@ index 43b566a1..dea09dc9 100644
 @@ -19,10 +19,17 @@
  #define LIBSOLV_VERSION_PATCH @LIBSOLV_PATCH@
  #define LIBSOLV_VERSION (LIBSOLV_VERSION_MAJOR * 10000 + LIBSOLV_VERSION_MINOR * 100 + LIBSOLV_VERSION_PATCH)
- 
+
 -extern const char solv_version[];
 -extern int solv_version_major;
 -extern int solv_version_minor;
@@ -66,7 +66,7 @@ index 43b566a1..dea09dc9 100644
 +SOLV_API extern int solv_version_major;
 +SOLV_API extern int solv_version_minor;
 +SOLV_API extern int solv_version_patch;
- 
+
  #cmakedefine LIBSOLV_FEATURE_LINKED_PKGS
  #cmakedefine LIBSOLV_FEATURE_COMPLEX_DEPS
 diff --git a/win32/CMakeLists.txt b/win32/CMakeLists.txt

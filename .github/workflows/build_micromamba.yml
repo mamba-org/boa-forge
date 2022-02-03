@@ -26,7 +26,7 @@ jobs:
     env:
       TARGET_PLATFORM: ${{ matrix.target_platform }}
       GITHUB_OWNER: ${{ github.actor }}
-      
+
     steps:
       - uses: actions/checkout@v2
       - name: install mamba
@@ -56,7 +56,7 @@ jobs:
         run: |
           python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
         if: always()
-        
+
       - name: build bzip2
         shell: bash -l -eo pipefail {0}
         run: |
@@ -193,7 +193,7 @@ jobs:
 ##        with:
 ##          name: micromamba_pkgs
 ##          path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
-##      
+##
 ##
 ##  make_release_and_upload:
 ##    needs: [build_libraries_unix, build_libraries_win]
@@ -243,4 +243,4 @@ jobs:
 ##
 ##          token: ${{ secrets.GITHUB_TOKEN }}
 ##
-##        
+##

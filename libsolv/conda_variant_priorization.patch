@@ -18,7 +18,7 @@ index c02d2373..d6354cd2 100644
 @@ -833,6 +833,79 @@ move_installed_to_front(Pool *pool, Queue *plist)
      }
  }
- 
+
 +/*
 + * prune_to_best_version
 + *
@@ -50,7 +50,7 @@ index c02d2373..d6354cd2 100644
 +      s = pool->solvables + plist->elements[i];
 +
 +      POOL_DEBUG(SOLV_DEBUG_POLICY, "- %s [%d]%s\n",
-+		 pool_solvable2str(pool, s), plist->elements[i], 
++		 pool_solvable2str(pool, s), plist->elements[i],
 +		 (pool->installed && s->repo == pool->installed) ? "I" : "");
 +
 +      if (!best)		/* if no best yet, the current is best */
@@ -66,8 +66,8 @@ index c02d2373..d6354cd2 100644
 +          best = s;		/* take current as new best */
 +          continue;
 +        }
-+     
-+      r = 0; 
++
++      r = 0;
 +      if (r == 0)
 +        r = best->evr != s->evr ? pool_evrcmp(pool, best->evr, s->evr, EVRCMP_COMPARE) : 0;
 +#ifdef ENABLE_LINKED_PKGS
@@ -114,7 +114,7 @@ index c02d2373..d6354cd2 100644
 +    queue_push(&tmp, p);
 +
 +  // set intersection, assuming sorted arrays
-+  while (i < prev->count && j < tmp.count) 
++  while (i < prev->count && j < tmp.count)
 +    if (prev->elements[i] < tmp.elements[j])
 +      i++;
 +    else if (tmp.elements[j] < prev->elements[i])
@@ -195,7 +195,7 @@ index c02d2373..d6354cd2 100644
 +        *all_have_trackfeatures = 0;
 +        break;
 +      }
-+  
++
 +  for (int i = 0; i < selection.count; ++i)
 +  {
 +    stmp = pool_id2solvable(pool, selection.elements[i]);
@@ -253,7 +253,7 @@ index c02d2373..d6354cd2 100644
 +    if (b1 == 0 || b2 == 0)
 +      continue;
 +
-+    // if one has deps with track features, and the other does not, 
++    // if one has deps with track features, and the other does not,
 +    // downweight the one with track features
 +    if (aht_1 != aht_2)
 +      comparison_result += (aht_1 - aht_2) * 100;
@@ -297,9 +297,9 @@ index c02d2373..d6354cd2 100644
 +  POOL_DEBUG(SOLV_DEBUG_POLICY, "Selecting variant [%c] of (a) %s vs (b) %s (score: %d)\n",
 +             (res < 0 ? 'a' : 'b'), pool_solvable2str(pool, sa), pool_solvable2str(pool, sb), res);
 +
-+  return res; 
++  return res;
 +}
- 
+
  /*
 - * prune_to_best_version
 + * prune_to_best_version_conda
@@ -313,24 +313,24 @@ index c02d2373..d6354cd2 100644
  {
    int i, j, r;
    Solvable *s, *best;
- 
+
 -  if (plist->count < 2)		/* no need to prune for a single entry */
 +  if (plist->count < 2)         /* no need to prune for a single entry */
      return;
 -  POOL_DEBUG(SOLV_DEBUG_POLICY, "prune_to_best_version %d\n", plist->count);
 +  POOL_DEBUG(SOLV_DEBUG_POLICY, "prune_to_best_version_conda %d\n", plist->count);
- 
+
    /* sort by name first, prefer installed */
    solv_sort(plist->elements, plist->count, sizeof(Id), prune_to_best_version_sortcmp, pool);
 @@ -891,10 +1162,10 @@ prune_to_best_version(Pool *pool, Queue *plist)
        s = pool->solvables + plist->elements[i];
- 
+
        POOL_DEBUG(SOLV_DEBUG_POLICY, "- %s [%d]%s\n",
--		 pool_solvable2str(pool, s), plist->elements[i], 
+-		 pool_solvable2str(pool, s), plist->elements[i],
 -		 (pool->installed && s->repo == pool->installed) ? "I" : "");
-+                 pool_solvable2str(pool, s), plist->elements[i], 
++                 pool_solvable2str(pool, s), plist->elements[i],
 +                 (pool->installed && s->repo == pool->installed) ? "I" : "");
- 
+
 -      if (!best)		/* if no best yet, the current is best */
 +      if (!best)                /* if no best yet, the current is best */
          {
@@ -344,8 +344,8 @@ index c02d2373..d6354cd2 100644
 +          best = s;             /* take current as new best */
            continue;
          }
-      
-       r = 0; 
+
+       r = 0;
 -#ifdef ENABLE_CONDA
 -      if (pool->disttype == DISTTYPE_CONDA)
 -        r = pool_featurecountcmp(pool, best, s);
@@ -381,7 +381,7 @@ index c02d2373..d6354cd2 100644
      }
 -  plist->elements[j++] = best - pool->solvables;	/* finish last group */
 -  plist->count = j;
- 
+
 -  /* we reduced the list to one package per name, now look at
 -   * package obsoletes */
 -  if (plist->count > 1)
@@ -405,7 +405,7 @@ index c02d2373..d6354cd2 100644
 +        queue_push(&q, s - pool->solvables);
      }
 -}
- 
+
 +  if (q.count > 1)
 +    {
 +      // order by first-level deps
@@ -419,7 +419,7 @@ index c02d2373..d6354cd2 100644
 +  queue_free(&q);
 +}
 +#endif  // ENABLE_CONDA
- 
+
  static int
  sort_by_name_evr_sortcmp(const void *ap, const void *bp, void *dp)
 diff --git a/src/policy.h b/src/policy.h
@@ -429,10 +429,10 @@ index 3ae1005a..a79483a4 100644
 @@ -45,6 +45,9 @@ extern void pool_best_solvables(Pool *pool, Queue *plist, int flags);
  extern void prune_to_best_version(Pool *pool, Queue *plist);
  extern void policy_prefer_favored(Solver *solv, Queue *plist);
- 
+
 +#ifdef ENABLE_CONDA
 +extern void prune_to_best_version_conda(Pool *pool, Queue *plist);
 +#endif
- 
+
  #ifdef __cplusplus
  }

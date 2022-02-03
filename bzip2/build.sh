@@ -21,4 +21,3 @@ else
     fi
     rm -rf $PREFIX/lib/libbz2.a
 fi
-

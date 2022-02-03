@@ -5,7 +5,7 @@ index a78d0dc..407e3b1 100644
 @@ -201,36 +201,29 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
                  libcurl.a
                  libssh2.a
- 
+
 -                libgssapi_krb5.a
 -                libkrb5.a
 -                libk5crypto.a
@@ -14,9 +14,9 @@ index a78d0dc..407e3b1 100644
 -
                  libssl.a
                  libcrypto.a
- 
+
                  libarchive.a
- 
+
 -                libiconv.a
                  libbz2.a
 -                liblz4.a
@@ -24,18 +24,18 @@ index a78d0dc..407e3b1 100644
                  libz.a
 -                liblzma.a
 -                liblzo2.a
- 
+
                  libsolv.a
                  libsolvext.a
- 
+
 -                libnghttp2.a
 -
                  libyaml-cpp.a
- 
+
                  libreproc++.a
                  libreproc.a
              )
- 
+
 +            if (APPLE)
 +                list(APPEND REQUIRED_STATIC_DEPS libiconv.a)
 +                list(REMOVE_ITEM REQUIRED_STATIC_DEPS libssl.a)
@@ -54,11 +54,11 @@ index a78d0dc..407e3b1 100644
 +                message("Found library:\n  - ${SECURITY_LIBRARY}\n  - ${COREFOUNDATION_LIBRARY}\n  - ${SYSTEMCONFIGURATION_LIBRARY}")
 +                list(APPEND STATIC_DEPS ${COREFOUNDATION_LIBRARY} ${SECURITY_LIBRARY} ${SYSTEMCONFIGURATION_LIBRARY})
              endif()
- 
+
              message("   -> Found static dependencies:")
 @@ -267,48 +261,34 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
              set(CMAKE_PREFIX_PATH "$ENV{VCPKG_ROOT}/installed/x64-windows-static/")
- 
+
              # For Windows we have a vcpkg based build system right now.
 -            find_package(LibArchive REQUIRED)
 +            find_library(LIBARCHIVE_LIBRARY archive_static.lib)
@@ -78,7 +78,7 @@ index a78d0dc..407e3b1 100644
 +            find_library(LIBZSTD_LIBRARY NAMES zstd_static.lib)
 +            find_library(BZIP2_LIBRARIES NAMES bz2.lib)
 +            find_library(CRYPTO_LIBRARIES NAMES libcrypto_static)
- 
+
 -            find_library(LIBXML2_LIBRARY NAMES libxml2)
 -            find_library(ICONV_LIBRARY NAMES libiconv)
 -            find_library(CHARSET_LIBRARY NAMES libcharset)
@@ -86,7 +86,7 @@ index a78d0dc..407e3b1 100644
 +            find_library(LIBSOLV_STATIC_LIBRARIES NAMES solv_static)
 +            find_library(LIBSOLVEXT_STATIC_LIBRARIES NAMES solvext_static)
 +            find_package(reproc++ CONFIG REQUIRED)
- 
+
              target_link_libraries(${target_name} PUBLIC
                  ${CRYPTO_LIBRARIES}
 -                ${LibArchive_LIBRARY}
@@ -112,7 +112,7 @@ index a78d0dc..407e3b1 100644
                  reproc++
 -                reproc
              )
- 
+
 -            add_definitions("-DLIBARCHIVE_STATIC -DCURL_STATICLIB -DSOLV_BUILD_STATIC")
 +            add_definitions("-DLIBARCHIVE_STATIC -DCURL_STATICLIB -DSOLV_STATIC_LIB")
              set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")

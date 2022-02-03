@@ -14,4 +14,3 @@ fi
 # remove the static libraries
 rm ${PREFIX}/lib/libcrypto.a
 rm ${PREFIX}/lib/libssl.a
-

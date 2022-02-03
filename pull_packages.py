@@ -1,59 +1,40 @@
-from importlib.resources import Package
+import json
 import logging
 import sys
+from importlib.resources import Package
 from pathlib import Path
-from oras import Oras
-import json
 
-#features = sys.argv[1]
+from oras import Oras
+
+# features = sys.argv[1]
 owner = sys.argv[1]
-#pkg_name=  str (sys.argv[2])
-target_platform = str (sys.argv[2])
+# pkg_name=  str (sys.argv[2])
+target_platform = str(sys.argv[2])
 conda_prefix = sys.argv[3]
 token = sys.argv[4]
 
 directory = "conda-bld"
-oras = Oras(owner,token, conda_prefix, target_platform)
+oras = Oras(owner, token, conda_prefix, target_platform)
 oras.login()
 
 base = Path(conda_prefix) / directory
-#expl= #/home/runner/micromamba/envs/buildenv/ #conda-bld/
+# expl= #/home/runner/micromamba/envs/buildenv/ #conda-bld/
 if not base.is_dir():
     logging.warning(f" {base}did NOT exist")
     base.mkdir(mode=511, parents=False, exist_ok=True)
 
 path = base / target_platform
-#expl=#/home/runner/micromamba/envs/buildenv/ #conda-bld/ #linux-aarch64/
+# expl=#/home/runner/micromamba/envs/buildenv/ #conda-bld/ #linux-aarch64/
 
 if not path.is_dir:
-    print (f" {path}did NOT exist")
+    print(f" {path}did NOT exist")
     path.mkdir(mode=511, parents=False, exist_ok=True)(f" {base}did NOT exist")
 
-#import json file
+# import json file
 with open("packages.json", "r") as read_file:
     packages_json = json.load(read_file)
 packagesList = packages_json["pkgs"]
 
+#strData = str(data)
 for pkg in packagesList:
-    oras.pull(pkg,"latest",str(path))
-
-# oras pull
-#strData = str(conda_prefix)
-#pkg = str(data).rsplit('/', 1)[-1]
-#length = len(strData) - len(pkg)
-
-#path = strData[:length]
-
-
-
-#location = Path(conda_prefix) / directory / target_platform
-
-
-#/home/runner/micromamba/envs/buildenv/
-#conda-bld/
-#linux-aarch64/bzip2-static-1.0.8-he8cfe8b_0.tar.bz2
-
-#if base.is_dir():
-#    print("yes")
-#else:
-#    print("no")
+    oras.pull(pkg, "latest", str(path))

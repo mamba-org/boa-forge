@@ -7,7 +7,7 @@ diff -urN work.orig/CMakeLists.txt work/CMakeLists.txt
  LA_CHECK_INCLUDE_FILE("winioctl.h" HAVE_WINIOCTL_H)
 +# Only available on Windows 7 and above, so not possible with vc9.
 +CHECK_FUNCTION_EXISTS(BCryptDeriveKeyPBKDF2 HAVE_BCRYPT_DERIVE_KEY_PBKDF2)
- 
+
  #
  # Check whether use of __EXTENSIONS__ is safe.
 diff -urN work.orig/libarchive/archive_cryptor.c work/libarchive/archive_cryptor.c
@@ -16,7 +16,7 @@ diff -urN work.orig/libarchive/archive_cryptor.c work/libarchive/archive_cryptor
 @@ -57,7 +57,7 @@
  	return 0;
  }
- 
+
 -#elif defined(_WIN32) && !defined(__CYGWIN__) && defined(HAVE_BCRYPT_H)
 +#elif defined(_WIN32) && !defined(__CYGWIN__) && defined(HAVE_BCRYPT_H) && defined(HAVE_BCRYPT_DERIVE_KEY_PBKDF2)
  #ifdef _MSC_VER

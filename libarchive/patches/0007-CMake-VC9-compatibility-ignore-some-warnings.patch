@@ -27,8 +27,7 @@ index 73bf07b..60e391c 100644
 +    SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /wd4996")
 +  ENDIF (MSVC_VERSION LESS 1900)
  ENDIF (MSVC)
- 
- # Enable CTest/CDash support
--- 
-2.15.0
 
+ # Enable CTest/CDash support
+--
+2.15.0

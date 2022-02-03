@@ -4,7 +4,7 @@ index a6b9394f..a4960ef4 100644
 +++ b/src/problems.c
 @@ -1068,10 +1068,10 @@ solver_take_solution(Solver *solv, Id problem, Id solution, Queue *job)
   */
- 
+
  static void
 -findproblemrule_internal(Solver *solv, Id idx, Id *reqrp, Id *conrp, Id *sysrp, Id *jobrp, Id *blkrp, Map *rseen)
 +findproblemrule_internal(Solver *solv, Id idx, Id *reqrp, Id *conrp, Id *sysrp, Id *jobrp, Id *blkrp, Id *scprp, Map *rseen)
@@ -16,7 +16,7 @@ index a6b9394f..a4960ef4 100644
    Id jobassert = 0;
    int i, reqset = 0;	/* 0: unset, 1: installed, 2: jobassert, 3: assert */
 @@ -1093,7 +1093,7 @@ findproblemrule_internal(Solver *solv, Id idx, Id *reqrp, Id *conrp, Id *sysrp,
- 
+
    /* the problem rules are somewhat ordered from "near to the problem" to
     * "near to the job" */
 -  lreqr = lconr = lsysr = ljobr = lblkr = 0;
@@ -52,7 +52,7 @@ index a6b9394f..a4960ef4 100644
 +  if (!*scprp && lscpr)
 +    *scprp = lscpr;
  }
- 
+
  /*
 @@ -1197,12 +1204,12 @@ findproblemrule_internal(Solver *solv, Id idx, Id *reqrp, Id *conrp, Id *sysrp,
  Id
@@ -119,7 +119,7 @@ index b1b5f09c..0dcce68e 100644
 @@ -4135,6 +4141,54 @@ solver_addrecommendsrules(Solver *solv)
    solv->recommendsrules_end = solv->nrules;
  }
- 
+
 +/* add rules to exclude solvables provided by lower
 + * precedence repositories */
 +void solver_addstrictrepopriorules(struct s_Solver *solv, Map *addedmap)
@@ -151,7 +151,7 @@ index b1b5f09c..0dcce68e 100644
 +		if (s2->repo->priority > max_prio)
 +			max_prio = s2->repo->priority;
 +		}
-+		
++
 +    FOR_PROVIDES(p2, pp2, s->name)
 +		{
 +		Solvable *s2 = pool->solvables + p2;
@@ -183,12 +183,12 @@ index 3fcede07..043d0a0b 100644
 +  SOLVER_RULE_BLACK = 0xc00,
 +  SOLVER_RULE_STRICT_REPO_PRIORITY = 0xd00
  } SolverRuleinfo;
- 
+
  #define SOLVER_RULE_TYPEMASK    0xff00
 @@ -142,6 +143,9 @@ extern void solver_addblackrules(struct s_Solver *solv);
  /* recommends rules */
  extern void solver_addrecommendsrules(struct s_Solver *solv);
- 
+
 +/* channel priority rules */
 +extern void solver_addstrictrepopriorules(struct s_Solver *solv, Map *addedmap);
 +
@@ -221,7 +221,7 @@ index 89a2ed10..25ff2d40 100644
 @@ -4062,6 +4067,11 @@ solver_solve(Solver *solv, Queue *job)
    else
      solv->recommendsrules = solv->recommendsrules_end = solv->nrules;
- 
+
 +  if (solv->strict_repo_priority)
 +    solver_addstrictrepopriorules(solv, &addedmap);
 +  else
@@ -233,23 +233,23 @@ index 89a2ed10..25ff2d40 100644
 @@ -4077,7 +4087,19 @@ solver_solve(Solver *solv, Queue *job)
    map_free(&installcandidatemap);
    queue_free(&q);
- 
+
 -  POOL_DEBUG(SOLV_DEBUG_STATS, "%d pkg rules, 2 * %d update rules, %d job rules, %d infarch rules, %d dup rules, %d choice rules, %d best rules, %d yumobs rules\n", solv->pkgrules_end - 1, solv->updaterules_end - solv->updaterules, solv->jobrules_end - solv->jobrules, solv->infarchrules_end - solv->infarchrules, solv->duprules_end - solv->duprules, solv->choicerules_end - solv->choicerules, solv->bestrules_end - solv->bestrules, solv->yumobsrules_end - solv->yumobsrules);
 +  POOL_DEBUG(SOLV_DEBUG_STATS, "%d pkg rules, 2 * %d update rules, %d job rules, %d infarch rules, %d dup rules, %d choice rules, %d best rules, %d yumobs rules\n"
 +  "%d black rules, %d recommends rules, %d repo priority rules\n",
-+   solv->pkgrules_end - 1, 
-+   solv->updaterules_end - solv->updaterules, 
-+   solv->jobrules_end - solv->jobrules, 
-+   solv->infarchrules_end - solv->infarchrules, 
-+   solv->duprules_end - solv->duprules, 
-+   solv->choicerules_end - solv->choicerules, 
-+   solv->bestrules_end - solv->bestrules, 
++   solv->pkgrules_end - 1,
++   solv->updaterules_end - solv->updaterules,
++   solv->jobrules_end - solv->jobrules,
++   solv->infarchrules_end - solv->infarchrules,
++   solv->duprules_end - solv->duprules,
++   solv->choicerules_end - solv->choicerules,
++   solv->bestrules_end - solv->bestrules,
 +   solv->yumobsrules_end - solv->yumobsrules,
 +   solv->blackrules_end - solv->blackrules,
 +   solv->recommendsrules_end - solv->recommendsrules,
 +   solv->strictrepopriorules_end - solv->strictrepopriorules);
    POOL_DEBUG(SOLV_DEBUG_STATS, "overall rule memory used: %d K\n", solv->nrules * (int)sizeof(Rule) / 1024);
- 
+
    /* create weak map */
 diff --git a/src/solver.h b/src/solver.h
 index 2dec2590..5de13c9c 100644
@@ -258,7 +258,7 @@ index 2dec2590..5de13c9c 100644
 @@ -79,6 +79,9 @@ struct s_Solver {
    Id blackrules;			/* rules from blacklisted packages */
    Id blackrules_end;
- 
+
 +  Id strictrepopriorules;			/* rules from strict priority repositories */
 +  Id strictrepopriorules_end;
 +
@@ -270,7 +270,7 @@ index 2dec2590..5de13c9c 100644
    int install_also_updates;		/* true: do not prune install job rules to installed packages */
    int only_namespace_recommended;	/* true: only install packages recommended by namespace */
 +  int strict_repo_priority;			/* true: only use packages from highest precedence/priority */
- 
+
    int process_orphans;			/* true: do special orphan processing */
    Map dupmap;				/* dup to those packages */
 @@ -326,6 +330,7 @@ typedef struct s_Solver Solver;
@@ -278,7 +278,7 @@ index 2dec2590..5de13c9c 100644
  #define SOLVER_FLAG_INSTALL_ALSO_UPDATES	26
  #define SOLVER_FLAG_ONLY_NAMESPACE_RECOMMENDED	27
 +#define SOLVER_FLAG_STRICT_REPO_PRIORITY	28
- 
+
  #define GET_USERINSTALLED_NAMES			(1 << 0)	/* package names instead of ids */
  #define GET_USERINSTALLED_INVERTED		(1 << 1)	/* autoinstalled */
 diff --git a/src/solverdebug.c b/src/solverdebug.c

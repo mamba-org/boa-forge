@@ -27,8 +27,7 @@ index bd4517c..828fc80 100644
 +  # /MD option for Multi-threaded DLL.
 +  SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /MD")
  ENDIF (MSVC)
- 
- # Enable CTest/CDash support
--- 
-2.15.0
 
+ # Enable CTest/CDash support
+--
+2.15.0

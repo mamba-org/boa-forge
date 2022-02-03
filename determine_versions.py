@@ -57,16 +57,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import abc, re, copy
-import feedparser, subprocess
+import abc
 import collections.abc
-from typing import Optional, List, cast, Iterator, Set
-from conda.models.version import VersionOrder
-
-import ruamel, jinja2, requests, time, hashlib, math, functools
-from ruamel.yaml import YAML
+import copy
+import functools
+import hashlib
+import math
+import re
+import subprocess
+import time
 from collections import OrderedDict
-from multiprocessing import Process, Pipe
+from multiprocessing import Pipe, Process
+from typing import Iterator, List, Optional, Set, cast
+
+import feedparser
+import jinja2
+import requests
+import ruamel
+from conda.models.version import VersionOrder
+from ruamel.yaml import YAML
 from ruamel.yaml.representer import RoundTripRepresenter
 
 RECIPE_FIELD_ORDER = [
@@ -83,12 +92,15 @@ RECIPE_FIELD_ORDER = [
     "extra",
 ]
 
+
 class MyRepresenter(RoundTripRepresenter):
     pass
+
 
 ruamel.yaml.add_representer(
     OrderedDict, MyRepresenter.represent_dict, representer=MyRepresenter
 )
+
 
 class AbstractSource(abc.ABC):
     name: str
@@ -101,11 +113,13 @@ class AbstractSource(abc.ABC):
     def get_url(self, meta_yaml) -> Optional[str]:
         pass
 
+
 def _split_alpha_num(ver: str) -> List[str]:
     for i, c in enumerate(ver):
         if c.isalpha():
             return [ver[0:i], ver[i:]]
     return [ver]
+
 
 def next_version(ver: str, increment_alpha: bool = False) -> Iterator[str]:
     ver_split = []
@@ -151,12 +165,11 @@ def next_version(ver: str, increment_alpha: bool = False) -> Iterator[str]:
         else:
             continue
 
+
 def url_exists(url: str) -> bool:
     try:
         output = subprocess.check_output(
-            ["wget", "--spider", url],
-            stderr=subprocess.STDOUT,
-            timeout=1,
+            ["wget", "--spider", url], stderr=subprocess.STDOUT, timeout=1,
         )
     except Exception:
         return False
@@ -239,8 +252,7 @@ class BaseRawURL(AbstractSource):
                         or url in orig_urls
                     ):
                         print(
-                            "skipping url '%s' due to "
-                            "\n    %s = %s\n    %s = %s",
+                            "skipping url '%s' due to " "\n    %s = %s\n    %s = %s",
                             url,
                             'str(new_meta["package"]["version"]) != next_ver',
                             str(new_meta["package"]["version"]) != next_ver,
@@ -253,9 +265,7 @@ class BaseRawURL(AbstractSource):
                     _exists, _url_to_use = url_exists_swap_exts(url)
                     if not _exists:
                         print(
-                            "version %s does not exist for url %s",
-                            next_ver,
-                            url,
+                            "version %s does not exist for url %s", next_ver, url,
                         )
                         continue
                     else:
@@ -286,6 +296,7 @@ class BaseRawURL(AbstractSource):
 class RawURL(BaseRawURL):
     name = "RawURL"
     next_ver_func = functools.partial(next_version, increment_alpha=False)
+
 
 class VersionFromFeed(AbstractSource):
     ver_prefix_remove = ["release-", "releases%2F", "v_", "v.", "v"]
@@ -322,6 +333,7 @@ class VersionFromFeed(AbstractSource):
         else:
             return None
 
+
 class Github(VersionFromFeed):
     name = "github"
 
@@ -333,11 +345,13 @@ class Github(VersionFromFeed):
         gh_package_name = split_url[split_url.index("github.com") + 2]
         return f"https://github.com/{package_owner}/{gh_package_name}/releases.atom"
 
+
 def ensure_list(x):
     if not isinstance(x, list):
         return [x]
     else:
         return x
+
 
 def _hash_url(url, hash_type, progress=False, conn=None, timeout=None):
     _hash = None
@@ -440,11 +454,7 @@ def hash_url(url, timeout=None, progress=False, hash_type="sha256"):
         # if launched in a process we cannot use another process
         if "daemonic" in repr(e):
             _hash = _hash_url(
-                url,
-                hash_type,
-                progress=progress,
-                conn=None,
-                timeout=timeout,
+                url, hash_type, progress=progress, conn=None, timeout=timeout,
             )
         else:
             raise e
@@ -453,6 +463,7 @@ def hash_url(url, timeout=None, progress=False, hash_type="sha256"):
         raise eval(_hash[0])
 
     return _hash
+
 
 def order_output_dict(d):
     result_list = []
@@ -463,6 +474,7 @@ def order_output_dict(d):
     leftover_keys = d.keys() - set(RECIPE_FIELD_ORDER)
     result_list += [(k, d[k]) for k in leftover_keys]
     return OrderedDict(result_list)
+
 
 def get_yaml_loader(typ):
     if typ == "rt":
@@ -476,6 +488,7 @@ def get_yaml_loader(typ):
     elif typ == "safe":
         loader = YAML(typ=typ)
     return loader
+
 
 def render_recursive(dict_or_array, context_dict, jenv):
     # check if it's a dict?
@@ -504,6 +517,7 @@ def render_recursive(dict_or_array, context_dict, jenv):
                 render_recursive(value, context_dict, jenv)
             elif isinstance(value, collections.abc.Iterable):
                 render_recursive(value, context_dict, jenv)
+
 
 def normalize_recipe(ydoc):
     # normalizing recipe:
@@ -553,12 +567,14 @@ def normalize_recipe(ydoc):
 
     return ydoc
 
+
 def get_raw_yaml(recipe_path):
-    f = open(recipe_path, 'r')
+    f = open(recipe_path, "r")
     loader = get_yaml_loader(typ="rt")
     raw_yaml = loader.load(f)
     context_dict = raw_yaml.get("context") or {}
     return raw_yaml, context_dict
+
 
 def get_rendered_yaml(raw_yaml, context_dict):
     rendered_yaml = copy.deepcopy(raw_yaml)
@@ -573,6 +589,7 @@ def get_rendered_yaml(raw_yaml, context_dict):
 
     rendered_yaml = normalize_recipe(rendered_yaml)
     return rendered_yaml
+
 
 def is_new_version_available(raw_yaml, context_dict, rendered_yaml):
     raw_yaml = copy.deepcopy(raw_yaml)
@@ -589,6 +606,7 @@ def is_new_version_available(raw_yaml, context_dict, rendered_yaml):
                 return True, download_version
     return False, current_version
 
+
 def get_new_url_for_new_version(raw_yaml, context_dict, new_version):
     yaml = copy.deepcopy(raw_yaml)
     context = copy.deepcopy(context_dict)
@@ -597,6 +615,7 @@ def get_new_url_for_new_version(raw_yaml, context_dict, new_version):
     rendered = get_rendered_yaml(yaml, context)
     return rendered["source"][0]["url"]
 
+
 def get_sha256(url: str) -> Optional[str]:
     try:
         return hash_url(url, timeout=120, hash_type="sha256")
@@ -604,10 +623,11 @@ def get_sha256(url: str) -> Optional[str]:
         print("url hashing exception: %s", repr(e))
         return None
 
+
 def get_updated_raw_yaml(recipe_path):
     raw_yaml, context_dict = get_raw_yaml(recipe_path)
 
-    yaml    = copy.deepcopy(raw_yaml)
+    yaml = copy.deepcopy(raw_yaml)
     context = copy.deepcopy(context_dict)
     rendered_yaml = get_rendered_yaml(yaml, context)
 
@@ -616,14 +636,20 @@ def get_updated_raw_yaml(recipe_path):
     else:
         sha256_hash_for_current = rendered_yaml["source"][0]["sha256"]
 
-    version_available, new_version = is_new_version_available(yaml, context, rendered_yaml)
+    version_available, new_version = is_new_version_available(
+        yaml, context, rendered_yaml
+    )
     if not version_available:
         return raw_yaml
 
     url_for_version = get_new_url_for_new_version(yaml, context, new_version)
     sha256_hash_for_version = get_sha256(url_for_version)
 
-    if version_available and sha256_hash_for_version is not None and sha256_hash_for_version != sha256_hash_for_current:
+    if (
+        version_available
+        and sha256_hash_for_version is not None
+        and sha256_hash_for_version != sha256_hash_for_current
+    ):
         raw_yaml["context"]["version"] = new_version
         context["version"] = new_version
         if "sha256" in context:
@@ -636,13 +662,15 @@ def get_updated_raw_yaml(recipe_path):
         raw_yaml["build"]["number"] = 0
     return raw_yaml
 
+
 if __name__ == "__main__":
     import glob
+
     loader = get_yaml_loader(typ="rt")
     recipes = glob.glob("**/recipe.yaml")
     for each_recipe_path in recipes:
-        package_name = each_recipe_path.split('/')[0]
+        package_name = each_recipe_path.split("/")[0]
         updated_raw_yaml = get_updated_raw_yaml(each_recipe_path)
-        fw = open(each_recipe_path, 'w')
+        fw = open(each_recipe_path, "w")
         loader.dump(order_output_dict(updated_raw_yaml), fw)
         print(f"Done for {each_recipe_path}")

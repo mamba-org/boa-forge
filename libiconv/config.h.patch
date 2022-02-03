@@ -332,7 +332,7 @@
 +
 +/* Define to 1 if getusershell is declared even after undefining macros. */
 +#cmakedefine HAVE_RAW_DECL_GETUSERSHELL 1
-+ 
++
 +/* Define to 1 if grantpt is declared even after undefining macros. */
 +#cmakedefine HAVE_RAW_DECL_GRANTPT 1
 +

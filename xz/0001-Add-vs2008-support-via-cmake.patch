@@ -5,7 +5,7 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +cmake_minimum_required(VERSION 3.0)
 +
 +project(
-+    xz 
++    xz
 +    VERSION 5.2.3
 +    LANGUAGES C
 +)
@@ -13,8 +13,8 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +include(FeatureSummary)
 +
 +set (SOVERSION 7.1.2)
-+#option (BUILD_SHARED_LIBS "Build Shared Libraries" ON) 
-+#option (BUILD_TESTS "Build Tests" ON) 
++#option (BUILD_SHARED_LIBS "Build Shared Libraries" ON)
++#option (BUILD_TESTS "Build Tests" ON)
 +
 +if (MSVC)
 +    if (NOT DEFINED ARCH)
@@ -28,7 +28,7 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +    if (NOT DEFINED MSVCVER)
 +        math(EXPR MSVCVER "(${MSVC_VERSION} / 10) - 60")
 +    endif()
-+    
++
 +    # add the runtime version and target architecture into the DLL name per MS
 +    # guidelines (Anaconda Distribtuoin mod: do not do this, we want the same
 +    # filenames as the non-CMake build; we also add the lib prefix to the .dlls)
@@ -43,18 +43,18 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +    set(VER_STR "${PROJECT_VERSION}")
 +    set(VER_NUM "${PROJECT_VERSION_MAJOR},${PROJECT_VERSION_MINOR},${PROJECT_VERSION_PATCH},0")
 +
-+    file(COPY 
++    file(COPY
 +            windows/msvc2013/config.h
-+            windows/msvc2013/unistd.h 
++            windows/msvc2013/unistd.h
 +          DESTINATION ${CMAKE_BINARY_DIR}
 +        )
-+        
++
 +    configure_file(
 +        lib/getopt.in.h
 +        ${CMAKE_BINARY_DIR}/getopt.h
 +         @ONLY
 +        )
-+    
++
 +endif()
 +
 +function(add_win32_rc target)
@@ -79,7 +79,7 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +         ${CMAKE_SOURCE_DIR}/windows/version.rc.cmakein
 +         ${OUT_FNAME}
 +         @ONLY
-+     )         
++     )
 +
 +    target_sources(${target} PRIVATE ${OUT_FNAME})
 +
@@ -280,7 +280,7 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +set (unxz_src
 +    src/xzdec/xzdec.c
 +	src/common/tuklib_progname.c
-+	src/common/tuklib_exit.c 
++	src/common/tuklib_exit.c
 +	src/common/tuklib_progname.h
 +	src/common/tuklib_exit.h
 + )
@@ -288,7 +288,7 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +set (lzmainfo_src
 +    src/lzmainfo/lzmainfo.c
 +	src/common/tuklib_progname.c
-+	src/common/tuklib_exit.c 
++	src/common/tuklib_exit.c
 +	src/common/tuklib_progname.h
 +	src/common/tuklib_exit.h
 +)
@@ -305,10 +305,10 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +
 +# lzma shared lib
 +add_library(lzma SHARED ${lzma_src})
-+ 
++
 +set_property(TARGET lzma PROPERTY DESCRIPTION "LZMA data compression dynamic link library")
 +
-+set_target_properties(lzma PROPERTIES 
++set_target_properties(lzma PROPERTIES
 +          SOVERSION ${PROJECT_VERSION}
 +          VERSION ${PROJECT_VERSION_MAJOR}
 +)
@@ -318,15 +318,15 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +)
 +
 +target_include_directories(lzma
-+    PRIVATE 
-+        src/common 
++    PRIVATE
++        src/common
 +        src/liblzma
-+        src/liblzma/common 
-+        src/liblzma/lzma 
-+        src/liblzma/lz 
-+        src/liblzma/check 
-+        src/liblzma/rangecoder 
-+        src/liblzma/simple 
++        src/liblzma/common
++        src/liblzma/lzma
++        src/liblzma/lz
++        src/liblzma/check
++        src/liblzma/rangecoder
++        src/liblzma/simple
 +        src/liblzma/delta
 +        src/liblzma/api
 +        ${CMAKE_BINARY_DIR}
@@ -337,21 +337,21 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +
 +# lzma static lib
 +add_library(lzma_static STATIC ${lzma_src})
-+ 
++
 +target_compile_definitions(lzma
 +    PRIVATE DLL_EXPORT HAVE_CONFIG_H
 +)
 +
 +target_include_directories(lzma_static
-+    PRIVATE 
-+        src/common 
++    PRIVATE
++        src/common
 +        src/liblzma
-+        src/liblzma/common 
-+        src/liblzma/lzma 
-+        src/liblzma/lz 
-+        src/liblzma/check 
-+        src/liblzma/rangecoder 
-+        src/liblzma/simple 
++        src/liblzma/common
++        src/liblzma/lzma
++        src/liblzma/lz
++        src/liblzma/check
++        src/liblzma/rangecoder
++        src/liblzma/simple
 +        src/liblzma/delta
 +        src/liblzma/api
 +        ${CMAKE_BINARY_DIR}
@@ -372,8 +372,8 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +target_link_libraries(xz_static lzma_static)
 +
 +target_include_directories(xz_static
-+    PRIVATE 
-+        src/common 
++    PRIVATE
++        src/common
 +        lib
 +        ${CMAKE_BINARY_DIR}
 +)
@@ -389,8 +389,8 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +target_link_libraries(xz lzma)
 +
 +target_include_directories(xz
-+    PRIVATE 
-+        src/common 
++    PRIVATE
++        src/common
 +        lib
 +        ${CMAKE_BINARY_DIR}
 +)
@@ -409,8 +409,8 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +target_link_libraries(unxz lzma)
 +
 +target_include_directories(unxz
-+    PRIVATE 
-+        src/common 
++    PRIVATE
++        src/common
 +        lib
 +        ${CMAKE_BINARY_DIR}
 +)
@@ -429,8 +429,8 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +target_link_libraries(lzmadec lzma)
 +
 +target_include_directories(lzmadec
-+    PRIVATE 
-+        src/common 
++    PRIVATE
++        src/common
 +        lib
 +        ${CMAKE_BINARY_DIR}
 +)
@@ -449,8 +449,8 @@ diff -urN CMakeLists.txt CMakeLists.txt
 +target_link_libraries(lzmainfo lzma)
 +
 +target_include_directories(lzmainfo
-+    PRIVATE 
-+        src/common 
++    PRIVATE
++        src/common
 +        lib
 +        ${CMAKE_BINARY_DIR}
 +)

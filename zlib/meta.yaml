@@ -34,7 +34,7 @@ about:
     summary: Massively spiffy yet delicately unobtrusive compression library
     license_family: Other
     license_file: license.txt
-    
+
     description: |
       zlib is designed to be a free, general-purpose, lossless data-compression
       library for use on virtually any computer hardware and operating system.

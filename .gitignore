@@ -1,3 +1,4 @@
 conda_build_config.yaml
 .*.un~
 *.un~
+..*

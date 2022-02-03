@@ -5,7 +5,7 @@ index 4732a45..3118999 100644
 @@ -339,11 +339,11 @@ if (YAML_CPP_INSTALL)
  		DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
  	install(EXPORT yaml-cpp-targets DESTINATION ${INSTALL_CMAKE_DIR})
- 
+
 -	if(UNIX)
 +	# if(UNIX)
  		set(PC_FILE ${CMAKE_BINARY_DIR}/yaml-cpp.pc)
@@ -13,6 +13,5 @@ index 4732a45..3118999 100644
  		install(FILES ${PC_FILE} DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
 -	endif()
 +	# endif()
- 
+
  endif()
- 
