@@ -28,15 +28,17 @@ class Oras:
 
         pkg_name, tag = getName_andTag(pkg)
 
+        origin = "./" + pkg
+
         logging.warning(f"The extracted pkg <<{pkg}>>.")
         logging.warning(f"The path is <<{path}>>.")
 
         # upload the tar_bz2 file to the right url
-        push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {strData}:application/octet-stream"
+        push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {origin}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
         chdir(path)
         cur = Path.cwd()
-        origin = "./" + pkg
+        
 
         logging.warning(f"Uploading <<{pkg}>>. path <<{origin} (from dir: << {self.conda_prefix} >> to link: <<{upload_url}>>")
         logging.warning(f"current dir is <<{cur}>>")
