@@ -110,8 +110,8 @@ jobs:
       - name: create_oras_push
         shell: bash -l {0}
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | oras login https://ghcr.io -u ${{ env.GITHUB_OWNER }} --password-stdin
-          python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX}
+          python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+#          echo ${{ secrets.GITHUB_TOKEN }} | oras login https://ghcr.io -u ${{ env.GITHUB_OWNER }} --password-stdin
         if: always()
 ##
 ##

@@ -5,9 +5,12 @@ from oras import Oras
 owner = sys.argv[1]
 target_platform = str (sys.argv[2])
 conda_prefix = sys.argv[3]
+token = sys.argv[4]
 
-#create oras object
-oras = Oras (owner, conda_prefix, target_platform)
+#create oras object and login with the token 
+oras = Oras (owner,token, conda_prefix, target_platform)
+
+oras.login(token)
 
 directory = "conda-bld"
 location = Path(conda_prefix) / directory / target_platform

@@ -2,6 +2,7 @@ import logging
 import subprocess
 from pathlib import Path
 from os import chdir
+from typing_extensions import Self
 
 
 def getName_andTag(pkg):
@@ -22,13 +23,18 @@ def install_on_OS():
     subprocess.run("rm -rf oras_0.12.0_*.tar.gz oras-install/", shell=True)
 
 class Oras:
-    def __init__(self, github_owner, origin, system):
+    def __init__(self, github_owner,user_token, origin, system):
         self.owner = github_owner
         self.conda_prefix = origin
+        self.token = user_token
         logging.warning(f"Host is <<{system}>>")
         if "osx" in system:
             install_on_OS
-        
+    
+    def login(self):
+        loginStr = f"echo {self.token} | oras login https://ghcr.io -u {self.owner} --password-stdin"
+        subprocess.run(loginStr, shell=True)
+
     def push(self, target, data ):
         strData = str(data)
         pkg = str(data).rsplit('/', 1)[-1]
@@ -39,6 +45,7 @@ class Oras:
         origin = "./" + pkg
 
         # upload the tar_bz2 file to the right url
+        
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {origin}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
         logging.warning(f"Cmd <<{push_bz2}>>")
