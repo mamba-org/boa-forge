@@ -1,10 +1,7 @@
 import logging
 import subprocess
-from lib2to3.pgen2 import token
 from os import chdir
 from pathlib import Path
-
-from typing_extensions import Self
 
 
 def getName_andTag(pkg):
@@ -59,7 +56,6 @@ class Oras:
         logging.warning(f"Cmd <<{push_bz2}>>")
         logging.warning(f"Latest Cmd <<{push_bz2_latest}>>")
         chdir(path)
-        cur = Path.cwd()
 
         logging.warning(
             f"Uploading <<{pkg}>>. path <<{origin} (from dir: << {self.conda_prefix} >> to link: <<{upload_url}>>"

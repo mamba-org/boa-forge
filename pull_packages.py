@@ -1,7 +1,6 @@
 import json
 import logging
 import sys
-from importlib.resources import Package
 from pathlib import Path
 
 from oras import Oras
@@ -40,6 +39,6 @@ with open("packages.json", "r") as read_file:
 
 packagesList = packages_json["pkgs"][trgt]
 
-#strData = str(data)
+# strData = str(data)
 for pkg in packagesList:
     oras.pull(pkg, "latest", str(path))
