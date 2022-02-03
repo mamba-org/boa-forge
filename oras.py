@@ -23,15 +23,18 @@ class Oras:
     def push(self, target, data ):
         strData = str(data)
         pkg = str(data).rsplit('/', 1)[-1]
+        length = len(strData) - len(pkg)
+        path = strData[:length]
+
         pkg_name, tag = getName_andTag(pkg)
 
         logging.warning(f"The extracted pkg <<{pkg}>>.")
-        logging.warning(f"The path is <<{strData}>>.")
+        logging.warning(f"The path is <<{path}>>.")
 
         # upload the tar_bz2 file to the right url
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {strData}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
-        chdir(data)
+        chdir(path)
         cur = Path.cwd()
         origin = "./" + pkg
 
