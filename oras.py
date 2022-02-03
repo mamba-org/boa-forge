@@ -25,6 +25,7 @@ class Oras:
     def __init__(self, github_owner, origin, system):
         self.owner = github_owner
         self.conda_prefix = origin
+        logging.warning(f"Host is <<{system}>>")
         if "osx" in system:
             install_on_OS
         
