@@ -28,8 +28,9 @@ class Oras:
         self.owner = github_owner
         self.conda_prefix = origin
         self.token = user_token
-        logging.warning(f"Host is <<{system}>>")
-        if "osx" in str(system):
+        strSys = str(system)
+        logging.warning(f"Host is <<{strSys}>>")
+        if "osx" in strSys:
             install_on_OS
     
     def login(self):
