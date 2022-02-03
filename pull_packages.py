@@ -31,9 +31,13 @@ if not path.is_dir:
     path.mkdir(mode=511, parents=False, exist_ok=True)(f" {base}did NOT exist")
 
 # import json file
+if "osx" in target_platform:
+    trgt = "osx"
+else:
+    trgt = "linux"
 with open("packages.json", "r") as read_file:
     packages_json = json.load(read_file)
-packagesList = packages_json["pkgs"]
+packagesList = packages_json["pkgs"][trgt]
 
 #strData = str(data)
 for pkg in packagesList:
