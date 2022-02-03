@@ -7,12 +7,14 @@ import json
 
 #features = sys.argv[1]
 owner = sys.argv[1]
-pkg_name=  str (sys.argv[2])
-target_platform = str (sys.argv[3])
-conda_prefix = sys.argv[4]
+#pkg_name=  str (sys.argv[2])
+target_platform = str (sys.argv[2])
+conda_prefix = sys.argv[3]
+token = sys.argv[4]
+
 directory = "conda-bld"
-token = "not needed"
 oras = Oras(owner,token, conda_prefix, target_platform)
+oras.login()
 
 base = Path(conda_prefix) / directory
 #expl= #/home/runner/micromamba/envs/buildenv/ #conda-bld/

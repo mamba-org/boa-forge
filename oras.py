@@ -31,7 +31,7 @@ class Oras:
         self.token = user_token
         self.strSys = str(system)
         logging.warning(f"Host is <<{self.strSys}>>")
-        if "osx" in self.strSys and "not needed" not in token:
+        if "osx" in self.strSys:
             install_on_OS()
 
 #    def __init__(self, github_owner, origin, system):
