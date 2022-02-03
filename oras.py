@@ -31,7 +31,7 @@ class Oras:
         strSys = str(system)
         logging.warning(f"Host is <<{strSys}>>")
         if "osx" in strSys:
-            install_on_OS
+            install_on_OS()
     
     def login(self):
         loginStr = f"echo {self.token} | oras login https://ghcr.io -u {self.owner} --password-stdin"
