@@ -15,6 +15,7 @@ def getName_andTag(pkg):
     return name, tag_resized
 
 def install_on_OS():
+    logging.warning("Installing oras on the system...")
     subprocess.run("curl -LO https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_darwin_amd64.tar.gz", shell=True)
     location = Path("oras-install")
     location.mkdir(mode=511, parents=False, exist_ok=True)
@@ -45,7 +46,6 @@ class Oras:
         origin = "./" + pkg
 
         # upload the tar_bz2 file to the right url
-        
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {origin}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
         logging.warning(f"Cmd <<{push_bz2}>>")
