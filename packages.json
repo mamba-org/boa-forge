@@ -1,3 +1,7 @@
 {
-    "pkgs":["bzip2-static","libiconv-static"]
+    "pkgs":{
+        "all":["bzip2-static","libiconv-static"],
+        "osx":["bzip2-static","libiconv-static"],
+        "linux":["bzip2-static"]
+    }
 }
