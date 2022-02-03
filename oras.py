@@ -29,7 +29,7 @@ class Oras:
         self.conda_prefix = origin
         self.token = user_token
         logging.warning(f"Host is <<{system}>>")
-        if "osx" in system:
+        if "osx" in str(system):
             install_on_OS
     
     def login(self):
