@@ -24,6 +24,8 @@ class Oras:
         pkg = str(data).rsplit('/', 1)[-1]
         pkg_name, tag = getName_andTag(pkg)
 
+        logging.warning(f"The extracted pkg <<{pkg}>>.")
+
         # upload the tar_bz2 file to the right url
         strData = str(data)
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {strData}:application/octet-stream"
