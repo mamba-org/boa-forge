@@ -10,7 +10,7 @@ token = sys.argv[4]
 #create oras object and login with the token 
 oras = Oras (owner,token, conda_prefix, target_platform)
 
-oras.login(token)
+oras.login()
 
 directory = "conda-bld"
 location = Path(conda_prefix) / directory / target_platform
