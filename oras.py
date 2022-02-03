@@ -13,12 +13,20 @@ def getName_andTag(pkg):
     
     return name, tag_resized
 
-
+def install_on_OS():
+    subprocess.run("curl -LO https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_darwin_amd64.tar.gz", shell=True)
+    location = Path("oras-install")
+    location.mkdir(mode=511, parents=False, exist_ok=True)
+    subprocess.run("tar -zxf oras_0.12.0_*.tar.gz -C oras-install/", shell=True)
+    subprocess.run("mv oras-install/oras /usr/local/bin/", shell=True)
+    subprocess.run("rm -rf oras_0.12.0_*.tar.gz oras-install/", shell=True)
 
 class Oras:
-    def __init__(self, github_owner, origin):
+    def __init__(self, github_owner, origin, system):
         self.owner = github_owner
         self.conda_prefix = origin
+        if "osx" in system:
+            install_on_OS
         
     def push(self, target, data ):
         strData = str(data)

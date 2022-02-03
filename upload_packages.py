@@ -6,7 +6,7 @@ owner = sys.argv[1]
 target_platform = str (sys.argv[2])
 conda_prefix = sys.argv[3]
 
-oras = Oras (owner, conda_prefix)
+oras = Oras (owner, conda_prefix, target_platform)
 
 directory = "conda-bld"
 location = Path(conda_prefix) / directory / target_platform
