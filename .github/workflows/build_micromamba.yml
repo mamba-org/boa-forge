@@ -51,11 +51,11 @@ jobs:
 
           micromamba remove boa --no-prune
           python -m pip install git+https://github.com/mamba-org/boa@master
-#      - name: pull already uploaded packages
-#        shell: bash -l {0}
-#        run: |
-#          python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
-#        if: always()
+      - name: pull already uploaded packages
+        shell: bash -l {0}
+        run: |
+          python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+        if: always()
         
       - name: build bzip2
         shell: bash -l -eo pipefail {0}
