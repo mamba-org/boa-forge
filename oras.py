@@ -1,3 +1,4 @@
+from lib2to3.pgen2 import token
 import logging
 import subprocess
 from pathlib import Path
@@ -30,15 +31,14 @@ class Oras:
         self.token = user_token
         self.strSys = str(system)
         logging.warning(f"Host is <<{self.strSys}>>")
-        if "osx" in self.strSys:
+        if "osx" in self.strSys and "not needed" not in token:
             install_on_OS()
 
-
-    def __init__(self, github_owner, origin, system):
-        self.owner = github_owner
-        self.conda_prefix = origin
-        self.token = ""
-        self.strSys = str(system)
+#    def __init__(self, github_owner, origin, system):
+#        self.owner = github_owner
+#        self.conda_prefix = origin
+#        self.token = ""
+#        self.strSys = str(system)
 #        logging.warning(f"Host is <<{self.strSys}>>")
 #        if "osx" in self.strSys:
 #           install_on_OS()
@@ -75,3 +75,5 @@ class Oras:
         logging.warning(f"Pulling lattest of  <<{pkg}>>. with command: <<{pullCmd}>>")
         subprocess.run(pullCmd, shell=True)
         logging.warning(f"Latest version of  <<{pkg}>> pulled")
+
+
