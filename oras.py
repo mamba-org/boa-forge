@@ -61,6 +61,7 @@ class Oras:
         push_bz2_latest = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:latest {origin}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
         logging.warning(f"Cmd <<{push_bz2}>>")
+        logging.warning(f"Latest Cmd <<{push_bz2_latest}>>")
         chdir(path)
         cur = Path.cwd()
 
