@@ -25,6 +25,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       TARGET_PLATFORM: ${{ matrix.target_platform }}
+      GITHUB_OWNER: ${{ github.actor }}
     steps:
       - uses: actions/checkout@v2
       - name: install mamba
