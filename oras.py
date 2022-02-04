@@ -68,5 +68,10 @@ class Oras:
         pullCmd = f'oras pull ghcr.io/{self.owner}/samples/{self.strSys}/{pkg}:{tag} --output {dir} -t "application/octet-stream"'
 
         logging.warning(f"Pulling lattest of  <<{pkg}>>. with command: <<{pullCmd}>>")
-        subprocess.run(pullCmd, shell=True)
-        logging.warning(f"Latest version of  <<{pkg}>> pulled")
+        try:
+            subprocess.run(pullCmd, shell=True)
+        except:
+            logging.warning(f"Package <<{pkg}>> did not exist on the registry")
+            logging.warning(f"Upload aborted!")
+        else:
+            logging.warning(f"Latest version of  <<{pkg}>> pulled")
