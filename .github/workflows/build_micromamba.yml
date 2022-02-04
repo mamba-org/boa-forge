@@ -25,6 +25,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       TARGET_PLATFORM: ${{ matrix.target_platform }}
+      GITHUB_OWNER: ${{ github.actor }}
     steps:
       - uses: actions/checkout@v2
       - name: install mamba
@@ -33,12 +34,6 @@ jobs:
         id: cache_timestamp
         shell: bash -l {0}
         run: echo ::set-output name=timestamp::"$(TZ=UTC date +%F)"
-      - name: Cache build outputs
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
-          key: build-cache-${{ runner.os }}-${{ matrix.target_platform }}-${{ steps.cache_timestamp.outputs.timestamp }}
       - name: create .condarc
         shell: bash -l -eo pipefail {0}
         run: |
@@ -49,6 +44,11 @@ jobs:
 
           micromamba remove boa --no-prune
           python -m pip install git+https://github.com/mamba-org/boa@master
+      - name: pull already uploaded packages
+        shell: bash -l {0}
+        run: |
+          python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+        if: always()
       - name: build bzip2
         shell: bash -l -eo pipefail {0}
         run: |
@@ -111,6 +111,11 @@ jobs:
         with:
           name: micromamba_pkgs
           path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+      - name: create_oras_push
+        shell: bash -l {0}
+        run: |
+          python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+        if: always()
 
   build_libraries_win:
     runs-on: [windows-latest]
