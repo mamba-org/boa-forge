@@ -33,12 +33,6 @@ jobs:
         id: cache_timestamp
         shell: bash -l {0}
         run: echo ::set-output name=timestamp::"$(TZ=UTC date +%F)"
-      - name: Cache build outputs
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
-          key: build-cache-${{ runner.os }}-${{ matrix.target_platform }}-${{ steps.cache_timestamp.outputs.timestamp }}
       - name: create .condarc
         shell: bash -l -eo pipefail {0}
         run: |
