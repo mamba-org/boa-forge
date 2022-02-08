@@ -1,5 +1,5 @@
 context:
-  version: 3.5.2
+  version: 3.5.3
 
 package:
   name: libarchive
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/libarchive/libarchive/archive/v{{ version }}.tar.gz
-  sha256: 126058cb4cf50e36bcf83307f5d987bde2ecebabcae985b6a153116362d25b7b
+  sha256: aeaf0338a559da7c4a23a05b8c9dba0785f84cce12b0b7d5e3b807b07f8a3f90
   patches:
     - patches/0001-Add-lib-to-CMAKE_FIND_LIBRARY_PREFIXES-for-lzma.patch
     - patches/0003-VC9-compatibility-test-for-BCryptDeriveKeyPBKDF2.patch
@@ -23,7 +23,7 @@ source:
     # - patches/0009-CMake-Force-Multi-threaded-DLL-runtime.patch
 
 build:
-  number: 1
+  number: 0
   # run_exports:
   #   # https://abi-laboratory.pro/index.php?view=timeline&l=libarchive
   #   - '{{ pin_subpackage("libarchive", max_pin="x.x") }}'
