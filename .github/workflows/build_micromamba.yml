@@ -121,7 +121,7 @@ jobs:
   build_libraries_win:
     runs-on: [windows-latest]
     env:
-      TARGET_PLATFORM: ${{ matrix.target_platform }}
+      TARGET_PLATFORM: "windows"
       GITHUB_OWNER:  ${{ github.actor }}
     steps:
       - uses: actions/checkout@v2
