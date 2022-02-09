@@ -17,6 +17,7 @@ oras.login()
 
 directory = "conda-bld"
 location = Path(conda_prefix) / directory / target_platform
+warning(f"location <<{location}>>")
 
 # push the all found packages to the registry
 for data in location.iterdir():

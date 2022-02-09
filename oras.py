@@ -14,17 +14,30 @@ def getName_andTag(pkg):
     return name, tag_resized
 
 
-def install_on_OS():
-    logging.warning("Installing oras on the system...")
-    subprocess.run(
-        "curl -LO https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_darwin_amd64.tar.gz",
-        shell=True,
-    )
-    location = Path("oras-install")
-    location.mkdir(mode=511, parents=False, exist_ok=True)
-    subprocess.run("tar -zxf oras_0.12.0_*.tar.gz -C oras-install/", shell=True)
-    subprocess.run("mv oras-install/oras /usr/local/bin/", shell=True)
-    subprocess.run("rm -rf oras_0.12.0_*.tar.gz oras-install/", shell=True)
+def install_on_OS(sys):
+    logging.warning(f"Installing oras on {sys}...")
+    if "os" in sys:
+        subprocess.run(
+            "curl -LO https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_darwin_amd64.tar.gz",
+            shell=True,
+        )
+        location = Path("oras-install")
+        location.mkdir(mode=511, parents=False, exist_ok=True)
+        subprocess.run("tar -zxf oras_0.12.0_*.tar.gz -C oras-install/", shell=True)
+        subprocess.run("mv oras-install/oras /usr/local/bin/", shell=True)
+        subprocess.run("rm -rf oras_0.12.0_*.tar.gz oras-install/", shell=True)
+    elif "win" in sys :
+        subprocess.run(
+            "curl.exe -sLO  https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_windows_amd64.tar.gz",
+            shell=True,
+        )
+        subprocess.run("tar.exe -xvzf oras_0.12.0_windows_amd64.tar.gz", shell=True)
+        mdir_cmd = "mkdir -p %USERPROFILE%\\bin\\"
+        subprocess.run(mdir_cmd, shell=True)
+        copy_cmd = "copy oras.exe %USERPROFILE%\\bin\\"
+        subprocess.run(copy_cmd, shell=True)
+        setPath_cmd = "set PATH=%USERPROFILE%\\bin\\;%PATH%"
+        subprocess.run(setPath_cmd, shell=True)
 
 
 class Oras:
@@ -34,8 +47,8 @@ class Oras:
         self.token = user_token
         self.strSys = str(system)
         logging.warning(f"Host is <<{self.strSys}>>")
-        if "osx" in self.strSys:
-            install_on_OS()
+        if "osx" in self.strSys or "win" in self.strSys:
+            install_on_OS(system)
 
     def login(self):
         loginStr = f"echo {self.token} | oras login https://ghcr.io -u {self.owner} --password-stdin"
