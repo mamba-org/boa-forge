@@ -5,7 +5,7 @@ on:
   push:
   pull_request:
     branches:
-      - master
+      - windows_oras
 
 jobs:
   build_libraries_unix:
@@ -25,7 +25,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       TARGET_PLATFORM: ${{ matrix.target_platform }}
-      GITHUB_OWNER: "mamba-org"
+      GITHUB_OWNER:  ${{ github.actor }}
+#      GITHUB_OWNER: "mamba-org"
     steps:
       - uses: actions/checkout@v2
       - name: install mamba
@@ -58,49 +59,49 @@ jobs:
         run: |
           boa build libiconv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
         if: runner.os == 'macOS'
-      - name: build zlib
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build zlib --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build zstd
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build zstd --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build yaml-cpp
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build yaml-cpp --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build reproc
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build reproc --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build libarchive
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libarchive \
-              --skip-existing \
-              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
-              --target-platform $TARGET_PLATFORM
-      - name: build openssl
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build openssl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build libssh2
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libssh2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build libsolv
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build libsolv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build curl
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build curl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      - name: build micromamba
-        shell: bash -l -eo pipefail {0}
-        run: |
-          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build zlib
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build zlib --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build zstd
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build zstd --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build yaml-cpp
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build yaml-cpp --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build reproc
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build reproc --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build libarchive
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build libarchive \
+#              --skip-existing \
+#              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
+#              --target-platform $TARGET_PLATFORM
+#      - name: build openssl
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build openssl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build libssh2
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build libssh2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build libsolv
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build libsolv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build curl
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build curl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+#      - name: build micromamba
+#        shell: bash -l -eo pipefail {0}
+#        run: |
+#          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
       # - name: build micromamba-nightly
       #   shell: bash -l -eo pipefail {0}
       #   run: |
@@ -119,6 +120,9 @@ jobs:
 
   build_libraries_win:
     runs-on: [windows-latest]
+    env:
+      TARGET_PLATFORM: ${{ matrix.target_platform }}
+      GITHUB_OWNER:  ${{ github.actor }}
     steps:
       - uses: actions/checkout@v2
       - name: install mamba
@@ -153,42 +157,42 @@ jobs:
         shell: powershell
         run: |
           boa build bzip2 --features "[static]" --skip-existing
-      - name: build zstd
-        shell: powershell
-        run: |
-          boa build zstd --features "[static]" --skip-existing
-      - name: build yaml-cpp
-        shell: powershell
-        run: |
-          boa build yaml-cpp --features "[static]" --skip-existing
-      - name: build reproc
-        shell: powershell
-        run: |
-          boa build reproc --features "[static]" --skip-existing
-      - name: build libarchive
-        shell: powershell
-        run: |
-          boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" --skip-existing
-      - name: build openssl
-        shell: powershell
-        run: |
-          boa build openssl --features "[static]" --skip-existing
+#      - name: build zstd
+#        shell: powershell
+#        run: |
+#          boa build zstd --features "[static]" --skip-existing
+#      - name: build yaml-cpp
+#        shell: powershell
+#        run: |
+#          boa build yaml-cpp --features "[static]" --skip-existing
+#      - name: build reproc
+#        shell: powershell
+#        run: |
+#          boa build reproc --features "[static]" --skip-existing
+#      - name: build libarchive
+#        shell: powershell
+#        run: |
+#          boa build libarchive --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" --skip-existing
+#      - name: build openssl
+#        shell: powershell
+#        run: |
+#          boa build openssl --features "[static]" --skip-existing
       # - name: build libssh2
       #   shell: powershell
       #   run: |
       #     boa build libssh2 --features "[static]" --skip-existing
-      - name: build libsolv
-        shell: powershell
-        run: |
-          boa build libsolv --features "[static]" --skip-existing
-      - name: build curl
-        shell: powershell
-        run: |
-          boa build curl --features "[static]" --skip-existing
-      - name: build micromamba
-        shell: powershell
-        run: |
-          boa build micromamba --skip-existing
+#      - name: build libsolv
+#        shell: powershell
+#        run: |
+#          boa build libsolv --features "[static]" --skip-existing
+#      - name: build curl
+#        shell: powershell
+#        run: |
+#          boa build curl --features "[static]" --skip-existing
+#      - name: build micromamba
+#        shell: powershell
+#        run: |
+#          boa build micromamba --skip-existing
       # - name: build micromamba-nightly
       #   shell: powershell
       #   run: |
@@ -199,6 +203,12 @@ jobs:
         with:
           name: micromamba_pkgs
           path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+      - name: create_oras_push
+        shell: bash -l {0}
+        run: |
+          python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+        if: always()
+
 
   #########
   # TESTS #

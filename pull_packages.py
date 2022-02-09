@@ -33,6 +33,8 @@ if not path.is_dir:
 trgt = "linux"
 if "osx" in target_platform:
     trgt = "osx"
+elif "windows" in target_platform:
+    trgt = "windows"
 
 with open("packages.json", "r") as read_file:
     packages_json = json.load(read_file)
