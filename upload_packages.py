@@ -21,6 +21,6 @@ location = Path(conda_prefix) / directory / target_platform
 # push the all found packages to the registry
 for data in location.iterdir():
     strFile = str(data)
-    warning(f"data: strFile")
+    warning(f"data: {strFile}")
     if strFile.endswith("tar.bz2"):
         oras.push(target_platform, data)
