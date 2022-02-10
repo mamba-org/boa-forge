@@ -6,7 +6,7 @@ from pathlib import Path
 from get_latest_conda_package import get_version_file
 
 def get_latest_pkg(dir):
-    
+
     sort_key = lambda f: f.stat().st_mtime
     directory = Path(dir)
     files = directory.glob('*.bz2')
@@ -38,9 +38,12 @@ def split_name (data):
 
 
 def write_version(dict,data):
+    dir = data
     logging.warning(f"Data is: <<{data}>>")
-    pkg_name,_,_,_,_ = split_name (data)
-    version = get_version_file(data,pkg_name)[1]
+    whole_path = get_latest_pkg(dir)
+
+    pkg_name,_,_,_,_ = split_name (whole_path)
+    version = get_version_file(dir,pkg_name)[1]
     if pkg_name in dict.keys():
         if dict[pkg_name] < version:
             dict[pkg_name] = version
@@ -136,7 +139,6 @@ class Oras:
             logging.warning(f"Upload aborted!")
         else:
             logging.warning(f"Latest version of  <<{pkg}>> pulled")
-            whole_path = get_latest_pkg(dir)
-            versions_dict = write_version(versions_dict,whole_path)
+            versions_dict = write_version(versions_dict,dir)
         return versions_dict
 
