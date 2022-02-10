@@ -12,6 +12,7 @@ target_platform = str(sys.argv[2])
 conda_prefix = sys.argv[3]
 token = sys.argv[4]
 
+logging.warning(f"!!!!conda prefix <<< {conda_prefix} >>>")
 directory = "conda-bld"
 oras = Oras(owner, token, conda_prefix, target_platform)
 oras.login()
