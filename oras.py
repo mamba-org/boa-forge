@@ -109,9 +109,15 @@ class Oras:
         logging.warning(f"Package <<{pkg_name}>> uploaded to: <<{upload_url}>>")
 
         can_be_pushed = False
-        current_version = get_version_file(path,pkg_name)
+        current_version = get_version_file(path,pkg_name)[1]
         if pkg_name in versions_dict.keys():
+            t1 = type(pkg_name)
+            logging.warning(f"pkg_name: {pkg_name} type: {t1}")
+            
             if current_version > versions_dict[pkg_name]:
+                t = type(current_version)
+                logging.warning(f"curr is {current_version} type :{t}")
+
                 can_be_pushed = True
         else:
             can_be_pushed = True
