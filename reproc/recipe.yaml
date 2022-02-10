@@ -23,29 +23,27 @@ outputs:
       name: reproc
     build:
       script:
-        - sel(unix): build_c.sh
-        - sel(win): build_c.bat
+        - build_c.py
     requirements:
       build:
         - '{{ compiler("c") }}'
         - cmake
-        - sel(unix): make
-        - sel(win): ninja
+        - bitfurnace
+        - ninja
   - package:
       name: reproc-cpp
     build:
       script:
-        - sel(unix): build_cpp.sh
-        - sel(win): build_cpp.bat
+        - build_cpp.py
     requirements:
       build:
         - '{{ compiler("c") }}'
         - '{{ compiler("cxx") }}'
         - cmake
-        - sel(unix): make
-        - sel(win): ninja
+        - bitfurnace
+        - ninja
       host:
-        - "{{ pin_subpackage('reproc-static', exact=True ) }}"
+        - "{{ pin_subpackage('reproc', exact=True ) }}"
 
 about:
   home: https://github.com/DaanDeMeyer/reproc
