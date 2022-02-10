@@ -11,7 +11,10 @@ def get_latest_pkg(dir):
     directory = Path(dir)
     files = directory.glob('*.bz2')
     sorted_files = sorted(files, key=sort_key, reverse=True)
-    file = sorted_files[0]
+    if len(sorted_files) > 0:
+        file = sorted_files[0]
+    else:
+        file = "empty"
     return file
 
 
@@ -36,12 +39,12 @@ def split_name (data):
     origin = "./" + pkg
     return pkg_name,tag,path,origin,pkg
 
-
 def write_version(dict,data):
     dir = data
     logging.warning(f"Data is: <<{data}>>")
     whole_path = get_latest_pkg(dir)
-
+    if whole_path == "empty":
+        return dict
     pkg_name,_,_,_,_ = split_name (whole_path)
     version = get_version_file(dir,pkg_name)[1]
     if pkg_name in dict.keys():
@@ -113,7 +116,7 @@ class Oras:
         if pkg_name in versions_dict.keys():
             t1 = type(pkg_name)
             logging.warning(f"pkg_name: {pkg_name} type: {t1}")
-            
+
             if current_version > versions_dict[pkg_name]:
                 t = type(current_version)
                 logging.warning(f"curr is {current_version} type :{t}")

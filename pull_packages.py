@@ -16,7 +16,7 @@ logging.warning(f"!!!!conda prefix <<< {conda_prefix} >>>")
 
 pt = Path(conda_prefix)
 for data in pt.iterdir():
-    print(data)
+    logging.warning(f"data is {data}")
 
 directory = "conda-bld"
 oras = Oras(owner, token, conda_prefix, target_platform)
@@ -25,15 +25,15 @@ oras.login()
 base = Path(conda_prefix) / directory
 # expl= #/home/runner/micromamba/envs/buildenv/ #conda-bld/
 if not base.is_dir():
-    logging.warning(f" {base}did NOT exist")
+    logging.warning(f" {base} did NOT exist")
     base.mkdir(mode=511, parents=False, exist_ok=True)
 
 path = base / target_platform
 # expl=#/home/runner/micromamba/envs/buildenv/ #conda-bld/ #linux-aarch64/
 
 if not path.is_dir:
-    print(f" {path}did NOT exist")
-    path.mkdir(mode=511, parents=False, exist_ok=True)(f" {base}did NOT exist")
+    #print(f" {path} did NOT exist")
+    path.mkdir(mode=511, parents=False, exist_ok=True)(f" {base} did NOT exist")
 
 # import json file
 trgt = "linux"
