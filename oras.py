@@ -6,6 +6,7 @@ from pathlib import Path
 from get_latest_conda_package import get_version_file
 
 def getName_andTag(pkg):
+    logging.warning(f"Pkg is: <<{pkg}>>")
     name, version, hash = pkg.rsplit("-", 2)
 
     tag = version + "-" + hash
