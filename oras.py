@@ -1,8 +1,9 @@
+from importlib.resources import path
 import logging
 import subprocess
 from os import chdir
 from pathlib import Path
-
+from get_latest_conda_package import get_version_file
 
 def getName_andTag(pkg):
     name, version, hash = pkg.rsplit("-", 2)
@@ -13,6 +14,27 @@ def getName_andTag(pkg):
 
     return name, tag_resized
 
+def split_name (data):
+    strData = str(data)
+    pkg = str(data).rsplit("/", 1)[-1]
+    length = len(strData) - len(pkg)
+    path = strData[:length]
+    pkg_name, tag = getName_andTag(pkg)
+    origin = "./" + pkg
+    return pkg_name,tag,path,origin,pkg
+
+
+def write_version(dict,data):
+    pkg_name,_,_,_,_ = split_name (data)
+    version = get_version_file(data,pkg_name)[1]
+    if pkg_name in dict.keys():
+        if dict[pkg_name] < version:
+            dict[pkg_name] = version
+    else:
+        dict[pkg_name]=version
+    return dict
+
+    
 
 def install_on_OS(sys):
     logging.warning(f"Installing oras on {sys}...")
@@ -54,14 +76,9 @@ class Oras:
         loginStr = f"echo {self.token} | oras login https://ghcr.io -u {self.owner} --password-stdin"
         subprocess.run(loginStr, shell=True)
 
-    def push(self, target, data):
-        strData = str(data)
-        pkg = str(data).rsplit("/", 1)[-1]
-        length = len(strData) - len(pkg)
-        path = strData[:length]
-        pkg_name, tag = getName_andTag(pkg)
-        origin = "./" + pkg
-
+    def push(self, target, data, versions_dict):
+        pkg_name,tag, path, origin, pkg = split_name(data)
+        
         # upload the tar_bz2 file to the right url
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {origin}:application/octet-stream"
         push_bz2_latest = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:latest {origin}:application/octet-stream"
@@ -69,17 +86,42 @@ class Oras:
         logging.warning(f"Cmd <<{push_bz2}>>")
         logging.warning(f"Latest Cmd <<{push_bz2_latest}>>")
         chdir(path)
-
         logging.warning(
-            f"Uploading <<{pkg}>>. path <<{origin} (from dir: << {self.conda_prefix} >> to link: <<{upload_url}>>"
-        )
+                f"Uploading <<{pkg}>>. path <<{origin} (from dir: << {self.conda_prefix} >> to link: <<{upload_url}>>"
+            )
         subprocess.run(push_bz2, shell=True)
-        subprocess.run(push_bz2_latest, shell=True)
         logging.warning(f"Package <<{pkg_name}>> uploaded to: <<{upload_url}>>")
 
-    def pull(self, pkg, tag, dir):
-        pullCmd = f'oras pull ghcr.io/{self.owner}/samples/{self.strSys}/{pkg}:{tag} --output {dir} -t "application/octet-stream"'
+        can_be_pushed = False
+        current_version = get_version_file(path,pkg_name)
+        if pkg_name in versions_dict.keys():
+            if current_version > versions_dict[pkg_name]:
+                can_be_pushed = True
+        else:
+            can_be_pushed = True
 
+        if can_be_pushed:
+            logging.warning(
+                f"Uploading <<{pkg}>> with tag latest"
+            )
+            subprocess.run(push_bz2_latest, shell=True)
+            versions_dict = write_version(versions_dict,data)
+            logging.warning(f"Package <<{pkg_name}>> uploaded to: <<{upload_url}>>")
+        else:
+            logging.warning(f"This Version {current_version} of <<{pkg_name}>> cannot be tagged as latest, because there is a newer version")
+
+        return versions_dict
+
+
+    def pull(self, pkg, tag, dir, versions_dict):
+        pullCmd = f'oras pull ghcr.io/{self.owner}/samples/{self.strSys}/{pkg}:{tag} --output {dir} -t "application/octet-stream"'
         logging.warning(f"Pulling lattest of  <<{pkg}>>. with command: <<{pullCmd}>>")
-        subprocess.run(pullCmd, shell=True)
-        logging.warning(f"Latest version of  <<{pkg}>> pulled")
+        try:
+            subprocess.run(pullCmd, shell=True)
+        except:
+            logging.warning(f"Package <<{pkg}>> did not exist on the registry")
+            logging.warning(f"Upload aborted!")
+        else:
+            logging.warning(f"Latest version of  <<{pkg}>> pulled")
+            versions_dict = write_version(versions_dict,dir)
+        return versions_dict

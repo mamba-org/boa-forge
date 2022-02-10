@@ -1,7 +1,7 @@
 import sys
 from logging import warning
 from pathlib import Path
-
+import json
 from oras import Oras
 
 # initializations
@@ -10,6 +10,8 @@ target_platform = str(sys.argv[2])
 conda_prefix = sys.argv[3]
 token = sys.argv[4]
 
+with open("/tmp/versions.json", "r") as read_file:
+    versions_dict = json.load(read_file)
 # create oras object and login with the token
 oras = Oras(owner, token, conda_prefix, target_platform)
 
@@ -24,4 +26,4 @@ for data in location.iterdir():
     strFile = str(data)
     warning(f"data: {strFile}")
     if strFile.endswith("tar.bz2"):
-        oras.push(target_platform, data)
+        versions_dict = oras.push(target_platform, data, versions_dict)
