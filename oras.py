@@ -26,6 +26,7 @@ def split_name (data):
 
 
 def write_version(dict,data):
+    logging.warning(f"Data is: <<{data}>>")
     pkg_name,_,_,_,_ = split_name (data)
     version = get_version_file(data,pkg_name)[1]
     if pkg_name in dict.keys():
