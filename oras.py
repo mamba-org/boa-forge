@@ -16,6 +16,8 @@ def getName_andTag(pkg):
     return name, tag_resized
 
 def split_name (data):
+    logging.warning(f"Data1!!! is: <<{data}>>")
+
     strData = str(data)
     pkg = str(data).rsplit("/", 1)[-1]
     length = len(strData) - len(pkg)
