@@ -5,6 +5,16 @@ from os import chdir
 from pathlib import Path
 from get_latest_conda_package import get_version_file
 
+def get_latest_pkg(dir):
+    
+    sort_key = lambda f: f.stat().st_mtime
+    directory = Path(dir)
+    files = directory.glob('*.bz2')
+    sorted_files = sorted(files, key=sort_key, reverse=True)
+    file = sorted_files[0]
+    return file
+
+
 def getName_andTag(pkg):
     logging.warning(f"Pkg is: <<{pkg}>>")
     name, version, hash = pkg.rsplit("-", 2)
@@ -37,8 +47,7 @@ def write_version(dict,data):
     else:
         dict[pkg_name]=version
     return dict
-
-    
+   
 
 def install_on_OS(sys):
     logging.warning(f"Installing oras on {sys}...")
@@ -127,5 +136,7 @@ class Oras:
             logging.warning(f"Upload aborted!")
         else:
             logging.warning(f"Latest version of  <<{pkg}>> pulled")
-            versions_dict = write_version(versions_dict,dir)
+            whole_path = get_latest_pkg(dir)
+            versions_dict = write_version(versions_dict,whole_path)
         return versions_dict
+
