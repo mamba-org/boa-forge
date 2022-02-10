@@ -155,7 +155,7 @@ jobs:
           python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
         if: always()
         
-        - name: build zlib
+      - name: build zlib
         shell: powershell
         run: |
           boa build zlib --features "[static]" --skip-existing
