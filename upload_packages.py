@@ -10,7 +10,7 @@ target_platform = str(sys.argv[2])
 conda_prefix = sys.argv[3]
 token = sys.argv[4]
 
-with open("/tmp/versions.json", "r") as read_file:
+with open("versions.json", "r") as read_file:
     versions_dict = json.load(read_file)
 # create oras object and login with the token
 oras = Oras(owner, token, conda_prefix, target_platform)

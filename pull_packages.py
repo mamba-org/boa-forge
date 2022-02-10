@@ -52,5 +52,5 @@ versions_dict = {}
 for pkg in packagesList:
     versions_dict = oras.pull(pkg, "latest", str(path), versions_dict)
 
-with open('/tmp/versions.json', 'w') as fp:
+with open('versions.json', 'w') as fp:
     json.dump(versions_dict, fp)
