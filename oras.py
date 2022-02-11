@@ -46,6 +46,7 @@ def write_version(some_dict, data):
     some_dir = data
     logging.warning(f"Data is: <<{data}>>")
     whole_path = get_latest_pkg(some_dir)
+    logging.warning(f"File is: {whole_path}")
     if whole_path == "empty":
         return some_dict
     else:
@@ -110,6 +111,7 @@ class Oras:
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {origin}:application/octet-stream"
         push_bz2_latest = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:latest {origin}:application/octet-stream"
         upload_url = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag}"
+        upload_url_lat = f"ghcr.io/{self.owner}/samples/{target}/{pkg_name}:latest"
         logging.warning(f"Cmd <<{push_bz2}>>")
         logging.warning(f"Latest Cmd <<{push_bz2_latest}>>")
         chdir(path)
@@ -122,23 +124,25 @@ class Oras:
         can_be_pushed = False
         current_version = get_version_file(path, pkg_name)[1]
         if pkg_name in versions_dict.keys():
-            t1 = type(pkg_name)
             old_version = versions_dict[pkg_name]
-            logging.warning(f"pkg_name: {pkg_name} type: {t1} curr version: <<{current_version}>> old version:<<{old_version}>>")
+            logging.warning(
+                f"Two versions of package <<{pkg_name}>> found: current version: <<{current_version}>> old version:<<{old_version}>>"
+            )
 
             if current_version > old_version:
-                t = type(current_version)
-                logging.warning(f"curr is {current_version} type :{t}")
-
+                logging.warning(f"new version found: <<{current_version}>>")
                 can_be_pushed = True
         else:
             can_be_pushed = True
 
-        if can_be_pushed == True:
-            logging.warning(f"Uploading <<{pkg}>> with tag latest")
+        if can_be_pushed:
+            logging.warning(
+                f"Uploading <<{pkg}>> with tag latest with cmd <<{push_bz2_latest}>>"
+            )
             subprocess.run(push_bz2_latest, shell=True)
-            versions_dict = write_version(versions_dict, data)
-            logging.warning(f"Package <<{pkg_name}>> uploaded to: <<{upload_url}>>")
+            versions_dict[pkg_name] = current_version
+            # versions_dict = write_version(versions_dict, data)
+            logging.warning(f"Package <<{pkg_name}>> uploaded to: <<{upload_url_lat}>>")
         else:
             logging.warning(
                 f"This Version {current_version} of <<{pkg_name}>> cannot be tagged as latest, because there is a newer version"
@@ -158,5 +162,5 @@ class Oras:
         else:
             logging.warning(f"Latest version of  <<{pkg}>> pulled")
             versions_dict = write_version(versions_dict, a_dir)
-        
+
         return versions_dict
