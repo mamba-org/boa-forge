@@ -2,6 +2,8 @@ import logging
 import subprocess
 from os import chdir
 from pathlib import Path
+from urllib import request
+
 from get_latest_conda_package import get_version_file
 
 
@@ -47,18 +49,24 @@ def write_version(some_dict, data):
     whole_path = get_latest_pkg(some_dir)
     if whole_path == "empty":
         return some_dict
-    pkg_name, _, _, _, _ = split_name(whole_path)
-    version = get_version_file(some_dir, pkg_name)[1]
-    if pkg_name in some_dict.keys():
-        old_ver = some_dict[pkg_name]
-        logging.warning(f"Comparing <<{old_ver}>> and <<{version}>>")
-
-        if some_dict[pkg_name] < version:
-            some_dict[pkg_name] = version
     else:
-        some_dict[pkg_name] = version
-    return some_dict
+        pkg_name, _, _, _, _ = split_name(whole_path)
+        version = get_version_file(some_dir, pkg_name)[1]
+        if pkg_name in some_dict.keys():
+            old_ver = some_dict[pkg_name]
+            logging.warning(f"Comparing <<{old_ver}>> and <<{version}>>")
 
+            if version > old_ver:
+                some_dict[pkg_name] = version
+
+        else:
+            some_dict[pkg_name] = version
+        return some_dict
+dict ={}
+key = "moi"
+dict[key]="kora"
+r = dict[key]
+print(r)
 
 def install_on_OS(sys):
     logging.warning(f"Installing oras on {sys}...")
@@ -149,10 +157,12 @@ class Oras:
         logging.warning(f"Pulling lattest of  <<{pkg}>>. with command: <<{pullCmd}>>")
         try:
             subprocess.run(pullCmd, shell=True)
-        except BaseException:
+        except request.HTTPError:
             logging.warning(f"Package <<{pkg}>> did not exist on the registry")
             logging.warning("Upload aborted!")
+            #return versions_dict
         else:
             logging.warning(f"Latest version of  <<{pkg}>> pulled")
             versions_dict = write_version(versions_dict, a_dir)
+        
         return versions_dict
