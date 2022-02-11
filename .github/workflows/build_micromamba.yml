@@ -164,14 +164,14 @@ jobs:
         shell: powershell
         run: |
           boa build bzip2 --features "[static]" --skip-existing
-#      - name: build zstd
-#        shell: powershell
-#        run: |
-#          boa build zstd --features "[static]" --skip-existing
-#      - name: build yaml-cpp
-#        shell: powershell
-#        run: |
-#          boa build yaml-cpp --features "[static]" --skip-existing
+      - name: build zstd
+        shell: powershell
+        run: |
+          boa build zstd --features "[static]" --skip-existing
+      - name: build yaml-cpp
+        shell: powershell
+        run: |
+          boa build yaml-cpp --features "[static]" --skip-existing
 #      - name: build reproc
 #        shell: powershell
 #        run: |
