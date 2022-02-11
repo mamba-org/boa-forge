@@ -1,4 +1,5 @@
 import json
+import logging
 import sys
 from logging import warning
 from pathlib import Path
@@ -29,5 +30,8 @@ warning(f"location <<{location}>>")
 for data in location.iterdir():
     strFile = str(data)
     warning(f"data: {strFile}")
+    if strFile.endswith("win-64"):
+        for f in data.iterdir():
+            logging.warning(f"pkg: <<{f}>>")
     if strFile.endswith("tar.bz2"):
         versions_dict = oras.push(target_platform, data, versions_dict)
