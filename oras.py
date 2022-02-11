@@ -2,7 +2,6 @@ import logging
 import subprocess
 from os import chdir
 from pathlib import Path
-
 from get_latest_conda_package import get_version_file
 
 
