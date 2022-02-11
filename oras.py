@@ -135,7 +135,7 @@ class Oras:
             can_be_pushed = True
 
         if can_be_pushed == True:
-            logging.warning(f"Uploading <<{pkg}>> with tag latest")
+            logging.warning(f"Uploading <<{pkg}>> with tag latest with cmd <<{push_bz2_latest}>>")
             subprocess.run(push_bz2_latest, shell=True)
             versions_dict = write_version(versions_dict, data)
             logging.warning(f"Package <<{pkg_name}>> uploaded to: <<{upload_url}>>")
