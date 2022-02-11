@@ -7,12 +7,11 @@ from get_latest_conda_package import get_version_file
 
 
 def get_latest_pkg(some_dir):
-    a = {}
-    a.sort_key = lambda f: f.stat().st_mtime
+    sort_key = lambda f: f.stat().st_mtime
 
     directory = Path(some_dir)
     files = directory.glob("*.bz2")
-    sorted_files = sorted(files, key=a["sort_key"], reverse=True)
+    sorted_files = sorted(files, key=sort_key, reverse=True)
     if len(sorted_files) > 0:
         file = sorted_files[0]
     else:
