@@ -51,6 +51,9 @@ def write_version(some_dict, data):
     pkg_name, _, _, _, _ = split_name(whole_path)
     version = get_version_file(some_dir, pkg_name)[1]
     if pkg_name in some_dict.keys():
+        old_ver = some_dict[pkg_name]
+        logging.warning(f"Comparing <<{old_ver}>> and <<v{version} ")
+        
         if some_dict[pkg_name] < version:
             some_dict[pkg_name] = version
     else:
