@@ -54,11 +54,11 @@ jobs:
         shell: bash -l -eo pipefail {0}
         run: |
           boa build bzip2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-#      - name: build libiconv
-#        shell: bash -l -eo pipefail {0}
-#        run: |
-#          boa build libiconv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-#        if: runner.os == 'macOS'
+      - name: build libiconv
+        shell: bash -l -eo pipefail {0}
+        run: |
+          boa build libiconv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+        if: runner.os == 'macOS'
 #      - name: build zlib
 #        shell: bash -l -eo pipefail {0}
 #        run: |
