@@ -5,7 +5,7 @@ on:
   push:
   pull_request:
     branches:
-      - windows_oras
+      - master
 
 jobs:
   build_libraries_unix:
