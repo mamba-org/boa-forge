@@ -61,11 +61,6 @@ def write_version(some_dict, data):
         else:
             some_dict[pkg_name] = version
         return some_dict
-dict ={}
-key = "moi"
-dict[key]="kora"
-r = dict[key]
-print(r)
 
 def install_on_OS(sys):
     logging.warning(f"Installing oras on {sys}...")
