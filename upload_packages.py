@@ -19,7 +19,10 @@ oras = Oras(owner, token, conda_prefix, target_platform)
 oras.login()
 
 directory = "conda-bld"
-location = Path(conda_prefix) / directory / target_platform
+if "windows" in target_platform:
+    location = Path(conda_prefix) / directory
+else:
+    location = Path(conda_prefix) / directory / target_platform
 warning(f"location <<{location}>>")
 
 # push the all found packages to the registry
