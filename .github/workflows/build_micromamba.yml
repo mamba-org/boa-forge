@@ -25,8 +25,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       TARGET_PLATFORM: ${{ matrix.target_platform }}
-      GITHUB_OWNER:  ${{ github.actor }}
-#      GITHUB_OWNER: "mamba-org"
+#      GITHUB_OWNER:  ${{ github.actor }}
+      GITHUB_OWNER: "mamba-org"
     steps:
       - uses: actions/checkout@v2
       - name: install mamba
@@ -122,7 +122,8 @@ jobs:
     runs-on: [windows-latest]
     env:
       TARGET_PLATFORM: "windows"
-      GITHUB_OWNER:  ${{ github.actor }}
+#      GITHUB_OWNER:  ${{ github.actor }}
+      GITHUB_OWNER: "mamba-org"
     steps:
       - uses: actions/checkout@v2
       - name: install mamba
@@ -149,6 +150,12 @@ jobs:
           micromamba remove boa --no-prune
           python -m pip install git+https://github.com/mamba-org/boa@master
 
+      - name: pull already uploaded packages
+        shell: bash -l {0}
+        run: |
+          python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+        if: always()
+        
       - name: build zlib
         shell: powershell
         run: |
@@ -203,7 +210,11 @@ jobs:
         with:
           name: micromamba_pkgs
           path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
-
+      - name: create_oras_push
+        shell: bash -l {0}
+        run: |
+          python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+        if: always()
 
 
   #########

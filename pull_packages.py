@@ -32,7 +32,7 @@ path = base / target_platform
 # expl=#/home/runner/micromamba/envs/buildenv/ #conda-bld/ #linux-aarch64/
 
 if not path.is_dir:
-    #print(f" {path} did NOT exist")
+    # print(f" {path} did NOT exist")
     path.mkdir(mode=511, parents=False, exist_ok=True)(f" {base} did NOT exist")
 
 # import json file
@@ -52,5 +52,5 @@ versions_dict = {}
 for pkg in packagesList:
     versions_dict = oras.pull(pkg, "latest", str(path), versions_dict)
 
-with open('versions.json', 'w') as fp:
+with open("versions.json", "w") as fp:
     json.dump(versions_dict, fp)

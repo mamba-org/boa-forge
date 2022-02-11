@@ -1,7 +1,8 @@
+import json
 import sys
 from logging import warning
 from pathlib import Path
-import json
+
 from oras import Oras
 
 # initializations
