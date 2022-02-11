@@ -52,8 +52,8 @@ def write_version(some_dict, data):
     version = get_version_file(some_dir, pkg_name)[1]
     if pkg_name in some_dict.keys():
         old_ver = some_dict[pkg_name]
-        logging.warning(f"Comparing <<{old_ver}>> and <<v{version} ")
-        
+        logging.warning(f"Comparing <<{old_ver}>> and <<{version}>>")
+
         if some_dict[pkg_name] < version:
             some_dict[pkg_name] = version
     else:
@@ -102,6 +102,7 @@ class Oras:
         subprocess.run(loginStr, shell=True)
 
     def push(self, target, data, versions_dict):
+        logging.warning(f"current dic is: {versions_dict}")
         pkg_name, tag, path, origin, pkg = split_name(data)
 
         # upload the tar_bz2 file to the right url
@@ -121,9 +122,10 @@ class Oras:
         current_version = get_version_file(path, pkg_name)[1]
         if pkg_name in versions_dict.keys():
             t1 = type(pkg_name)
-            logging.warning(f"pkg_name: {pkg_name} type: {t1}")
+            old_version = versions_dict[pkg_name]
+            logging.warning(f"pkg_name: {pkg_name} type: {t1} curr version: <<{current_version}>> old version:<<{old_version}")
 
-            if current_version > versions_dict[pkg_name]:
+            if current_version > old_version:
                 t = type(current_version)
                 logging.warning(f"curr is {current_version} type :{t}")
 
@@ -131,7 +133,7 @@ class Oras:
         else:
             can_be_pushed = True
 
-        if can_be_pushed:
+        if can_be_pushed == True:
             logging.warning(f"Uploading <<{pkg}>> with tag latest")
             subprocess.run(push_bz2_latest, shell=True)
             versions_dict = write_version(versions_dict, data)
