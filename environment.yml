@@ -4,5 +4,6 @@ channels:
 dependencies:
   # - boa
   - mamba
+  - conda-build
   - pip
   - ruamel.yaml <0.17.6
