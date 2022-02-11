@@ -75,13 +75,13 @@ jobs:
 #        shell: bash -l -eo pipefail {0}
 #        run: |
 #          boa build reproc --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-#      - name: build libarchive
-#        shell: bash -l -eo pipefail {0}
-#        run: |
-#          boa build libarchive \
-#              --skip-existing \
-#              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
-#              --target-platform $TARGET_PLATFORM
+      - name: build libarchive
+        shell: bash -l -eo pipefail {0}
+        run: |
+          boa build libarchive \
+              --skip-existing \
+              --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
+              --target-platform $TARGET_PLATFORM
 #      - name: build openssl
 #        shell: bash -l -eo pipefail {0}
 #        run: |

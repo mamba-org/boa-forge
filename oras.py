@@ -123,7 +123,7 @@ class Oras:
         if pkg_name in versions_dict.keys():
             t1 = type(pkg_name)
             old_version = versions_dict[pkg_name]
-            logging.warning(f"pkg_name: {pkg_name} type: {t1} curr version: <<{current_version}>> old version:<<{old_version}")
+            logging.warning(f"pkg_name: {pkg_name} type: {t1} curr version: <<{current_version}>> old version:<<{old_version}>>")
 
             if current_version > old_version:
                 t = type(current_version)
