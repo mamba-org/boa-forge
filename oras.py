@@ -2,7 +2,6 @@ import logging
 import subprocess
 from os import chdir
 from pathlib import Path
-from urllib import request
 
 from get_latest_conda_package import get_version_file
 
@@ -157,7 +156,7 @@ class Oras:
         logging.warning(f"Pulling lattest of  <<{pkg}>>. with command: <<{pullCmd}>>")
         try:
             subprocess.run(pullCmd, shell=True)
-        except request.HTTPError:
+        except subprocess.CalledProcessError:
             logging.warning(f"Package <<{pkg}>> did not exist on the registry")
             logging.warning("Upload aborted!")
             #return versions_dict
