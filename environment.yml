@@ -2,8 +2,6 @@ name: buildenv
 channels:
   - conda-forge
 dependencies:
-  # - boa
-  - mamba
-  - conda-build
+  - boa
   - pip
   - ruamel.yaml <0.17.6

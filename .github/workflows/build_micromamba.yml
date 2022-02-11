@@ -44,7 +44,7 @@ jobs:
           EOL
 
           micromamba remove boa --no-prune
-          python -m pip install git+https://github.com/mamba-org/boa@master
+          # python -m pip install git+https://github.com/mamba-org/boa@master
       - name: pull already uploaded packages
         shell: bash -l {0}
         run: |
@@ -148,7 +148,7 @@ jobs:
           EOL
 
           micromamba remove boa --no-prune
-          python -m pip install git+https://github.com/mamba-org/boa@master
+          # python -m pip install git+https://github.com/mamba-org/boa@master
       - name: build zlib
         shell: powershell
         run: |
