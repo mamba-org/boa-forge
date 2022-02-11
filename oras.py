@@ -159,7 +159,7 @@ class Oras:
         except subprocess.CalledProcessError:
             logging.warning(f"Package <<{pkg}>> did not exist on the registry")
             logging.warning("Upload aborted!")
-            #return versions_dict
+            return versions_dict
         else:
             logging.warning(f"Latest version of  <<{pkg}>> pulled")
             versions_dict = write_version(versions_dict, a_dir)
