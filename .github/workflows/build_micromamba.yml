@@ -210,11 +210,6 @@ jobs:
         with:
           name: micromamba_pkgs
           path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
-      - name: create_oras_push
-        shell: bash -l {0}
-        run: |
-          python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
-        if: always()
 
 
   #########
