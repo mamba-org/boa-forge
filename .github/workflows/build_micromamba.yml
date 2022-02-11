@@ -5,7 +5,7 @@ on:
   push:
   pull_request:
     branches:
-      - bug_latest
+      - master
 
 jobs:
   build_libraries_unix:
@@ -25,8 +25,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       TARGET_PLATFORM: ${{ matrix.target_platform }}
-      GITHUB_OWNER:  ${{ github.actor }}
-#      GITHUB_OWNER: "mamba-org"
+#      GITHUB_OWNER:  ${{ github.actor }}
+      GITHUB_OWNER: "mamba-org"
     steps:
       - uses: actions/checkout@v2
       - name: install mamba
@@ -122,8 +122,8 @@ jobs:
     runs-on: [windows-latest]
     env:
       TARGET_PLATFORM: "windows"
-      GITHUB_OWNER:  ${{ github.actor }}
-#      GITHUB_OWNER: "mamba-org"
+#      GITHUB_OWNER:  ${{ github.actor }}
+      GITHUB_OWNER: "mamba-org"
     steps:
       - uses: actions/checkout@v2
       - name: install mamba
@@ -203,7 +203,6 @@ jobs:
         with:
           name: micromamba_pkgs
           path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
-
 
   #########
   # TESTS #

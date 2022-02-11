@@ -63,7 +63,6 @@ def write_version(some_dict, data):
             some_dict[pkg_name] = version
         return some_dict
 
-
 def install_on_OS(sys):
     logging.warning(f"Installing oras on {sys}...")
     if "os" in sys:
