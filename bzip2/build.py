@@ -22,7 +22,7 @@ class UnixRecipe(Make):
         return self.default_install_args + self.install_args
 
     def install(self):
-        run(['make'] + self.get_install_args())
+        run(['make', 'install'] + self.get_install_args())
         if not features.static:
             if target_platform.startswith('linux'):
                 run(['make', '-f', 'Makefile-libbz2_so'] + self.get_install_args())
@@ -30,6 +30,7 @@ class UnixRecipe(Make):
                 Path(prefix / 'lib' / 'libbz2.so').symlink_to(prefix / 'lib' / f'libbz2.so.{pkg_version}')
             else:
                 run([cc] + f'-shared -Wl,-install_name -Wl,libbz2.dylib -o libbz2.{pkg_version}.dylib blocksort.o huffman.o crctable.o randtable.o compress.o decompress.o bzlib.o'.split())
+
                 install(f'libbz2.{pkg_version}.dylib', prefix / 'lib')
                 Path(prefix / 'lib' / 'libbz2.dylib').symlink_to(prefix / 'lib' / f'libbz2.{pkg_version}.dylib')
 
@@ -39,8 +40,8 @@ class UnixRecipe(Make):
         self.cflags += ['-Wall', '-Winline', '-O2', '-g', '-D_FILE_OFFSET_BITS=64', '-fPIC']
 
         cflags = ' '.join(self.cflags)
-        self.build_args += [f'CFLAGS={cflags}']
-        self.install_args += [f'CFLAGS={cflags}']
+        self.build_args = [f'CFLAGS={cflags}']
+        self.install_args = [f'CFLAGS={cflags}']
 
 
 if target_platform.startswith('win'):
