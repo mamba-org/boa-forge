@@ -32,6 +32,7 @@ if "windows" in target_platform:
                 logging.warning(f"pkg: <<{pkg}>>")
                 if strPkg.endswith("tar.bz2"):
                     versions_dict = oras.push(target_platform, pkg, versions_dict)
+            
 
 else:
     location = Path(conda_prefix) / directory / target_platform
@@ -41,3 +42,8 @@ else:
         strFile = str(data)
         if strFile.endswith("tar.bz2"):
             versions_dict = oras.push(target_platform, data, versions_dict)
+
+oras.push_repodata(location)
+
+
+
