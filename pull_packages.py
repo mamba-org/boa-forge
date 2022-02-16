@@ -27,6 +27,9 @@ if not base.is_dir():
     logging.warning(f" {base} did NOT exist")
     base.mkdir(mode=511, parents=False, exist_ok=True)
 
+if "win" in target_platform:
+    target_platform = "win-64"
+
 path = base / target_platform
 # expl=#/home/runner/micromamba/envs/buildenv/ #conda-bld/ #linux-aarch64/
 # win = C:\Users\runneradmin\micromamba\envs\buildenv\conda-bld\win-64\
