@@ -23,11 +23,9 @@ directory = "conda-bld"
 if "windows" in target_platform:
     target_platform = "win-64"
     # C:\Users\runneradmin\micromamba\envs\buildenv\conda-bld\win-64\
-    #
     location = Path(conda_prefix) / directory
     for data in location.iterdir():
         strFile = str(data)
-        warning(f"data: {strFile}")
         if strFile.endswith("win-64"):
             for pkg in data.iterdir():
                 strPkg = str(pkg)
@@ -41,6 +39,5 @@ else:
     # push the all found packages to the registry
     for data in location.iterdir():
         strFile = str(data)
-        warning(f"data: {strFile}")
         if strFile.endswith("tar.bz2"):
             versions_dict = oras.push(target_platform, data, versions_dict)
