@@ -1,5 +1,5 @@
+import subprocess
 import json
-import logging
 import sys
 from logging import warning
 from pathlib import Path
@@ -34,6 +34,8 @@ for data in location.iterdir():
 #build and upload the repodata file
 curr_wd = Path.cwd()
 warning(f"????????ß Current work dir is: {curr_wd}")
+for dta in curr_wd:
+    warning(f"!!here: {dta}")
 oras.push_repodata(location)
 
 
