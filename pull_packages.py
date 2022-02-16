@@ -5,42 +5,37 @@ from pathlib import Path
 
 from oras import Oras
 
-# features = sys.argv[1]
 owner = sys.argv[1]
-# pkg_name=  str (sys.argv[2])
 target_platform = str(sys.argv[2])
 conda_prefix = sys.argv[3]
 token = sys.argv[4]
-
-logging.warning(f"!!!!conda prefix <<< {conda_prefix} >>>")
-
-pt = Path(conda_prefix)
-for data in pt.iterdir():
-    logging.warning(f"data is {data}")
 
 directory = "conda-bld"
 oras = Oras(owner, token, conda_prefix, target_platform)
 oras.login()
 
 base = Path(conda_prefix) / directory
-# expl= #/home/runner/micromamba/envs/buildenv/ #conda-bld/
+# unix= #/home/runner/micromamba/envs/buildenv/ #conda-bld/
+# win = C:\Users\runneradmin\micromamba\envs\buildenv\conda-bld\
 if not base.is_dir():
     logging.warning(f" {base} did NOT exist")
     base.mkdir(mode=511, parents=False, exist_ok=True)
 
+if "win" in target_platform:
+    target_platform = "win-64"
+
 path = base / target_platform
 # expl=#/home/runner/micromamba/envs/buildenv/ #conda-bld/ #linux-aarch64/
+# win = C:\Users\runneradmin\micromamba\envs\buildenv\conda-bld\win-64\
 
 if not path.is_dir:
-    # print(f" {path} did NOT exist")
     path.mkdir(mode=511, parents=False, exist_ok=True)(f" {base} did NOT exist")
 
-# import json file
 trgt = "linux"
 if "osx" in target_platform:
     trgt = "osx"
-elif "windows" in target_platform:
-    trgt = "windows"
+elif "win" in target_platform:
+    trgt = "win-64"
 
 with open("packages.json", "r") as read_file:
     packages_json = json.load(read_file)
@@ -48,7 +43,6 @@ with open("packages.json", "r") as read_file:
 packagesList = packages_json["pkgs"][trgt]
 
 versions_dict = {}
-# strData = str(data)
 for pkg in packagesList:
     versions_dict = oras.pull(pkg, "latest", str(path), versions_dict)
 
