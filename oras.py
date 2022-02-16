@@ -30,19 +30,22 @@ def getName_andTag(pkg):
     return name, tag_resized
 
 
-def split_name(data):
-    logging.warning(f"Data1!!! is: <<{data}>>")
+def split_name(data, host):
 
+    logging.warning(f"Data1!!! is: <<{data}>>")
+    sep = "/"
     strData = str(data)
-    pkg = str(data).rsplit("/", 1)[-1]
+    if "win" in host:
+        sep = "\\"
+    pkg = str(data).rsplit(sep, 1)[-1]
     length = len(strData) - len(pkg)
     path = strData[:length]
     pkg_name, tag = getName_andTag(pkg)
-    origin = "./" + pkg
+    origin = pkg
     return pkg_name, tag, path, origin, pkg
 
 
-def write_version(some_dict, data):
+def write_version(some_dict, data, host):
     some_dir = data
     logging.warning(f"Data is: <<{data}>>")
     whole_path = get_latest_pkg(some_dir)
@@ -50,7 +53,7 @@ def write_version(some_dict, data):
     if whole_path == "empty":
         return some_dict
     else:
-        pkg_name, _, _, _, _ = split_name(whole_path)
+        pkg_name, _, _, _, _ = split_name(whole_path, host)
         version = get_version_file(some_dir, pkg_name)[1]
         if pkg_name in some_dict.keys():
             old_ver = some_dict[pkg_name]
@@ -62,6 +65,7 @@ def write_version(some_dict, data):
         else:
             some_dict[pkg_name] = version
         return some_dict
+
 
 def install_on_OS(sys):
     logging.warning(f"Installing oras on {sys}...")
@@ -105,7 +109,7 @@ class Oras:
 
     def push(self, target, data, versions_dict):
         logging.warning(f"current dic is: {versions_dict}")
-        pkg_name, tag, path, origin, pkg = split_name(data)
+        pkg_name, tag, path, origin, pkg = split_name(data, self.strSys)
 
         # upload the tar_bz2 file to the right url
         push_bz2 = f"oras push ghcr.io/{self.owner}/samples/{target}/{pkg_name}:{tag} {origin}:application/octet-stream"
@@ -161,6 +165,6 @@ class Oras:
             return versions_dict
         else:
             logging.warning(f"Latest version of  <<{pkg}>> pulled")
-            versions_dict = write_version(versions_dict, a_dir)
+            versions_dict = write_version(versions_dict, a_dir, self.strSys)
 
         return versions_dict
