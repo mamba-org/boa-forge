@@ -32,6 +32,8 @@ for data in location.iterdir():
     if strFile.endswith("tar.bz2"):
         versions_dict = oras.push(target_platform, data, versions_dict)
 #build and upload the repodata file
+curr_wd = Path.cwd()
+warning(f"????????ß Current work dir is: {curr_wd}")
 oras.push_repodata(location)
 
 
