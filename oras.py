@@ -110,6 +110,16 @@ class Oras:
         loginStr = f"echo {self.token} | oras login https://ghcr.io -u {self.owner} --password-stdin"
         subprocess.run(loginStr, shell=True)
 
+    def push_repodata(self, the_dir):
+        # create the repodata file
+        logging.warning("Build the repodata file using conda index command")
+        subprocess.run(f"conda index {str(the_dir)}", shell=True)
+        repo = "repodata.json"
+
+        upload_cmd = f"oras push ghcr.io/{self.owner}/samples/{self.strSys}/repodata.json:latest {repo}:application/json"
+        logging.warning(f"upload the json file using following command: <<{upload_cmd}")
+        subprocess.run(upload_cmd, shell=True)
+
     def push(self, target, data, versions_dict):
         logging.warning(f"current dic is: {versions_dict}")
         pkg_name, tag, path, origin, pkg = split_name(data, self.strSys)
