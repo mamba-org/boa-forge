@@ -98,7 +98,10 @@ class Oras:
         self.owner = github_owner
         self.conda_prefix = origin
         self.token = user_token
-        self.strSys = str(system)
+        if "win" in str(system):
+            self.strSys = "win-64"
+        else:
+            self.strSys = str(system)
         logging.warning(f"Host is <<{self.strSys}>>")
         if "osx" in self.strSys or "win" in self.strSys:
             install_on_OS(system)
@@ -156,6 +159,7 @@ class Oras:
 
     def pull(self, pkg, tag, a_dir, versions_dict):
         pullCmd = f'oras pull ghcr.io/{self.owner}/samples/{self.strSys}/{pkg}:{tag} --output {a_dir} -t "application/octet-stream"'
+
         logging.warning(f"Pulling lattest of  <<{pkg}>>. with command: <<{pullCmd}>>")
         try:
             subprocess.run(pullCmd, shell=True)

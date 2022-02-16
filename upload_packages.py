@@ -21,6 +21,7 @@ oras.login()
 
 directory = "conda-bld"
 if "windows" in target_platform:
+    # C:\Users\runneradmin\micromamba\envs\buildenv\conda-bld\win-64\
     location = Path(conda_prefix) / directory
     for data in location.iterdir():
         strFile = str(data)
