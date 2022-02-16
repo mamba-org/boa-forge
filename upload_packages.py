@@ -1,7 +1,5 @@
-import subprocess
 import json
 import sys
-from logging import warning
 from pathlib import Path
 
 from oras import Oras
@@ -20,7 +18,7 @@ oras = Oras(owner, token, conda_prefix, target_platform)
 oras.login()
 
 directory = "conda-bld"
-location = Path(conda_prefix) / directory /target_platform
+location = Path(conda_prefix) / directory / target_platform
 # C:\Users\runneradmin\micromamba\envs\buildenv\conda-bld\win-64\
 # /home/runner/micromamba/envs/buildenv/conda-bld/linux-64/
 
@@ -29,8 +27,5 @@ for data in location.iterdir():
     strFile = str(data)
     if strFile.endswith("tar.bz2"):
         versions_dict = oras.push(target_platform, data, versions_dict)
-#build and upload the repodata file
+# build and upload the repodata file
 oras.push_repodata(location)
-
-
-
