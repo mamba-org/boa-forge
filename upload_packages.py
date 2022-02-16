@@ -35,7 +35,7 @@ for data in location.iterdir():
 curr_wd = Path.cwd()
 warning(f"????????ß Current work dir is: {curr_wd}")
 for dta in curr_wd:
-    warning(f"!!here: {dta}")
+    warning(f"!!here: {str(dta)}")
 oras.push_repodata(location)
 
 
