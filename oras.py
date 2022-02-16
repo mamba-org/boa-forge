@@ -112,13 +112,11 @@ class Oras:
 
     def push_repodata(self,dir):
         #create the json file
-        strDir = str(dir)
         logging.warning("Build the repodata file using conda index command")
-        subprocess.run(f"conda index {strDir}", shell=True)
+        subprocess.run(f"conda index {str(dir)}", shell=True)
         file = dir / "repodata.json"
-        strFile = str(file)
 
-        upload_cmd = f"oras push ghcr.io/{self.owner}/{self.strSys}/repodata.json:latest {strFile}:application/json"
+        upload_cmd = f"oras push ghcr.io/{self.owner}/{self.strSys}/repodata.json:latest {str(file)}:application/json"
         logging.warning(f"upload the json file using following command: <<{upload_cmd}")
         subprocess.run(upload_cmd,shell=True)
 
