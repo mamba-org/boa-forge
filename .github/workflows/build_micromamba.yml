@@ -121,7 +121,7 @@ jobs:
   build_libraries_win:
     runs-on: [windows-latest]
     env:
-      TARGET_PLATFORM: "windows"
+      TARGET_PLATFORM: "wind-64"
       GITHUB_OWNER:  ${{ github.actor }}
 #      GITHUB_OWNER: "mamba-org"
     steps:
