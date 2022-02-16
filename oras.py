@@ -159,6 +159,7 @@ class Oras:
 
     def pull(self, pkg, tag, a_dir, versions_dict):
         pullCmd = f'oras pull ghcr.io/{self.owner}/samples/{self.strSys}/{pkg}:{tag} --output {a_dir} -t "application/octet-stream"'
+        # pullCmdWin = f'oras pull ghcr.io/{self.owner}/samples/{self.strSys}/{pkg}:{tag} --output {a_dir} -t "application/octet-stream"'
 
         logging.warning(f"Pulling lattest of  <<{pkg}>>. with command: <<{pullCmd}>>")
         try:
