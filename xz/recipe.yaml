@@ -27,6 +27,9 @@ requirements:
     - sel(win): ninja
     - sel(not win): make
     - sel(not win): automake
+    - sel(not win): autoconf
+    - sel(not win): gettext
+    - sel(not win): gnuconfig
     - sel(not win): libtool
   host:
     - sel(win and vc<14): msinttypes

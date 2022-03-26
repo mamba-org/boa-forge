@@ -18,18 +18,16 @@ requirements:
   build:
     # This breals a dependency cycle:
     # curl->libssh2->cmake->curl
+    - '{{ compiler("c") }}'
     - sel(win): cmake-binary
     - sel(not win): cmake-no-system
-    - sel(not (osx and arm64)): '{{ compiler("c") }}'
-    - sel(osx and arm64): '{{ compiler("clang_bootstrap") }}'
-    - sel(win): ninja
-    - sel(unix): make
+    - ninja
   host:
-    - openssl-static
-    - zlib-static
+    - openssl
+    - zlib
   run:
-    - openssl-static
-    - zlib-static
+    - openssl
+    - zlib
 
 # test:
 #   commands:

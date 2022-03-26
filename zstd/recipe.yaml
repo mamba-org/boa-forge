@@ -24,27 +24,26 @@ requirements:
     - '{{ compiler("c") }}'
     - '{{ compiler("cxx") }}'
     - sel(win): msinttypes
-    - sel(unix): make
-    - sel(win): ninja
+    - ninja
     - cmake
+    - bitfurnace
 
-# test:
-#   commands:
-#     - zstd -be -i5
+test:
+  commands:
+    - sel(feature_programs): zstd -be -i5
 
-#     - sel(unix): test -f ${PREFIX}/include/{{ name }}.h
-#     - sel(unix): test ! -f ${PREFIX}/lib/lib{{ name }}.a
-#     - sel(linux): test -f ${PREFIX}/lib/lib{{ name }}.so
-#     - sel(osx): test -f ${PREFIX}/lib/lib{{ name }}.dylib
+    - sel(unix): test -f ${PREFIX}/include/{{ name }}.h
+    - sel(unix): test ! -f ${PREFIX}/lib/lib{{ name }}.a
+    - sel(linux): test -f ${PREFIX}/lib/lib{{ name }}.so
+    - sel(osx): test -f ${PREFIX}/lib/lib{{ name }}.dylib
 
-#     - sel(win): if not exist %LIBRARY_INC%\{{ name }}.h exit 1
-#     - sel(win): if not exist %LIBRARY_BIN%\lib{{ name }}.dll exit 1
-#     - sel(win): if not exist %LIBRARY_LIB%\lib{{ name }}.lib exit 1
-#     - sel(win): if exist %LIBRARY_LIB%\lib{{ name }}_static.lib exit 1
+    - sel(win): if not exist %LIBRARY_INC%\{{ name }}.h exit 1
+    - sel(win): if not exist %LIBRARY_BIN%\lib{{ name }}.dll exit 1
+    - sel(win): if not exist %LIBRARY_LIB%\lib{{ name }}.lib exit 1
+    - sel(win): if exist %LIBRARY_LIB%\lib{{ name }}_static.lib exit 1
 
-#     - sel(unix): export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
-#     - sel(unix): test -f ${PREFIX}/lib/pkgconfig/lib{{ name }}.pc
-#     - sel(unix): pkg-config --cflags lib{{ name }}
+    - sel(unix): test -f ${PREFIX}/lib/pkgconfig/lib{{ name }}.pc
+    - sel(unix): pkg-config --cflags lib{{ name }}
 
 features:
   - name: static

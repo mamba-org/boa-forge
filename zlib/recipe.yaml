@@ -18,10 +18,10 @@ build:
 
 requirements:
   build:
+    - bitfurnace
     - '{{ compiler("c") }}'
-    - sel(win): cmake
-    - sel(win): ninja
-    - sel(unix): make
+    - cmake
+    - ninja
 
 features:
   - name: static

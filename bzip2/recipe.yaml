@@ -19,6 +19,7 @@ build:
 requirements:
   build:
     - '{{ compiler("c") }}'
+    - bitfurnace
     # - sel(win): jom
     - sel(win): cmake
     - sel(win): ninja

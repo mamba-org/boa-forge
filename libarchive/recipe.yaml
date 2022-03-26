@@ -31,6 +31,7 @@ build:
 requirements:
   build:
     - '{{ compiler("c") }}'
+    - bitfurnace
       # Does not work in this recips at present
       # we manually convert C99 to C89 instead.
       # - c99-to-c89  # [win and vc<14]
@@ -45,74 +46,74 @@ requirements:
     - sel(win): m2-patch
   host:
     - sel(win and vc<14): msinttypes
-    - sel(osx): libiconv-static
+    - sel(osx): libiconv
   run:
-    - sel(osx): libiconv-static
+    - sel(osx): libiconv
 
 features:
   - name: zlib
     default: true
     requirements:
       host:
-        - zlib-static
+        - zlib
       run:
-        - zlib-static
+        - zlib
 
   - name: zstd
     default: true
     requirements:
       host:
-        - zstd-static
+        - zstd
       run:
-        - zstd-static
+        - zstd
 
   - name: openssl
     default: true
     requirements:
       host:
-        - openssl-static
+        - openssl
       run:
-        - openssl-static
+        - openssl
 
   - name: lzo
     default: true
     requirements:
       host:
-        - lzo-static
+        - lzo
       run:
-        - lzo-static
+        - lzo
 
   - name: xz
     default: true
     requirements:
       host:
-        - xz-static
+        - xz
       run:
-        - xz-static
+        - xz
 
   - name: bzip2
     default: true
     requirements:
       host:
-        - bzip2-static
+        - bzip2
       run:
-        - bzip2-static
+        - bzip2
 
   - name: lz4
     default: true
     requirements:
       host:
-        - lz4-c-static
+        - lz4-c
       run:
-        - lz4-c-static
+        - lz4-c
 
   - name: xml2
     default: true
     requirements:
       host:
-        - libxml2-static
+        - libxml2
       run:
-        - libxml2-static
+        - libxml2
 
   - name: static
     default: false
