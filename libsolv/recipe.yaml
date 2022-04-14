@@ -14,7 +14,6 @@ source:
   patches:
     - sel(win): win_export_and_static_build.patch
     - conda_variant_priorization.patch
-    - add_strict_repo_prio_rule.patch
 
 build:
   number: 0
