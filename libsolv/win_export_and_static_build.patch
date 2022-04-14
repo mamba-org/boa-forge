@@ -28,10 +28,10 @@ index bbf30bac..17b65eb3 100644
  
  INSTALL (FILES ${libsolv_HEADERS} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/solv")
 diff --git a/src/solvversion.c b/src/solvversion.c
-index d66e1958..7124c93e 100644
+index 51d57a63..608d813b 100644
 --- a/src/solvversion.c
 +++ b/src/solvversion.c
-@@ -7,7 +7,7 @@
+@@ -7,8 +7,8 @@
  
  #include "solvversion.h"
  
@@ -39,15 +39,17 @@ index d66e1958..7124c93e 100644
 -int solv_version_major = LIBSOLV_VERSION_MAJOR;
 -int solv_version_minor = LIBSOLV_VERSION_MINOR;
 -int solv_version_patch = LIBSOLV_VERSION_PATCH;
+-const char solv_toolversion[] = LIBSOLV_TOOLVERSION;
 +SOLV_API const char solv_version[] = LIBSOLV_VERSION_STRING;
 +SOLV_API int solv_version_major = LIBSOLV_VERSION_MAJOR;
 +SOLV_API int solv_version_minor = LIBSOLV_VERSION_MINOR;
 +SOLV_API int solv_version_patch = LIBSOLV_VERSION_PATCH;
++SOLV_API const char solv_toolversion[] = LIBSOLV_TOOLVERSION;
 diff --git a/src/solvversion.h.in b/src/solvversion.h.in
-index 43b566a1..dea09dc9 100644
+index da0ad743..23026626 100644
 --- a/src/solvversion.h.in
 +++ b/src/solvversion.h.in
-@@ -19,10 +19,17 @@
+@@ -19,11 +19,18 @@
  #define LIBSOLV_VERSION_PATCH @LIBSOLV_PATCH@
  #define LIBSOLV_VERSION (LIBSOLV_VERSION_MAJOR * 10000 + LIBSOLV_VERSION_MINOR * 100 + LIBSOLV_VERSION_PATCH)
  
@@ -55,6 +57,7 @@ index 43b566a1..dea09dc9 100644
 -extern int solv_version_major;
 -extern int solv_version_minor;
 -extern int solv_version_patch;
+-extern const char solv_toolversion[];
 +#ifdef _WIN32
 +// include win32/config.h for SOLV_API
 +#include "config.h"
@@ -66,6 +69,7 @@ index 43b566a1..dea09dc9 100644
 +SOLV_API extern int solv_version_major;
 +SOLV_API extern int solv_version_minor;
 +SOLV_API extern int solv_version_patch;
++SOLV_API extern const char solv_toolversion[];
  
  #cmakedefine LIBSOLV_FEATURE_LINKED_PKGS
  #cmakedefine LIBSOLV_FEATURE_COMPLEX_DEPS
