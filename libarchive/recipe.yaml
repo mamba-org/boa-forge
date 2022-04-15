@@ -1,5 +1,5 @@
 context:
-  version: 3.6.0
+  version: 3.6.1
 
 package:
   name: libarchive
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/libarchive/libarchive/archive/v{{ version }}.tar.gz
-  sha256: 9f9c1a21e570242c0d2854964d5e9ce00bb87144c19feac282b027146a86d0e3
+  sha256: 3d5dce7be5ed9b2c239e25b0579167c133296d9dedd17b484b678aec6c010b62
   patches:
     - patches/0001-Add-lib-to-CMAKE_FIND_LIBRARY_PREFIXES-for-lzma.patch
     - patches/0003-VC9-compatibility-test-for-BCryptDeriveKeyPBKDF2.patch
