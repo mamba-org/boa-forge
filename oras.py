@@ -146,7 +146,7 @@ class Oras:
                 f"Two versions of package <<{pkg_name}>> found: current version: <<{current_version}>> old version:<<{old_version}>>"
             )
 
-            if current_version > old_version:
+            if current_version != old_version:
                 logging.warning(f"new version found: <<{current_version}>>")
                 can_be_pushed = True
         else:

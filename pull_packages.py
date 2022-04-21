@@ -15,18 +15,15 @@ oras = Oras(owner, token, conda_prefix, target_platform)
 oras.login()
 
 base = Path(conda_prefix) / directory
-# unix= #/home/runner/micromamba/envs/buildenv/ #conda-bld/
-# win = C:\Users\runneradmin\micromamba\envs\buildenv\conda-bld\
+
 if not base.is_dir():
     logging.warning(f" {base} did NOT exist")
     base.mkdir(mode=511, parents=False, exist_ok=True)
 
 if "win" in target_platform:
-    target_platform = "win-64"
+    target_platform = "win"
 
 path = base / target_platform
-# expl=#/home/runner/micromamba/envs/buildenv/ #conda-bld/ #linux-aarch64/
-# win = C:\Users\runneradmin\micromamba\envs\buildenv\conda-bld\win-64\
 
 if not path.is_dir:
     path.mkdir(mode=511, parents=False, exist_ok=True)(f" {base} did NOT exist")
@@ -35,7 +32,7 @@ trgt = "linux"
 if "osx" in target_platform:
     trgt = "osx"
 elif "win" in target_platform:
-    trgt = "win-64"
+    trgt = "win"
 
 with open("packages.json", "r") as read_file:
     packages_json = json.load(read_file)

@@ -3,6 +3,6 @@
         "all":["bzip2-static","libiconv-static","zlib-static","zstd-static","yaml-cpp-static","reproc-static","libarchive-static","openssl-static","libssh2-static","libsolv-static","curl-static","micromamba"],
         "osx":["bzip2-static","libiconv-static","zlib-static","zstd-static","yaml-cpp-static","reproc-static","libarchive-static","openssl-static","libssh2-static","libsolv-static","curl-static","micromamba"],
         "linux":["bzip2-static","zlib-static","zstd-static", "yaml-cpp-static","reproc-static","libarchive-static","openssl-static","libssh2-static","libsolv-static","curl-static","micromamba"],
-        "win-64":["zlib-static","bzip2-static","zstd-static","yaml-cpp-static","reproc-static","libarchive-static","openssl-static","libsolv-static","curl-static","micromamba-static"]
+        "win":["zlib-static","bzip2-static","zstd-static","yaml-cpp-static","reproc-static","libarchive-static","openssl-static","libsolv-static","curl-static","micromamba-static"]
     }
 }
