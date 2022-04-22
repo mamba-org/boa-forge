@@ -67,7 +67,12 @@ jobs:
         shell: bash -l {0}
         run: |
           # python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
-          conda-oci pull-cache --subdir $TARGET_PLATFORM --location ${{ env.GITHUB_OWNER }}/boa-forge --cache-dir ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
+
+          conda-oci pull-cache \
+            --subdir $TARGET_PLATFORM \
+            --location ${{ env.GITHUB_OWNER }}/boa-forge \
+            --cache-dir ${CONDA_PREFIX}/conda-bld
+
         if: always()
       - name: build bzip2
         shell: bash -l -eo pipefail {0}
@@ -135,7 +140,14 @@ jobs:
         shell: bash -l {0}
         run: |
           # python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
-          conda-oci push-cache --subdir $TARGET_PLATFORM --location ${{ env.GITHUB_OWNER }}/boa-forge --cache-dir ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
+          find ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
+          echo "--------------"
+          find ${CONDA_PREFIX}/conda-bld/
+          conda-oci push-cache \
+            --subdir $TARGET_PLATFORM \
+            --location ${{ env.GITHUB_OWNER }}/boa-forge \
+            --cache-dir ${CONDA_PREFIX}/conda-bld
+
         if: always()
 
   build_libraries_win:
