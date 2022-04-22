@@ -106,32 +106,32 @@ jobs:
               --skip-existing \
               --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
               --target-platform $TARGET_PLATFORM
-      # - name: build openssl
+      - name: build openssl
+        shell: bash -l -eo pipefail {0}
+        run: |
+          boa build openssl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+      - name: build libssh2
+        shell: bash -l -eo pipefail {0}
+        run: |
+          boa build libssh2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+      - name: build libsolv
+        shell: bash -l -eo pipefail {0}
+        run: |
+          boa build libsolv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+      - name: build curl
+        shell: bash -l -eo pipefail {0}
+        run: |
+          boa build curl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
+      - name: build micromamba
+        shell: bash -l -eo pipefail {0}
+        run: |
+          boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
+      # - name: build micromamba-nightly
       #   shell: bash -l -eo pipefail {0}
       #   run: |
-      #     boa build openssl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      # - name: build libssh2
-      #   shell: bash -l -eo pipefail {0}
-      #   run: |
-      #     boa build libssh2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      # - name: build libsolv
-      #   shell: bash -l -eo pipefail {0}
-      #   run: |
-      #     boa build libsolv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      # - name: build curl
-      #   shell: bash -l -eo pipefail {0}
-      #   run: |
-      #     boa build curl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-      # - name: build micromamba
-      #   shell: bash -l -eo pipefail {0}
-      #   run: |
+      #     export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
+      #     python micromamba/to_nightly.py
       #     boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
-      # # - name: build micromamba-nightly
-      # #   shell: bash -l -eo pipefail {0}
-      # #   run: |
-      # #     export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
-      # #     python micromamba/to_nightly.py
-      # #     boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
@@ -187,7 +187,13 @@ jobs:
       - name: pull already uploaded packages
         shell: bash -l {0}
         run: |
-          python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+          # python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+
+          conda-oci pull-cache \
+            --subdir $TARGET_PLATFORM \
+            --location ${{ env.GITHUB_OWNER }}/boa-forge \
+            --cache-dir ${CONDA_PREFIX}/conda-bld
+
         if: always()
 
       - name: build zlib
@@ -247,7 +253,15 @@ jobs:
       - name: create_oras_push
         shell: bash -l {0}
         run: |
-          python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+          # python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+
+          echo ${{ secrets.GITHUB_TOKEN }} | oras login https://ghcr.io -u $GITHUB_OWNER --password-stdin
+
+          conda-oci push-cache \
+            --subdir $TARGET_PLATFORM \
+            --location ${{ env.GITHUB_OWNER }}/boa-forge \
+            --cache-dir ${CONDA_PREFIX}/conda-bld
+
         if: always()
 
   #########
