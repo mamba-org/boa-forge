@@ -174,22 +174,22 @@ jobs:
 
           micromamba remove boa --no-prune
           python -m pip install git+https://github.com/mamba-org/boa@main
+          python -m pip install git+https://github.com/mamba-org/conda_oci_mirror@main
 
           if [ "$RUNNER_OS" == "Windows" ]; then
             curl.exe -sLO  https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_windows_amd64.tar.gz
             tar.exe -xvzf oras_0.12.0_windows_amd64.tar.gz
-            mkdir -p %USERPROFILE%\bin\
-            copy oras.exe %USERPROFILE%\bin\
-            set PATH=%USERPROFILE%\bin\;%PATH%
+            mkdir -p $USERPROFILE/bin/
+            cp oras.exe $USERPROFILE/bin/
+            export PATH="$USERPROFILE/bin/":$PATH
           fi
-
-          python -m pip install git+https://github.com/mamba-org/conda_oci_mirror@main
 
       - name: pull already uploaded packages
         shell: bash -l {0}
         run: |
           # python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
 
+          export PATH="$USERPROFILE/bin/":$PATH
           conda-oci pull-cache \
             --subdir $TARGET_PLATFORM \
             --location ${{ env.GITHUB_OWNER }}/boa-forge \
@@ -255,6 +255,8 @@ jobs:
         shell: bash -l {0}
         run: |
           # python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+
+          export PATH="$USERPROFILE/bin/":$PATH
 
           echo ${{ secrets.GITHUB_TOKEN }} | oras login https://ghcr.io -u $GITHUB_OWNER --password-stdin
 
