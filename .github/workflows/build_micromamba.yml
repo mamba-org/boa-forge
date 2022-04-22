@@ -140,9 +140,9 @@ jobs:
         shell: bash -l {0}
         run: |
           # python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
-          find ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
-          echo "--------------"
-          find ${CONDA_PREFIX}/conda-bld/
+          # find ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
+          # echo "--------------"
+          # find ${CONDA_PREFIX}/conda-bld/
           conda-oci push-cache \
             --subdir $TARGET_PLATFORM \
             --location ${{ env.GITHUB_OWNER }}/boa-forge \
