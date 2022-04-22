@@ -30,6 +30,7 @@ requirements:
     - sel(win): ninja
   host:
     - cli11
+    - cpp-expected
     - cpp-filesystem
     - nlohmann_json
     - termcolor-cpp
