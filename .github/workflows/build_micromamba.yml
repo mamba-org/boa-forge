@@ -147,8 +147,8 @@ jobs:
             - defaults
           EOL
 
-          # micromamba remove boa --no-prune
-          # python -m pip install git+https://github.com/mamba-org/boa@master
+          micromamba remove boa --no-prune
+          python -m pip install git+https://github.com/mamba-org/boa@main
       - name: pull already uploaded packages
         shell: bash -l {0}
         run: |
