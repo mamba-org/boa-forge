@@ -45,10 +45,12 @@ jobs:
 
           micromamba remove boa --no-prune
           python -m pip install git+https://github.com/mamba-org/boa@main
+          python -m pip install git+https://github.com/mamba-org/conda_oci_mirror@main
       - name: pull already uploaded packages
         shell: bash -l {0}
         run: |
-          python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+          # python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+          conda-oci pull-cache --subdir $TARGET_PLATFORM --location ${{ env.GITHUB_OWNER }}/samples --cache-dir ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
         if: always()
       - name: build bzip2
         shell: bash -l -eo pipefail {0}
@@ -115,7 +117,8 @@ jobs:
       - name: create_oras_push
         shell: bash -l {0}
         run: |
-          python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+          # python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
+          conda-oci push-cache --subdir $TARGET_PLATFORM --location ${{ env.GITHUB_OWNER }}/samples --cache-dir ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
         if: always()
 
   build_libraries_win:
@@ -149,6 +152,8 @@ jobs:
 
           micromamba remove boa --no-prune
           python -m pip install git+https://github.com/mamba-org/boa@main
+          python -m pip install git+https://github.com/mamba-org/conda_oci_mirror@main
+
       - name: pull already uploaded packages
         shell: bash -l {0}
         run: |
