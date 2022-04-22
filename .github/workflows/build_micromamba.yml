@@ -54,14 +54,6 @@ jobs:
             rm -rf oras_0.12.0_*.tar.gz oras-install/
           fi
           
-          if [ "$RUNNER_OS" == "Windows" ]; then
-            curl.exe -sLO  https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_windows_amd64.tar.gz
-            tar.exe -xvzf oras_0.12.0_windows_amd64.tar.gz
-            mkdir -p %USERPROFILE%\bin\
-            copy oras.exe %USERPROFILE%\bin\
-            set PATH=%USERPROFILE%\bin\;%PATH%
-          fi
-
           python -m pip install git+https://github.com/mamba-org/conda_oci_mirror@main
       - name: pull already uploaded packages
         shell: bash -l {0}
@@ -182,6 +174,15 @@ jobs:
 
           micromamba remove boa --no-prune
           python -m pip install git+https://github.com/mamba-org/boa@main
+
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            curl.exe -sLO  https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_windows_amd64.tar.gz
+            tar.exe -xvzf oras_0.12.0_windows_amd64.tar.gz
+            mkdir -p %USERPROFILE%\bin\
+            copy oras.exe %USERPROFILE%\bin\
+            set PATH=%USERPROFILE%\bin\;%PATH%
+          fi
+
           python -m pip install git+https://github.com/mamba-org/conda_oci_mirror@main
 
       - name: pull already uploaded packages
