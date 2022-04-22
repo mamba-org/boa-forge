@@ -45,12 +45,29 @@ jobs:
 
           micromamba remove boa --no-prune
           python -m pip install git+https://github.com/mamba-org/boa@main
+
+          if [ "$RUNNER_OS" == "macOS" ]; then
+            curl -LO https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_darwin_amd64.tar.gz
+            mkdir -p oras-install/
+            tar -zxf oras_0.12.0_*.tar.gz -C oras-install/
+            mv oras-install/oras /usr/local/bin/
+            rm -rf oras_0.12.0_*.tar.gz oras-install/
+          fi
+          
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            curl.exe -sLO  https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_windows_amd64.tar.gz
+            tar.exe -xvzf oras_0.12.0_windows_amd64.tar.gz
+            mkdir -p %USERPROFILE%\bin\
+            copy oras.exe %USERPROFILE%\bin\
+            set PATH=%USERPROFILE%\bin\;%PATH%
+          fi
+
           python -m pip install git+https://github.com/mamba-org/conda_oci_mirror@main
       - name: pull already uploaded packages
         shell: bash -l {0}
         run: |
           # python ./pull_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
-          conda-oci pull-cache --subdir $TARGET_PLATFORM --location ${{ env.GITHUB_OWNER }}/samples --cache-dir ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
+          conda-oci pull-cache --subdir $TARGET_PLATFORM --location ${{ env.GITHUB_OWNER }}/boa-forge --cache-dir ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
         if: always()
       - name: build bzip2
         shell: bash -l -eo pipefail {0}
@@ -118,7 +135,7 @@ jobs:
         shell: bash -l {0}
         run: |
           # python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
-          conda-oci push-cache --subdir $TARGET_PLATFORM --location ${{ env.GITHUB_OWNER }}/samples --cache-dir ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
+          conda-oci push-cache --subdir $TARGET_PLATFORM --location ${{ env.GITHUB_OWNER }}/boa-forge --cache-dir ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
         if: always()
 
   build_libraries_win:
