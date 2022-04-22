@@ -143,6 +143,7 @@ jobs:
           # find ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
           # echo "--------------"
           # find ${CONDA_PREFIX}/conda-bld/
+          echo ${{ secrets.GITHUB_TOKEN }} | oras login https://ghcr.io -u $GITHUB_OWNER --password-stdin
           conda-oci push-cache \
             --subdir $TARGET_PLATFORM \
             --location ${{ env.GITHUB_OWNER }}/boa-forge \
