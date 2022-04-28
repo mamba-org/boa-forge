@@ -1,8 +1,8 @@
 diff --git a/libmamba/CMakeLists.txt b/libmamba/CMakeLists.txt
-index a78d0dc..407e3b1 100644
+index f592db2..22b1f40 100644
 --- a/libmamba/CMakeLists.txt
 +++ b/libmamba/CMakeLists.txt
-@@ -201,36 +201,29 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
+@@ -263,36 +263,29 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
                  libcurl.a
                  libssh2.a
  
@@ -44,7 +44,7 @@ index a78d0dc..407e3b1 100644
              set(STATIC_DEPS "")
              foreach(LIB ${REQUIRED_STATIC_DEPS})
                  set(TMP_LIB "${LIB}-NOTFOUND")
-@@ -243,8 +236,9 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
+@@ -305,8 +298,9 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
              if (APPLE)
                  find_library(SECURITY_LIBRARY Security)
                  find_library(COREFOUNDATION_LIBRARY CoreFoundation)
@@ -56,7 +56,7 @@ index a78d0dc..407e3b1 100644
              endif()
  
              message("   -> Found static dependencies:")
-@@ -267,48 +261,34 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
+@@ -329,19 +323,16 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
              set(CMAKE_PREFIX_PATH "$ENV{VCPKG_ROOT}/installed/x64-windows-static/")
  
              # For Windows we have a vcpkg based build system right now.
@@ -74,18 +74,16 @@ index a78d0dc..407e3b1 100644
 -
 -            find_library(LIBSOLV_BUILD_STATICRARIES NAMES solv_static)
 -            find_library(LIBSOLVEXT_BUILD_STATICRARIES NAMES solvext_static)
--            find_package(reproc++ CONFIG REQUIRED)
++
 +            find_library(LIBZSTD_LIBRARY NAMES zstd_static.lib)
 +            find_library(BZIP2_LIBRARIES NAMES bz2.lib)
 +            find_library(CRYPTO_LIBRARIES NAMES libcrypto_static)
- 
--            find_library(LIBXML2_LIBRARY NAMES libxml2)
--            find_library(ICONV_LIBRARY NAMES libiconv)
--            find_library(CHARSET_LIBRARY NAMES libcharset)
--            message("Found: ${LIBXML2_LIBRARY} ${ICONV_LIBRARY} ${CHARSET_LIBRARY}")
 +            find_library(LIBSOLV_STATIC_LIBRARIES NAMES solv_static)
 +            find_library(LIBSOLVEXT_STATIC_LIBRARIES NAMES solvext_static)
-+            find_package(reproc++ CONFIG REQUIRED)
+             find_package(reproc++ CONFIG REQUIRED)
+             find_package(tl-expected REQUIRED)
+ 
+@@ -352,27 +343,21 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
  
              target_link_libraries(${target_name} PUBLIC
                  ${CRYPTO_LIBRARIES}
@@ -111,6 +109,7 @@ index a78d0dc..407e3b1 100644
 +                ${LIBSOLVEXT_STATIC_LIBRARIES}
                  reproc++
 -                reproc
+                 tl::expected
              )
  
 -            add_definitions("-DLIBARCHIVE_STATIC -DCURL_STATICLIB -DSOLV_BUILD_STATIC")
