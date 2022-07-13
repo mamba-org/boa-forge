@@ -2,6 +2,7 @@ name: buildenv
 channels:
   - conda-forge
 dependencies:
+  - oras 0.12.0
   - boa
   - pip
   - ruamel.yaml <0.17.6
