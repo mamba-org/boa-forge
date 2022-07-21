@@ -127,7 +127,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
-          path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+          path: ~/micromamba-root/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
       - name: create_oras_push
         shell: bash -l {0}
         run: |
@@ -250,7 +250,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
-          path: ~/micromamba/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+          path: ~/micromamba-root/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
       - name: create_oras_push
         shell: bash -l {0}
         run: |
