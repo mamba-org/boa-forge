@@ -1,7 +1,7 @@
 context:
   pkg_name: lz4-c
   name: lz4
-  version: 1.9.3
+  version: 1.9.4
 
 package:
   name: '{{ pkg_name }}'
@@ -10,7 +10,7 @@ package:
 source:
   fn: '{{ name }}-{{ version }}.tar.gz'
   url: https://github.com/{{ name }}/{{ name }}/archive/v{{ version }}.tar.gz
-  sha256: 030644df4611007ff7dc962d981f390361e6c97a34e5cbc393ddfbe019ffe2c1
+  sha256: 0b0e3aa07c8c063ddf40b082bdf7e37a1562bda40a0ff5272957f3e987e0e54b
   patches:
     # Split into 2 patches due to a bug in conda-build
     - patches/0001-Add-WindowsTargetPlatformVersion-of-10.0-and-lz4-exe.1.patch
