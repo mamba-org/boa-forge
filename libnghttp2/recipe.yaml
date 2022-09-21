@@ -1,6 +1,6 @@
 context:
   name: nghttp2
-  version: 1.49.0
+  version: 1.50.0
 
 package:
   name: '{{ name|lower }}'
@@ -8,7 +8,7 @@ package:
 
 source:
   url: https://github.com/nghttp2/{{ name }}/releases/download/v{{ version }}/nghttp2-{{ version }}.tar.gz
-  sha256: 14dd5654e369227afebfba5198793a1788a0af9d30cddb19af3ec275d110a7a6
+  sha256: d162468980dba58e54e31aa2cbaf96fd2f0890e6dd141af100f6bd1b30aa73c6
 
 build:
   number: 0
