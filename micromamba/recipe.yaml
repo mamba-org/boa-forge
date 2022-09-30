@@ -1,5 +1,5 @@
 context:
-  version: 0.24.0
+  version: 0.26.0
 
 package:
   name: micromamba
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://github.com/mamba-org/mamba/archive/refs/tags/micromamba-{{ version }}.tar.gz
-    sha256: 86bdf480069dcc0b863da74ca4248942f5aeaa75004ab52d4829ec8b202d9086
+    sha256: 3d8b96d6ba4a0d0db38ce78e671bf62f3b3b211d200fadd13509210bd03ec65c
   - patches:
       - patches/libmamba_install.patch
       - patches/libmamba_deps.patch
@@ -31,7 +31,6 @@ requirements:
   host:
     - cli11
     - cpp-expected
-    - cpp-filesystem
     - nlohmann_json
     - termcolor-cpp
     - spdlog
