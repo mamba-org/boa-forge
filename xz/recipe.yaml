@@ -1,5 +1,5 @@
 context:
-  version: 5.2.6
+  version: 5.2.7
 
 package:
   name: xz
@@ -7,7 +7,7 @@ package:
 
 source:
   url: http://downloads.sourceforge.net/project/lzmautils/xz-{{ version }}.tar.bz2
-  sha256: 13e3402e301b6018f6a71ef0e497f714c6d11e214ae82dab156b81c2a64acb25
+  sha256: b65f1d0c2708e57716f4dd2216989a73847ac6fdb4168ffceb155767e22b834b
   patches:
     - 0001-Add-vs2008-support-via-cmake.patch
     - 0002-Add-gettimeofday-for-VS2008.patch
