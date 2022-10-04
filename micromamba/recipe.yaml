@@ -1,5 +1,5 @@
 context:
-  version: 0.26.0
+  version: 0.27.0
 
 package:
   name: micromamba
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://github.com/mamba-org/mamba/archive/refs/tags/micromamba-{{ version }}.tar.gz
-    sha256: 19c1cec502536f5cbec82e2fc56db1c6337fb8b18ddc12472182f9df2e94cc40
+    sha256: cb9ed96ac3b2f96553bd6bf6d7b863903d0ab4872e20418199b5caf285791896
   - patches:
       - patches/libmamba_install.patch
       - patches/libmamba_deps.patch
