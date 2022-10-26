@@ -15,7 +15,7 @@ fi
 if [[ $target_platform =~ linux.* ]]; then
     USESSL="--with-ssl=${PREFIX}"
 else
-    USESSL="--with-secure-transport --without-ssl"
+    USESSL="--with-secure-transport --without-openssl"
 fi;
 
 ./configure \
