@@ -9,8 +9,10 @@ cmake .. ^
     -D BUILD_MICROMAMBA=ON ^
     -D MICROMAMBA_LINKAGE=FULL_STATIC ^
     -G "Ninja"
+if %errorlevel% NEQ 0 exit /b %errorlevel%
 
 ninja install --verbose
+if %errorlevel% NEQ 0 exit /b %errorlevel%
 
 DEL /Q /F /S "%LIBRARY_PREFIX%\lib\libmamba*"
 if %errorlevel% NEQ 0 exit /b %errorlevel%

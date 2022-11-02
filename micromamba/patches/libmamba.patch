@@ -1,5 +1,5 @@
 diff --git a/libmamba/CMakeLists.txt b/libmamba/CMakeLists.txt
-index 366aa90f..2729db4d 100644
+index 366aa90f..5cfe05f7 100644
 --- a/libmamba/CMakeLists.txt
 +++ b/libmamba/CMakeLists.txt
 @@ -276,12 +276,6 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
@@ -55,3 +55,76 @@ index 366aa90f..2729db4d 100644
              endif()
  
              message("   -> Found static dependencies:")
+@@ -357,55 +350,40 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
+             set(CMAKE_PREFIX_PATH "$ENV{VCPKG_ROOT}/installed/x64-windows-static/")
+ 
+             # For Windows we have a vcpkg based build system right now.
+-            find_package(LibArchive REQUIRED)
++            find_library(LIBARCHIVE_LIBRARY archive_static.lib)
+             find_package(CURL CONFIG REQUIRED)
+             find_package(yaml-cpp CONFIG REQUIRED)
+             find_package(nlohmann_json CONFIG REQUIRED)
+-            find_package(fmt REQUIRED)
+-            find_package(spdlog CONFIG REQUIRED)
+-            find_library(LIBLZMA_LIBRARIES lzma REQUIRED)
+-            find_library(LZ4_LIBRARY NAMES lz4)
+-            find_library(LZO2_LIBRARY NAMES lzo2)
+-            find_package(zstd CONFIG REQUIRED)
+-            find_library(BZIP2_LIBRARIES NAMES bz2)
+-            find_library(CRYPTO_LIBRARIES NAMES libcrypto)
+-
+-            find_library(LIBSOLV_BUILD_STATICRARIES NAMES solv_static)
+-            find_library(LIBSOLVEXT_BUILD_STATICRARIES NAMES solvext_static)
++
++            find_library(LIBZSTD_LIBRARY NAMES zstd_static.lib)
++            find_library(BZIP2_LIBRARIES NAMES bz2.lib)
++            find_library(CRYPTO_LIBRARIES NAMES libcrypto_static)
++            find_library(LIBSOLV_STATIC_LIBRARIES NAMES solv_static)
++            find_library(LIBSOLVEXT_STATIC_LIBRARIES NAMES solvext_static)
+             find_package(reproc++ CONFIG REQUIRED)
+             find_package(tl-expected REQUIRED)
++            find_package(spdlog REQUIRED)
++            find_package(fmt REQUIRED)
+ 
+-            find_library(LIBXML2_LIBRARY NAMES libxml2)
+-            find_library(ICONV_LIBRARY NAMES libiconv iconv)
+-            find_library(CHARSET_LIBRARY NAMES libcharset charset)
+-            message("Found: ${LIBXML2_LIBRARY} ${ICONV_LIBRARY} ${CHARSET_LIBRARY}")
+ 
+             target_link_libraries(${target_name} PUBLIC
+                 ${CRYPTO_LIBRARIES}
+-                ${LibArchive_LIBRARY}
+-                ${LIBXML2_LIBRARY}
+-                ${ICONV_LIBRARY}
+-                ${CHARSET_LIBRARY}
+-                zstd::libzstd_static
+-                ${LZ4_LIBRARY}
+-                ${LZO2_LIBRARY}
++                crypt32.lib
++                ${LIBARCHIVE_LIBRARY}
++                ${LIBZSTD_LIBRARY}
+                 ${BZIP2_LIBRARIES}
+                 ${LIBLZMA_LIBRARIES}
+                 CURL::libcurl
+                 nlohmann_json::nlohmann_json
+-                fmt::fmt
+-                # Since conda-forge spdlog is built with a bundled version of fmt we use the
+-                # header only version to avoid chasing after the correct fmt version mathching
+-                # the one used in the bundle
++                ${YAML_CPP_LIBRARIES}
++                ${LIBSOLV_STATIC_LIBRARIES}
++                ${LIBSOLVEXT_STATIC_LIBRARIES}
+                 spdlog::spdlog_header_only
+-                yaml-cpp
+-                ${LIBSOLV_BUILD_STATICRARIES}
+-                ${LIBSOLVEXT_BUILD_STATICRARIES}
+-                ${sodium_LIBRARY_RELEASE}
++                fmt::fmt-header-only
+                 reproc++
+-                reproc
+                 tl::expected
+             )
++            add_definitions("-DLIBARCHIVE_STATIC -DCURL_STATICLIB -DSOLV_STATIC_LIB")
+ 
+             add_compile_definitions(
+               SPDLOG_FMT_EXTERNAL
