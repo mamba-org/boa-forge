@@ -34,7 +34,7 @@ jobs:
       - name: generate cache timestamp
         id: cache_timestamp
         shell: bash -l {0}
-        run: echo "timestamp=$(TZ=UTC date +%F) >> $GITHUB_OUTPUT
+        run: echo "timestamp=$(TZ=UTC date +%F)" >> $GITHUB_OUTPUT
       - name: create .condarc
         shell: bash -l -eo pipefail {0}
         run: |
@@ -156,7 +156,7 @@ jobs:
       - name: generate cache timestamp
         id: cache_timestamp
         shell: bash -l {0}
-        run: echo "timestamp=$(TZ=UTC date +%F) >> $GITHUB_OUTPUT
+        run: echo "timestamp=$(TZ=UTC date +%F)" >> $GITHUB_OUTPUT
       - name: Cache build outputs
         uses: actions/cache@v3
         with:
