@@ -4,6 +4,7 @@ cd build
 export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY=1"
 
 cmake ${CMAKE_ARGS} .. \
+         -GNinja \
          -DCMAKE_INSTALL_PREFIX=${PREFIX} \
          -DCMAKE_BUILD_TYPE="Release" \
          -DBUILD_LIBMAMBA=ON \

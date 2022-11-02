@@ -26,8 +26,7 @@ requirements:
     - '{{ compiler("c") }}'
     - '{{ compiler("cxx") }}'
     - cmake
-    - sel(unix): make
-    - sel(win): ninja
+    - ninja
   host:
     - cli11
     - cpp-expected
