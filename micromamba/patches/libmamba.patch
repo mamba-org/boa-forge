@@ -1,5 +1,5 @@
 diff --git a/libmamba/CMakeLists.txt b/libmamba/CMakeLists.txt
-index 366aa90f..55790d1d 100644
+index 366aa90f..2729db4d 100644
 --- a/libmamba/CMakeLists.txt
 +++ b/libmamba/CMakeLists.txt
 @@ -276,12 +276,6 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
@@ -15,8 +15,11 @@ index 366aa90f..55790d1d 100644
                  libssl.a
                  libcrypto.a
  
-@@ -292,14 +286,10 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
-                 liblz4.a
+@@ -289,17 +283,12 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
+ 
+                 libiconv.a
+                 libbz2.a
+-                liblz4.a
                  libzstd.a
                  libz.a
 -                liblzma.a
@@ -30,7 +33,7 @@ index 366aa90f..55790d1d 100644
                  libyaml-cpp.a
  
                  libreproc++.a
-@@ -309,6 +299,9 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
+@@ -309,6 +298,9 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
                  set(REQUIRED_STATIC_DEPS ${REQUIRED_STATIC_DEPS} libc++.a)
              endif()
  
@@ -40,7 +43,7 @@ index 366aa90f..55790d1d 100644
  
              set(STATIC_DEPS "")
              foreach(LIB ${REQUIRED_STATIC_DEPS})
-@@ -321,9 +314,10 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
+@@ -321,9 +313,10 @@ macro(libmamba_create_target target_name linkage deps_linkage output_name)
  
              if (APPLE)
                  find_library(SECURITY_LIBRARY Security)
