@@ -1,5 +1,5 @@
 context:
-  version: 0.27.0
+  version: 1.0.0
 
 package:
   name: micromamba
@@ -7,10 +7,10 @@ package:
 
 source:
   - url: https://github.com/mamba-org/mamba/archive/refs/tags/micromamba-{{ version }}.tar.gz
-    sha256: cb9ed96ac3b2f96553bd6bf6d7b863903d0ab4872e20418199b5caf285791896
+    sha256: 7303d983b49a1a52b302ceae355af1c05afef3a07aa3ad6dd27c36d64c43f991
   - patches:
-      - patches/libmamba_install.patch
-      - patches/libmamba_deps.patch
+      - patches/libmamba.patch
+      - patches/fix_ssl_init.patch
 
 build:
   number: 0
@@ -34,6 +34,7 @@ requirements:
     - nlohmann_json
     - termcolor-cpp
     - spdlog
+    - fmt
     - bzip2-static
     - zstd-static
     - zlib-static
@@ -75,6 +76,8 @@ about:
     - LIBNGHTTP2_LICENSE.txt
     - TERMCOLOR_CPP_LICENSE.txt
     - SPDLOG_LICENSE.txt
+    - FMT_LICENSE.txt
+    - TL_EXPECTED_LICENSE.txt
   license: BSD-3-Clause AND MIT AND OpenSSL
   license_family: BSD
   summary: Micromamba is a tiny version of mamba, the fast conda package installer.

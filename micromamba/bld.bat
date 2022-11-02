@@ -11,3 +11,10 @@ cmake .. ^
     -G "Ninja"
 
 ninja install --verbose
+
+DEL /Q /F /S "%LIBRARY_PREFIX%\lib\libmamba*"
+if %errorlevel% NEQ 0 exit /b %errorlevel%
+RMDIR /S /Q "%LIBRARY_PREFIX%\include\mamba"
+if %errorlevel% NEQ 0 exit /b %errorlevel%
+RMDIR /S /Q "%LIBRARY_PREFIX%\lib\cmake\libmamba"
+if %errorlevel% NEQ 0 exit /b %errorlevel%

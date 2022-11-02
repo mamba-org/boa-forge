@@ -1,0 +1,118 @@
+diff --git a/libmamba/src/core/fetch.cpp b/libmamba/src/core/fetch.cpp
+index 5821ab37..ef0c3719 100644
+--- a/libmamba/src/core/fetch.cpp
++++ b/libmamba/src/core/fetch.cpp
+@@ -34,39 +34,6 @@ namespace mamba
+             }
+ 
+ #ifdef LIBMAMBA_STATIC_DEPS
+-            CURLsslset sslset_res;
+-            const curl_ssl_backend** available_backends;
+-
+-            if (on_linux)
+-            {
+-                sslset_res
+-                    = curl_global_sslset(CURLSSLBACKEND_OPENSSL, nullptr, &available_backends);
+-            }
+-            else if (on_mac)
+-            {
+-                sslset_res = curl_global_sslset(
+-                    CURLSSLBACKEND_SECURETRANSPORT, nullptr, &available_backends);
+-            }
+-            else if (on_win)
+-            {
+-                sslset_res
+-                    = curl_global_sslset(CURLSSLBACKEND_SCHANNEL, nullptr, &available_backends);
+-            }
+-
+-            if (sslset_res == CURLSSLSET_TOO_LATE)
+-            {
+-                LOG_ERROR << "cURL SSL init called too late, that is a bug.";
+-            }
+-            else if (sslset_res == CURLSSLSET_UNKNOWN_BACKEND
+-                     || sslset_res == CURLSSLSET_NO_BACKENDS)
+-            {
+-                LOG_WARNING
+-                    << "Could not use preferred SSL backend (Linux: OpenSSL, OS X: SecureTransport, Win: SChannel)"
+-                    << std::endl;
+-                LOG_WARNING << "Please check the cURL library configuration that you are using."
+-                            << std::endl;
+-            }
+-
+             CURL* handle = curl_easy_init();
+             if (handle)
+             {
+@@ -148,9 +115,9 @@ namespace mamba
+         , m_filename(filename)
+         , m_url(unc_url(url))
+     {
++        init_curl_ssl();
+         m_handle = curl_easy_init();
+ 
+-        init_curl_ssl();
+         init_curl_target(m_url);
+     }
+ 
+@@ -605,9 +572,8 @@ namespace mamba
+ 
+     bool DownloadTarget::resource_exists()
+     {
+-        auto handle = curl_easy_init();
+-
+         init_curl_ssl();
++        auto handle = curl_easy_init();
+         init_curl_handle(handle, m_url);
+ 
+         curl_easy_setopt(handle, CURLOPT_FAILONERROR, 1L);
+diff --git a/libmamba/src/core/singletons.cpp b/libmamba/src/core/singletons.cpp
+index bbe3f92c..322487bc 100644
+--- a/libmamba/src/core/singletons.cpp
++++ b/libmamba/src/core/singletons.cpp
+@@ -35,11 +35,47 @@ namespace mamba
+     //--- Dependencie's singletons
+     //----------------------------------------------------------------------
+ 
++
+     class CURLSetup final
+     {
+     public:
+         CURLSetup()
+         {
++#ifdef LIBMAMBA_STATIC_DEPS
++            CURLsslset sslset_res;
++            const curl_ssl_backend** available_backends;
++
++            if (on_linux)
++            {
++                sslset_res
++                    = curl_global_sslset(CURLSSLBACKEND_OPENSSL, nullptr, &available_backends);
++            }
++            else if (on_mac)
++            {
++                sslset_res = curl_global_sslset(
++                    CURLSSLBACKEND_SECURETRANSPORT, nullptr, &available_backends);
++            }
++            else if (on_win)
++            {
++                sslset_res
++                    = curl_global_sslset(CURLSSLBACKEND_SCHANNEL, nullptr, &available_backends);
++            }
++
++            if (sslset_res == CURLSSLSET_TOO_LATE)
++            {
++                LOG_ERROR << "cURL SSL init called too late, that is a bug.";
++            }
++            else if (sslset_res == CURLSSLSET_UNKNOWN_BACKEND
++                     || sslset_res == CURLSSLSET_NO_BACKENDS)
++            {
++                LOG_WARNING
++                    << "Could not use preferred SSL backend (Linux: OpenSSL, OS X: SecureTransport, Win: SChannel)"
++                    << std::endl;
++                LOG_WARNING << "Please check the cURL library configuration that you are using."
++                            << std::endl;
++            }
++#endif
++
+             if (curl_global_init(CURL_GLOBAL_ALL) != 0)
+                 throw std::runtime_error("failed to initialize curl");
+         }

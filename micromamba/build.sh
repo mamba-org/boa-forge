@@ -11,7 +11,17 @@ cmake ${CMAKE_ARGS} .. \
          -DBUILD_MICROMAMBA=ON \
          -DMICROMAMBA_LINKAGE=FULL_STATIC
 
-make -j${CPU_COUNT}
-make install
+ninja
+
+ninja install
+
+# remove everything related to `libmamba`
+rm -rf $PREFIX/lib/libmamba*
+rm -rf $PREFIX/include/mamba
+rm -rf $PREFIX/lib/cmake/libmamba
 
 ${STRIP:-strip} ${PREFIX}/bin/micromamba
+
+if [[ "$target_platform" == "osx-"* ]]; then
+  ${OTOOL:-otool} -l ${PREFIX}/bin/micromamba
+fi
