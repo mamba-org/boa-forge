@@ -7,3 +7,9 @@ MACOSX_DEPLOYMENT_TARGET:      # [osx]
 CONDA_BUILD_SYSROOT:
  - /Applications/Xcode_12.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk  # [osx and arm64]
  # - /opt/MacOSX11.1.sdk/  # [osx and arm64]
+
+# use vs2019 on Windows
+cxx_compiler:                  # [win]
+- vs2019                       # [win]
+c_compiler:                    # [win]
+- vs2019                       # [win]
