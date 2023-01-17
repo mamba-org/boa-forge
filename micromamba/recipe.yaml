@@ -1,5 +1,5 @@
 context:
-  version: 1.0.0
+  version: 1.2.0
 
 package:
   name: micromamba
@@ -7,10 +7,7 @@ package:
 
 source:
   - url: https://github.com/mamba-org/mamba/archive/refs/tags/micromamba-{{ version }}.tar.gz
-    sha256: 7303d983b49a1a52b302ceae355af1c05afef3a07aa3ad6dd27c36d64c43f991
-  - patches:
-      - patches/libmamba.patch
-      - patches/fix_ssl_init.patch
+    sha256: 63fd8a1dbec811e63d4f9b5e27757af45d08a219d0900c7c7a19e0b177a576b8
 
 build:
   number: 0
