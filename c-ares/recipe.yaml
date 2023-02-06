@@ -1,5 +1,5 @@
 context:
-  version: 1.18.1
+  version: 1.19.0
 
 package:
   name: c-ares
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://c-ares.haxx.se/download/c-ares-{{ version }}.tar.gz
-  sha256: 1a7d52a8a84a9fbffb1be9133c0f6e17217d91ea5a6fa61f6b4729cda78ebbcf
+  sha256: bfceba37e23fd531293829002cac0401ef49a6dc55923f7f92236585b7ad1dd3
 
 build:
   number: 0
