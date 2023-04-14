@@ -1,7 +1,7 @@
 context:
   name: libsolv
-  version: 0.7.23
-  sha256: 0286155964373c6cc3802d025750786c3ee79608d5cb884598e110e3918bb2fe
+  version: 0.7.24
+  sha256: 62743265222a729c7fe94c40f7b90ccc1ac5568f5ee6df46884e7ce3c16c78c7
 
 package:
   name: '{{ name|lower }}'
