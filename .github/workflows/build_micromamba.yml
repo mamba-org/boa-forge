@@ -30,7 +30,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: install mamba
-        uses: mamba-org/provision-with-micromamba@main
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: environment.yml
       - name: generate cache timestamp
         id: cache_timestamp
         shell: bash -l {0}
@@ -152,7 +154,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: install mamba
-        uses: mamba-org/provision-with-micromamba@main
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          init-shell: >-
+            bash
+            powershell
+          environment-file: environment.yml
       - name: generate cache timestamp
         id: cache_timestamp
         shell: bash -l {0}
