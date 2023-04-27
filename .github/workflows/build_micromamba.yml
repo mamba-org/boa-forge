@@ -37,25 +37,19 @@ jobs:
         id: cache_timestamp
         shell: bash -l {0}
         run: echo "timestamp=$(TZ=UTC date +%F)" >> $GITHUB_OUTPUT
-      - name: create .condarc
-        shell: bash -l -eo pipefail {0}
+      - shell: bash -l -eo pipefail {0}
         run: |
-          cat > ~/.condarc <<EOL
-          channels:
-            - conda-forge
-          EOL
-
           micromamba remove boa --no-prune
           python -m pip install git+https://github.com/mamba-org/boa@main
 
-          if [ "$RUNNER_OS" == "macOS" ]; then
+          if [ "${{ runner.os }}" == "macOS" ]; then
             curl -LO https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_darwin_amd64.tar.gz
             mkdir -p oras-install/
             tar -zxf oras_0.12.0_*.tar.gz -C oras-install/
             mv oras-install/oras /usr/local/bin/
             rm -rf oras_0.12.0_*.tar.gz oras-install/
           fi
-          
+
           python -m pip install git+https://github.com/mamba-org/conda_oci_mirror@main
       - name: pull already uploaded packages
         shell: bash -l {0}
@@ -69,59 +63,59 @@ jobs:
 
         if: always()
       - name: build bzip2
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build bzip2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
       - name: build libiconv
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build libiconv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
-        if: runner.os == 'macOS'
+        if: ${{ matrix.os }} == macos-latest
       - name: build zlib
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build zlib --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
       - name: build zstd
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build zstd --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
       - name: build yaml-cpp
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build yaml-cpp --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
       - name: build reproc
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build reproc --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
       - name: build libarchive
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build libarchive \
               --skip-existing \
               --features "[static,zlib,zstd,bzip2,~openssl,~xml2,~lz4,~lzo,~xz]" \
               --target-platform $TARGET_PLATFORM
       - name: build openssl
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build openssl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
       - name: build libssh2
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build libssh2 --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
       - name: build libsolv
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build libsolv --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
       - name: build curl
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build curl --features "[static]" --skip-existing --target-platform $TARGET_PLATFORM
       - name: build micromamba
-        shell: bash -l -eo pipefail {0}
+        shell: micromamba-shell {0}
         run: |
           boa build micromamba --skip-existing --target-platform $TARGET_PLATFORM
       # - name: build micromamba-nightly
-      #   shell: bash -l -eo pipefail {0}
+      #   shell: micromamba-shell {0}
       #   run: |
       #     export NIGHTLY_VERSION=`date +%y.%-m.%-d.%-H%M`
       #     python micromamba/to_nightly.py
@@ -129,9 +123,9 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
-          path: ~/micromamba-root/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+          path: ${{ env.MAMBA_ROOT }}/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
       - name: create_oras_push
-        shell: bash -l {0}
+        shell: micromamba-shell {0}
         run: |
           # python ./upload_packages.py ${{ env.GITHUB_OWNER }} ${{ env.TARGET_PLATFORM }} ${CONDA_PREFIX} ${{ secrets.GITHUB_TOKEN }}
           # find ${CONDA_PREFIX}/conda-bld/$TARGET_PLATFORM
@@ -142,7 +136,6 @@ jobs:
             --subdir $TARGET_PLATFORM \
             --location ${{ env.GITHUB_OWNER }}/boa-forge \
             --cache-dir ${CONDA_PREFIX}/conda-bld
-
         if: always()
 
   build_libraries_win:
@@ -168,8 +161,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/micromamba/envs/buildenv/conda-bld/**/*tar.bz2
-          key: build-cache-${{ runner.os }}-${{ matrix.target_platform }}-${{ steps.cache_timestamp.outputs.timestamp }}
+            ${{ env.MAMBA_ROOT }}/envs/buildenv/conda-bld/**/*tar.bz2
+          key: build-cache-${{ runner.os }}-win-64-${{ steps.cache_timestamp.outputs.timestamp }}
       - name: create .condarc
         shell: bash -l -eo pipefail {0}
         run: |
@@ -183,7 +176,7 @@ jobs:
           python -m pip install git+https://github.com/mamba-org/boa@main
           python -m pip install git+https://github.com/mamba-org/conda_oci_mirror@main
 
-          if [ "$RUNNER_OS" == "Windows" ]; then
+          if [ ${{ runner.os }} == "Windows" ]; then
             curl.exe -sLO  https://github.com/oras-project/oras/releases/download/v0.12.0/oras_0.12.0_windows_amd64.tar.gz
             tar.exe -xvzf oras_0.12.0_windows_amd64.tar.gz
             mkdir -p $USERPROFILE/bin/
@@ -257,7 +250,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
-          path: ~/micromamba-root/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+          path: ${{ env.MAMBA_ROOT }}/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
       - name: create_oras_push
         shell: bash -l {0}
         run: |
@@ -433,11 +426,11 @@ jobs:
   #       env:
   #         RUNNER_OS: ${{ runner.os }}
   #       run: |
-  #         if [[ $RUNNER_OS == "Linux" ]]; then
+  #         if [[ ${{ runner.os }} == "Linux" ]]; then
   #           export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}
-  #         elif [[ $RUNNER_OS == "macOS" ]]; then
+  #         elif [[ ${{ runner.os }} == "macOS" ]]; then
   #           export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
-  #         elif [[ $RUNNER_OS == "Windows" ]]; then
+  #         elif [[ ${{ runner.os }} == "Windows" ]]; then
   #           export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_win_64 }}
   #           export IGNORE_TESTS="--ignore=upstream-mamba/micromamba/tests/test_activation.py --ignore=upstream-mamba/micromamba/tests/test_shell.py"
   #         fi
@@ -454,9 +447,9 @@ jobs:
   #       if: runner.os == 'Linux' || runner.os == 'macOS'
   #       run: |
 
-  #         if [[ $RUNNER_OS == "Linux" ]]; then
+  #         if [[ ${{ runner.os }} == "Linux" ]]; then
   #           export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_linux_64 }}
-  #         elif [[ $RUNNER_OS == "macOS" ]]; then
+  #         elif [[ ${{ runner.os }} == "macOS" ]]; then
   #           export TEST_MAMBA_EXE=${{ steps.get_micromamba_nightly.outputs.micromamba_bin_osx_64 }}
   #         fi
 
