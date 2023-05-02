@@ -123,7 +123,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
-          path: ${{ env.MAMBA_ROOT }}/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+          path: ${{ env.MAMBA_ROOT_PREFIX }}/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
       - name: create_oras_push
         shell: micromamba-shell {0}
         run: |
@@ -161,7 +161,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ${{ env.MAMBA_ROOT }}/envs/buildenv/conda-bld/**/*tar.bz2
+            ${{ env.MAMBA_ROOT_PREFIX }}/envs/buildenv/conda-bld/**/*tar.bz2
           key: build-cache-${{ runner.os }}-win-64-${{ steps.cache_timestamp.outputs.timestamp }}
       - name: create .condarc
         shell: bash -l -eo pipefail {0}
@@ -250,7 +250,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: micromamba_pkgs
-          path: ${{ env.MAMBA_ROOT }}/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
+          path: ${{ env.MAMBA_ROOT_PREFIX }}/envs/buildenv/conda-bld/**/*.tar.bz2 # or path/to/artifact
       - name: create_oras_push
         shell: bash -l {0}
         run: |
