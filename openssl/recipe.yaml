@@ -1,5 +1,5 @@
 context:
-  version: 3.1.1
+  version: 3.2.1
 
 package:
   name: openssl
@@ -7,7 +7,7 @@ package:
 
 source:
   url: http://www.openssl.org/source/openssl-{{ version }}.tar.gz
-  sha256: b3aa61334233b852b63ddb048df181177c2c659eb9d4376008118f9c08d07674
+  sha256: 83c7329fe52c850677d75e5d0b0ca245309b97e8ecbcfdc1dfdc4ab9fac35b39
 
 build:
   number: 0

@@ -1,5 +1,5 @@
 context:
-  version: "8.1.2"
+  version: "8.7.1"
 
 package:
   name: curl
@@ -7,7 +7,7 @@ package:
 
 source:
   url: http://curl.haxx.se/download/curl-{{ version }}.tar.bz2
-  sha256: b54974d32fd610acace92e3df1f643144015ac65847f0a041fdc17db6f43f243
+  sha256: 05bbd2b698e9cfbab477c33aa5e99b4975501835a41b7ca6ca71de03d8849e76
 
 build:
   number: 0
